@@ -16,11 +16,10 @@ static void main_dtor(void) {
     write(1, "[main] dtor\n", 12);
 }
 
-void _start(void) {
+int main(void) {
     write(1, "[main] entry\n", 13);
     main_print();
     libfoo_print();
     libbar_print();
-    write(1, "PASS\n", 5);
-    exit(0);
+    return 0;
 }

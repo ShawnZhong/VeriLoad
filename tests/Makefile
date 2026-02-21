@@ -10,7 +10,6 @@ COMMON_CFLAGS := \
 	-fno-unwind-tables \
 	-fno-stack-protector \
 	-fno-ident \
-	-DNOLIBC_NO_RUNTIME \
 	-DNOLIBC_IGNORE_ERRNO \
 	-I$(NOLIBC_DIR)
 
