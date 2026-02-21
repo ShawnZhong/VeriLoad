@@ -55,6 +55,19 @@ run_fatal() {
   fi
 }
 
+assert_musl_dynamic() {
+  local name="$1"
+  local bin="$2"
+
+  if ! readelf -l "${bin}" | grep -q "Requesting program interpreter: /lib/ld-musl-x86_64.so.1"; then
+    panic "case ${name} is not using musl dynamic interpreter"
+  fi
+
+  if ! readelf -d "${bin}" | grep -q "Shared library: \\[libc.musl-x86_64.so.1\\]"; then
+    panic "case ${name} is not dynamically linked against musl libc"
+  fi
+}
+
 if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
   if [[ -z "${LOADER_CONTAINER:-}" ]]; then
     panic "LOADER_CONTAINER is required in container mode"
@@ -77,6 +90,8 @@ if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
   run_success "pos_one_dso" "${BUILD_DIR}/pos_one_dso" 7
   run_success "pos_multi_dso_bfs" "${BUILD_DIR}/pos_multi_dso_bfs" 12
   run_fatal "neg_missing_needed" "${BUILD_DIR}/neg_missing_needed"
+  assert_musl_dynamic "pos_musl_dynamic" "${BUILD_DIR}/pos_musl_dynamic"
+  run_success "pos_musl_dynamic" "${BUILD_DIR}/pos_musl_dynamic" 42
 
   log "all configured Alpine runtime tests passed"
   exit 0

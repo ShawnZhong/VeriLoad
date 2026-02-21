@@ -11,7 +11,8 @@ BINS := \
 	$(BUILD_DIR)/pos_minimal_pie \
 	$(BUILD_DIR)/pos_one_dso \
 	$(BUILD_DIR)/pos_multi_dso_bfs \
-	$(BUILD_DIR)/neg_missing_needed
+	$(BUILD_DIR)/neg_missing_needed \
+	$(BUILD_DIR)/pos_musl_dynamic
 
 .PHONY: all
 all: $(LIBS) $(BINS)
@@ -42,6 +43,9 @@ $(BUILD_DIR)/pos_multi_dso_bfs: pos_multi_dso_bfs.S $(BUILD_DIR)/libvla.so | $(B
 
 $(BUILD_DIR)/neg_missing_needed: neg_missing_needed.S $(BUILD_DIR)/libvlmissing.so | $(BUILD_DIR)
 	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -o $@ $< -L$(BUILD_DIR) -lvlmissing
+
+$(BUILD_DIR)/pos_musl_dynamic: pos_musl_dynamic.c | $(BUILD_DIR)
+	$(CC) -fPIE -pie -O2 -o $@ $<
 
 .PHONY: clean
 clean:
