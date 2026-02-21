@@ -3,6 +3,8 @@ set -euo pipefail
 
 PACKAGES=(
   podman
+  curl
+  unzip
 )
 
 sudo apt-get update
