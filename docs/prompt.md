@@ -27,11 +27,14 @@ Each `mmap` plan must include:
 
 ## Staged Modeling Requirements
 - Organize the loader into explicit stages, with spec/struct per stage when useful.
+- For each stage, write spec in `src/<stage_name>_spec.rs` and implementation in `src/<stage_name>_impl.rs`. 
+- Put all the structs and constants common to all stages in `src/types.rs` and `src/consts.rs`.
 - Suggested stages: parse, dependency discovery, symbol resolution, relocation.
 - Keep the design easy to implement and verify.
 - Do not omit details required for a correct loader specification.
 - Since input is bytes, model all required ELF constants from the spec.
 - DO NOT CHEAT!!! external_body is only allowed in the verification boundary.
+- Make sure that you prove that the implementation refines the spec. Do not skip any steps.
 
 ## Implementation and Proof Requirements
 - Ensure implementation behavior matches the formal spec.
