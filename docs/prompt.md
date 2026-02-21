@@ -7,8 +7,7 @@ The resulting binary should be able to load and run the `tests/main` executable.
 1. Read the code examples in `third_party/verus/examples` on how to write Verus code. In particular
     - `source/docs/guide/src/triangle.md` and `examples/guide/recursion.rs`
 2. Write `src/design.md` and `src/todo.md` first. Use as a guide.
-3. At the beginning, implement the core interface types (`LoaderInput`, `LoaderOutput`).
-4. Then implement and most importantly, prove the loader stage by stage. Do not do everything at once.
+3. Stage by stage, come up with the spec/struct for each stage first. Then implement, and most importantly, prove the implementation refines the spec.
 
 ## LoaderInput
 - `LoaderInput` is provided by unverified initialization code calling into the verified code.
