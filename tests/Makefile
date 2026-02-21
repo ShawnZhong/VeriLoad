@@ -2,17 +2,17 @@ CC ?= cc
 BUILD_DIR ?= build
 
 LIBS := \
-	$(BUILD_DIR)/libvlfoo.so \
-	$(BUILD_DIR)/libvlb.so \
-	$(BUILD_DIR)/libvla.so \
-	$(BUILD_DIR)/libvlmissing.so
+	$(BUILD_DIR)/libveriload_basic.so \
+	$(BUILD_DIR)/libveriload_dep_b.so \
+	$(BUILD_DIR)/libveriload_dep_a.so \
+	$(BUILD_DIR)/libveriload_missing_leaf.so \
+	$(BUILD_DIR)/libveriload_missing_top.so
 
 BINS := \
-	$(BUILD_DIR)/pos_minimal_pie \
-	$(BUILD_DIR)/pos_one_dso \
-	$(BUILD_DIR)/pos_multi_dso_bfs \
-	$(BUILD_DIR)/neg_missing_needed \
-	$(BUILD_DIR)/pos_musl_dynamic
+	$(BUILD_DIR)/pos_no_deps \
+	$(BUILD_DIR)/pos_one_dep \
+	$(BUILD_DIR)/pos_transitive_dep \
+	$(BUILD_DIR)/neg_missing_dep
 
 .PHONY: all
 all: $(LIBS) $(BINS)
@@ -20,32 +20,32 @@ all: $(LIBS) $(BINS)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/libvlfoo.so: libvlfoo.S | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libvlfoo.so -o $@ $<
+$(BUILD_DIR)/libveriload_basic.so: libveriload_basic.c | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_basic.so -o $@ $<
 
-$(BUILD_DIR)/libvlb.so: libvlb.S | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libvlb.so -o $@ $<
+$(BUILD_DIR)/libveriload_dep_b.so: libveriload_dep_b.c | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_dep_b.so -o $@ $<
 
-$(BUILD_DIR)/libvla.so: libvla.S $(BUILD_DIR)/libvlb.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libvla.so -o $@ $< -L$(BUILD_DIR) -lvlb
+$(BUILD_DIR)/libveriload_dep_a.so: libveriload_dep_a.c $(BUILD_DIR)/libveriload_dep_b.so | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_dep_a.so -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_dep_b -Wl,--as-needed -o $@ $<
 
-$(BUILD_DIR)/libvlmissing.so: libvlfoo.S | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libvlmissing.so -o $@ $<
+$(BUILD_DIR)/libveriload_missing_leaf.so: libveriload_missing_leaf.c | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_missing_leaf.so -o $@ $<
 
-$(BUILD_DIR)/pos_minimal_pie: pos_minimal_pie.S | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -o $@ $<
+$(BUILD_DIR)/libveriload_missing_top.so: libveriload_missing_top.c $(BUILD_DIR)/libveriload_missing_leaf.so | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_missing_top.so -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_missing_leaf -Wl,--as-needed -o $@ $<
 
-$(BUILD_DIR)/pos_one_dso: pos_one_dso.S $(BUILD_DIR)/libvlfoo.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -o $@ $< -L$(BUILD_DIR) -lvlfoo
+$(BUILD_DIR)/pos_no_deps: pos_no_deps.c | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -o $@ $<
 
-$(BUILD_DIR)/pos_multi_dso_bfs: pos_multi_dso_bfs.S $(BUILD_DIR)/libvla.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,-rpath-link,$(BUILD_DIR) -o $@ $< -L$(BUILD_DIR) -lvla
+$(BUILD_DIR)/pos_one_dep: pos_one_dep.c $(BUILD_DIR)/libveriload_basic.so | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_basic -Wl,--as-needed -o $@ $<
 
-$(BUILD_DIR)/neg_missing_needed: neg_missing_needed.S $(BUILD_DIR)/libvlmissing.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -o $@ $< -L$(BUILD_DIR) -lvlmissing
+$(BUILD_DIR)/pos_transitive_dep: pos_transitive_dep.c $(BUILD_DIR)/libveriload_dep_a.so | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_dep_a -Wl,--as-needed -Wl,-rpath-link,$(BUILD_DIR) -o $@ $<
 
-$(BUILD_DIR)/pos_musl_dynamic: pos_musl_dynamic.c | $(BUILD_DIR)
-	$(CC) -fPIE -pie -O2 -o $@ $<
+$(BUILD_DIR)/neg_missing_dep: neg_missing_dep.c $(BUILD_DIR)/libveriload_missing_top.so | $(BUILD_DIR)
+	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_missing_top -Wl,--as-needed -Wl,-rpath-link,$(BUILD_DIR) -o $@ $<
 
 .PHONY: clean
 clean:

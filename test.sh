@@ -55,16 +55,24 @@ run_fatal() {
   fi
 }
 
-assert_musl_dynamic() {
+assert_no_libc_linkage() {
   local name="$1"
-  local bin="$2"
+  local elf="$2"
 
-  if ! readelf -l "${bin}" | grep -q "Requesting program interpreter: /lib/ld-musl-x86_64.so.1"; then
-    panic "case ${name} is not using musl dynamic interpreter"
+  if readelf -d "${elf}" | grep -q "Shared library: \\[libc"; then
+    panic "case ${name} links libc, but first-stage tests must avoid libc"
   fi
+}
 
-  if ! readelf -d "${bin}" | grep -q "Shared library: \\[libc.musl-x86_64.so.1\\]"; then
-    panic "case ${name} is not dynamically linked against musl libc"
+assert_log_contains() {
+  local name="$1"
+  local pattern="$2"
+  local out="${BUILD_DIR}/${name}.log"
+
+  if ! grep -Fq "${pattern}" "${out}"; then
+    echo "--- ${name} output ---" >&2
+    cat "${out}" >&2 || true
+    panic "case ${name} log does not contain: ${pattern}"
   fi
 }
 
@@ -82,18 +90,35 @@ if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
 
   make -C "${TESTS_DIR}" BUILD_DIR="${BUILD_DIR}"
 
-  cp "${BUILD_DIR}/libvlfoo.so" /lib/
-  cp "${BUILD_DIR}/libvlb.so" /lib/
-  cp "${BUILD_DIR}/libvla.so" /lib/
+  assert_no_libc_linkage "libveriload_basic.so" "${BUILD_DIR}/libveriload_basic.so"
+  assert_no_libc_linkage "libveriload_dep_a.so" "${BUILD_DIR}/libveriload_dep_a.so"
+  assert_no_libc_linkage "libveriload_dep_b.so" "${BUILD_DIR}/libveriload_dep_b.so"
+  assert_no_libc_linkage "libveriload_missing_top.so" "${BUILD_DIR}/libveriload_missing_top.so"
+  assert_no_libc_linkage "libveriload_missing_leaf.so" "${BUILD_DIR}/libveriload_missing_leaf.so"
+  assert_no_libc_linkage "pos_no_deps" "${BUILD_DIR}/pos_no_deps"
+  assert_no_libc_linkage "pos_one_dep" "${BUILD_DIR}/pos_one_dep"
+  assert_no_libc_linkage "pos_transitive_dep" "${BUILD_DIR}/pos_transitive_dep"
+  assert_no_libc_linkage "neg_missing_dep" "${BUILD_DIR}/neg_missing_dep"
 
-  run_success "pos_minimal_pie" "${BUILD_DIR}/pos_minimal_pie" 0
-  run_success "pos_one_dso" "${BUILD_DIR}/pos_one_dso" 7
-  run_success "pos_multi_dso_bfs" "${BUILD_DIR}/pos_multi_dso_bfs" 12
-  run_fatal "neg_missing_needed" "${BUILD_DIR}/neg_missing_needed"
-  assert_musl_dynamic "pos_musl_dynamic" "${BUILD_DIR}/pos_musl_dynamic"
-  run_success "pos_musl_dynamic" "${BUILD_DIR}/pos_musl_dynamic" 42
+  cp "${BUILD_DIR}/libveriload_basic.so" /lib/
+  cp "${BUILD_DIR}/libveriload_dep_a.so" /lib/
+  cp "${BUILD_DIR}/libveriload_dep_b.so" /lib/
+  cp "${BUILD_DIR}/libveriload_missing_top.so" /lib/
+  rm -f /lib/libveriload_missing_leaf.so
 
-  log "all configured Alpine runtime tests passed"
+  run_success "pos_no_deps" "${BUILD_DIR}/pos_no_deps" 0
+  run_success "pos_one_dep" "${BUILD_DIR}/pos_one_dep" 0
+  assert_log_contains "pos_one_dep" "[veriload] load DSO /lib/libveriload_basic.so"
+
+  run_success "pos_transitive_dep" "${BUILD_DIR}/pos_transitive_dep" 0
+  assert_log_contains "pos_transitive_dep" "[veriload] load DSO /lib/libveriload_dep_a.so"
+  assert_log_contains "pos_transitive_dep" "[veriload] load DSO /lib/libveriload_dep_b.so"
+
+  run_fatal "neg_missing_dep" "${BUILD_DIR}/neg_missing_dep"
+  assert_log_contains "neg_missing_dep" "[veriload] load DSO /lib/libveriload_missing_top.so"
+  assert_log_contains "neg_missing_dep" "/lib/libveriload_missing_leaf.so"
+
+  log "all configured stage-1 dependency tests passed"
   exit 0
 fi
 
