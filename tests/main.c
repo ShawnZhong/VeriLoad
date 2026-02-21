@@ -18,5 +18,5 @@ void _start(void) {
     libfoo_print();
     libbar_print();
     write(1, "PASS\n", 5);
-    _exit(0);
+    exit(0);
 }
