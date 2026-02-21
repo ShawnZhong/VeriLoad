@@ -1,3 +1,8 @@
+use verus_builtin::*;
+use verus_builtin_macros::*;
+
+verus! {
+
 pub const EI_MAG0: usize = 0;
 pub const EI_MAG1: usize = 1;
 pub const EI_MAG2: usize = 2;
@@ -6,9 +11,9 @@ pub const EI_CLASS: usize = 4;
 pub const EI_DATA: usize = 5;
 
 pub const ELFMAG0: u8 = 0x7f;
-pub const ELFMAG1: u8 = b'E';
-pub const ELFMAG2: u8 = b'L';
-pub const ELFMAG3: u8 = b'F';
+pub const ELFMAG1: u8 = 0x45;
+pub const ELFMAG2: u8 = 0x4c;
+pub const ELFMAG3: u8 = 0x46;
 pub const ELFCLASS64: u8 = 2;
 pub const ELFDATA2LSB: u8 = 1;
 
@@ -74,7 +79,7 @@ pub const DYN_SIZE: u64 = 16;
 pub const SYM_SIZE: u64 = 24;
 pub const RELA_SIZE: u64 = 24;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct ElfHeader {
     pub e_type: u16,
     pub e_machine: u16,
@@ -84,7 +89,7 @@ pub struct ElfHeader {
     pub e_phnum: u16,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct ProgramHeader {
     pub p_type: u32,
     pub p_flags: u32,
@@ -95,7 +100,7 @@ pub struct ProgramHeader {
     pub p_align: u64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Segment {
     pub vaddr: u64,
     pub memsz: u64,
@@ -104,7 +109,7 @@ pub struct Segment {
     pub flags: u32,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct RelroRegion {
     pub vaddr: u64,
     pub memsz: u64,
@@ -122,14 +127,14 @@ pub struct LoadPlan {
     pub entry: u64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct TableInfo {
     pub addr: u64,
     pub size: u64,
     pub ent: u64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct ArrayInfo {
     pub addr: u64,
     pub size: u64,
@@ -150,7 +155,7 @@ pub struct DynamicInfo {
     pub soname_off: Option<u64>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Symbol {
     pub name_off: u32,
     pub info: u8,
@@ -160,7 +165,7 @@ pub struct Symbol {
     pub size: u64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct RelaEntry {
     pub offset: u64,
     pub info: u64,
@@ -178,3 +183,5 @@ pub struct Module {
     pub needed_indices: Vec<usize>,
     pub soname: Option<String>,
 }
+
+} // verus!

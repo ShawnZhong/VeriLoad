@@ -21,8 +21,8 @@ Status keys:
 - [x] Define predicates: `mapped_va`, `mapped_range`, `writable_range`, `executable_va`
 - [x] Define `va_to_off` and `off_in_image`
 - [ ] Prove arithmetic lemmas for align up/down and checked add/sub
-- [ ] Prove `mapped_range -> off_in_image` bridge lemma
-- [ ] Prove writable subset lemma (`writable_range -> mapped_range`)
+- [x] Prove `mapped_range -> off_in_image` bridge lemma
+- [x] Prove writable subset lemma (`writable_range -> mapped_range`)
 
 ## M2: Verified Parsing (`parse.rs`)
 
