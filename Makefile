@@ -1,6 +1,7 @@
 VERUS := ./.verus/verus-x86-linux/verus
 SOURCE := src/main.rs
 BINARY := veriload
+IMAGE_NAME := veriload
 
 .PHONY: all
 all: build container
@@ -19,4 +20,4 @@ clean:
 
 .PHONY: container
 container: Containerfile
-	podman build -q -t veriload -f Containerfile .
+	podman build -q -t $(IMAGE_NAME) -f Containerfile .
