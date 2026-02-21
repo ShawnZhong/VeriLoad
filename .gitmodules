@@ -1,0 +1,6 @@
+[submodule "verus"]
+	path = verus
+	url = https://github.com/verus-lang/verus.git
+[submodule "musl"]
+	path = musl
+	url = https://github.com/kraj/musl.git
