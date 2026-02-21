@@ -13,7 +13,6 @@ mod protect;
 mod relocate;
 mod rt;
 mod spec;
-mod stack;
 mod symbols;
 
 fn host_main() {
@@ -53,7 +52,7 @@ fn host_main() {
             ))
         });
 
-    let sp = stack::build_minimal_stack(&main_path);
+    let sp = rt::build_minimal_stack(&main_path);
     rt::log(format!("enter entry=0x{entry:x} sp=0x{:x}", sp as usize));
 
     unsafe {
