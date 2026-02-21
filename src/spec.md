@@ -1,10 +1,29 @@
-TIS Committee
-May 1995
+---
+title: "TIS ELF Specification (Version 1.2) — Markdown conversion"
+source: "elf.pdf"
+generated: "2026-02-21T09:29:16Z"
+---
+
+> Converted from the original PDF. Formatting (tables/figures) is best-effort.
+
+
+
+---
+
+## Page 1: Tool Interface Standard (TIS)
+
 Tool Interface Standard (TIS)
 Executable and Linking Format (ELF)
 Specification
 Version 1.2
-i
+TIS Committee
+May 1995
+
+
+---
+
+## Page 2: The TIS Committee grants you a non-exclusive, worldwide, royalty-free license to use the information disclosed in this S
+
 The TIS Committee grants you a non-exclusive, worldwide, royalty-free license to use the information disclosed in this Specification
 to make your software TIS-compliant; no other license, express or implied, is granted or intended hereby.
 The TIS Committee makes no warranty for the use of this standard.
@@ -21,8 +40,14 @@ Microsoft, Microsoft C, MS, MS-DOS, Windows, and XENIX are registered trademarks
 Phoenix is a registered trademark of Phoenix Technologies, Ltd.
 UNIX is a registered trademark in the United States and other countries, licensed exclusively through X/Open Company Limited.
 * Other brands and names are the property of their respective owners.
-iii
-Preface
+i
+
+
+---
+
+## Page 3: Preface
+
+### Preface
 This Executable and Linking Format Specification, Version 1.2, is the result of the work of the
 Tool Interface Standards (TIS) Committee--an association of members of the microcomputer
 industry formed to work toward standardization of the software interfaces visible to
@@ -65,39 +90,58 @@ such as Intel Architecture information.
 • Book III: Operating System Specific, describes ELF information that is operating system
 dependent, such as System V Release 4 information. This book also contains an appendix that
 describes ELF information that is both operating system and processor dependent.
-Contents v
-Contents
-Preface
-Book I: Executable and Linking Format (ELF)
+iii
+
+
+---
+
+## Page 4
+
+
+
+
+---
+
+## Page 5: Contents
+
+### Contents
+### Preface
+### Book I: Executable and Linking Format (ELF)
 1. Object Files
 Introduction........................................................................................................ 1-1
-File Format ........................................................................................................ 1-1
-ELF Header ....................................................................................................... 1-4
+File Format........................................................................................................ 1-1
+ELF Header....................................................................................................... 1-4
 ELF Identification............................................................................................... 1-6
 Sections............................................................................................................. 1-9
-Special Sections ................................................................................................ 1-15
-String Table ....................................................................................................... 1-18
+Special Sections................................................................................................ 1-15
+String Table....................................................................................................... 1-18
 Symbol Table..................................................................................................... 1-19
 Symbol Values................................................................................................... 1-22
 Relocation.......................................................................................................... 1-23
 2. Program Loading and Dynamic Linking
 Introduction........................................................................................................ 2-1
-Program Header ................................................................................................ 2-2
-Program Loading ............................................................................................... 2-7
-Dynamic Linking ................................................................................................ 2-8
+Program Header................................................................................................ 2-2
+Program Loading............................................................................................... 2-7
+Dynamic Linking................................................................................................ 2-8
 A. Reserved Names
 Introduction........................................................................................................ A-1
 Special Sections Names.................................................................................... A-2
-Dynamic Section Names ................................................................................... A-3
-Pre-existing Extensions ..................................................................................... A-4
-Book II: Processor Specific (Intel Architecture)
+Dynamic Section Names................................................................................... A-3
+Pre-existing Extensions..................................................................................... A-4
+### Book II: Processor Specific (Intel Architecture)
 1. Object Files
 Introduction........................................................................................................ 1-1
-ELF Header ....................................................................................................... 1-2
+ELF Header....................................................................................................... 1-2
 Relocation.......................................................................................................... 1-3
-Contents
-vi
-Book III: Operating System Specific
+Contents v
+
+
+---
+
+## Page 6: Contents
+
+### Contents
+### Book III: Operating System Specific
 (UNIX System V Release 4)
 1. Object Files
 Introduction........................................................................................................ 1-1
@@ -105,104 +149,147 @@ Sections........................................................................
 Symbol Table..................................................................................................... 1-5
 2. Program Loading and Dynamic Linking
 Introduction........................................................................................................ 2-7
-Program Header ................................................................................................ 2-8
-Dynamic Linking ................................................................................................ 2-12
+Program Header................................................................................................ 2-8
+Dynamic Linking................................................................................................ 2-12
 3. Intel Architecture and System V Release 4 Dependencies
 Introduction........................................................................................................ A-1
 Sections............................................................................................................. A-2
 Symbol Table..................................................................................................... A-3
 Relocation.......................................................................................................... A-4
 Program Loading and Dynamic Linking............................................................. A-7
-Table of Contents vii
+vi
+
+
+---
+
+## Page 7: List of Figures
+
 List of Figures
-Book I: Executable and Linking Format (ELF)
-Figure 1-1. Object File Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-1
-Figure 1-2. 32-Bit Data Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-2
-Figure 1-3. ELF Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-4
-Figure 1-4. e_ident[] Identification Indexes . . . . . . . . . . . . . . . . . . . . . . . . . .1-6
-Figure 1-5. Data Encoding ELFDATA2LSB . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-8
-Figure 1-6. Data Encoding ELFDATA2MSB . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-8
-Figure 1-7. Special Section Indexes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-9
-Figure 1-8. Section Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-10
-Figure 1-9. Section Types, sh_type. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-11
-Figure 1-10. Section Header Table Entry: Index 0 . . . . . . . . . . . . . . . . . . . . . . . . .1-13
-Figure 1-11. Section Attribute Flags, sh_flags . . . . . . . . . . . . . . . . . . . . . . . . . .1-14
-Figure 1-12. sh_link and sh_info Interpretation . . . . . . . . . . . . . . . . . . . . . . .1-14
-Figure 1-13. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-15
-Figure 1-14. String Table Indexes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-18
-Figure 1-15. Symbol Table Entry . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-19
-Figure 1-16. Symbol Binding, ELF32_ST_BIND . . . . . . . . . . . . . . . . . . . . . . . . . .1-20
-Figure 1-17. Symbol Types, ELF32_ST_TYPE . . . . . . . . . . . . . . . . . . . . . . . . . . .1-21
-Figure 1-18. Symbol Table Entry: Index 0 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-22
-Figure 1-19. Relocation Entries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-23
-Figure 2-1. Program Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-2
-Figure 2-2. Segment Types, p_type . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-3
-Figure 2-3. Note Information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5
-Figure 2-4. Example Note Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-6
-Figure A-1. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-2
-Figure A-2. Dynamic Array Tags, d_tag . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-3
-Book II: Processor Specific (Intel Architecture)
-Figure 1-1. Intel Identification, e_ident . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-2
-Figure 1-2. Relocatable Fields . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-3
-Figure 1-3. Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-4
-viii Table of Contents
-Book III: Operating System Specific
+### Book I: Executable and Linking Format (ELF)
+**Figure 1-1. Object File Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-1**
+**Figure 1-2. 32-Bit Data Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-2**
+**Figure 1-3. ELF Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-4**
+**Figure 1-4. e_ident[] Identification Indexes . . . . . . . . . . . . . . . . . . . . . . . . . .1-6**
+**Figure 1-5. Data Encoding ELFDATA2LSB . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-8**
+**Figure 1-6. Data Encoding ELFDATA2MSB . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-8**
+**Figure 1-7. Special Section Indexes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-9**
+**Figure 1-8. Section Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-10**
+**Figure 1-9. Section Types, sh_type. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-11**
+**Figure 1-10. Section Header Table Entry: Index 0 . . . . . . . . . . . . . . . . . . . . . . . . .1-13**
+**Figure 1-11. Section Attribute Flags, sh_flags . . . . . . . . . . . . . . . . . . . . . . . . . .1-14**
+**Figure 1-12. sh_link and sh_info Interpretation . . . . . . . . . . . . . . . . . . . . . . .1-14**
+**Figure 1-13. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-15**
+**Figure 1-14. String Table Indexes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-18**
+**Figure 1-15. Symbol Table Entry . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-19**
+**Figure 1-16. Symbol Binding, ELF32_ST_BIND . . . . . . . . . . . . . . . . . . . . . . . . . .1-20**
+**Figure 1-17. Symbol Types, ELF32_ST_TYPE . . . . . . . . . . . . . . . . . . . . . . . . . . .1-21**
+**Figure 1-18. Symbol Table Entry: Index 0 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-22**
+**Figure 1-19. Relocation Entries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-23**
+**Figure 2-1. Program Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-2**
+**Figure 2-2. Segment Types, p_type . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-3**
+**Figure 2-3. Note Information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5**
+**Figure 2-4. Example Note Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-6**
+**Figure A-1. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-2**
+**Figure A-2. Dynamic Array Tags, d_tag . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-3**
+### Book II: Processor Specific (Intel Architecture)
+**Figure 1-1. Intel Identification, e_ident . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-2**
+**Figure 1-2. Relocatable Fields . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-3**
+**Figure 1-3. Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-4**
+Table of Contents vii
+
+
+---
+
+## Page 8: Book III: Operating System Specific
+
+### Book III: Operating System Specific
 (UNIX System V Release 4)
-Figure 1-1. sh_link and sh_info Interpretation . . . . . . . . . . . . . . . . . . . . . . .1-2
-Figure 1-2. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-3
-Figure 2-1. Segment Types, p_type . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-2
-Figure 2-2. Segment Flag Bits, p_flags . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-3
-Figure 2-3. Segment Permissions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-4
-Figure 2-4. Text Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5
-Figure 2-5. Data Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5
-Figure 2-6. Dynamic Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-8
-Figure 2-7. Dynamic Array Tags, d_tag . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-9
-Figure 2-8. Symbol Hash Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-14
-Figure 2-9. Hashing Function . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-14
-Figure 2-10. Initialization Ordering Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-16
-Figure A-1. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-2
-Figure A-2. Relocatable Fields . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-4
-Figure A-3. Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-5
-Figure A-4. Executable File Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-7
-Figure A-5. Program Header Segments . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-8
-Figure A-6. Process Image Segments Example. . . . . . . . . . . . . . . . . . . . . . . . . . . A-9
-Figure A-7. Shared Object Segment Addresses Example . . . . . . . . . . . . . . . . . .A-10
-Figure A-8. Global Offset Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-11
-Figure A-9. Absolute Procedure Linkage Table . . . . . . . . . . . . . . . . . . . . . . . . . . .A-12
-Figure A-10. Position-Independent Procedure Linkage Table . . . . . . . . . . . . . . . .A-13
-Book I:
+**Figure 1-1. sh_link and sh_info Interpretation . . . . . . . . . . . . . . . . . . . . . . .1-2**
+**Figure 1-2. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-3**
+**Figure 2-1. Segment Types, p_type . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-2**
+**Figure 2-2. Segment Flag Bits, p_flags . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-3**
+**Figure 2-3. Segment Permissions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-4**
+**Figure 2-4. Text Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5**
+**Figure 2-5. Data Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5**
+**Figure 2-6. Dynamic Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-8**
+**Figure 2-7. Dynamic Array Tags, d_tag . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-9**
+**Figure 2-8. Symbol Hash Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-14**
+**Figure 2-9. Hashing Function . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-14**
+**Figure 2-10. Initialization Ordering Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-16**
+**Figure A-1. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-2**
+**Figure A-2. Relocatable Fields . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-4**
+**Figure A-3. Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-5**
+**Figure A-4. Executable File Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-7**
+**Figure A-5. Program Header Segments . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-8**
+**Figure A-6. Process Image Segments Example. . . . . . . . . . . . . . . . . . . . . . . . . . . A-9**
+**Figure A-7. Shared Object Segment Addresses Example . . . . . . . . . . . . . . . . . .A-10**
+**Figure A-8. Global Offset Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-11**
+**Figure A-9. Absolute Procedure Linkage Table . . . . . . . . . . . . . . . . . . . . . . . . . . .A-12**
+**Figure A-10. Position-Independent Procedure Linkage Table . . . . . . . . . . . . . . . .A-13**
+viii Table of Contents
+
+
+---
+
+## Page 9: Book I:
+
+### Book I:
 Executable and Linking Format (ELF)
-Table of Contents xi
-Contents
-Book I: Executable and Linking Format (ELF)
-1 Object Files
+
+
+---
+
+## Page 10
+
+
+
+
+---
+
+## Page 11: Contents
+
+### Contents
+### Book I: Executable and Linking Format (ELF)
+### 1 Object Files
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-1
 File Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-1
-Data Representation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
-Character Representations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-3
-ELF Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-4
+Data Representation. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
+Character Representations. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-3
+ELF Header. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-4
 ELF Identification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-6
 Sections. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-9
-Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-15
-String Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-18
+Special Sections. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-15
+String Table. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-18
 Symbol Table. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-19
 Symbol Values . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-22
 Relocation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-23
-2 Program Loading and Dynamic Linking
+### 2 Program Loading and Dynamic Linking
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-1
 Program Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-2
-Note Section . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-5
-Program Loading . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-7
+Note Section. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-5
+Program Loading. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-7
 Dynamic Linking . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-8
 A Reserved Names
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-1
 Special Sections Names . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-2
-Dynamic Section Names . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-3
-Pre-existing Extensions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-4
-Contents
+Dynamic Section Names. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-3
+Pre-existing Extensions. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-4
+Table of Contents xi
+
+
+---
+
+## Page 12: Contents
+
+### Contents
 xii Book I: Executable and Linking Format (ELF)
-Table of Contents xiii
-Figures
+
+
+---
+
+## Page 13: Figures
+
+### Figures
 1-1. Object File Format . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-1
 1-2. 32-Bit Data Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-2
 1-3. ELF Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-4
@@ -228,7 +315,20 @@ Figures
 2-4. Example Note Segment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-6
 A-1. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-2
 A-2. Dynamic Array Tags, d_tag . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-3
-OBJECT FILES 1-1
+Table of Contents xiii
+
+
+---
+
+## Page 14
+
+
+
+
+---
+
+## Page 15: Introduction
+
 Introduction
 This chapter describes the object file format, called ELF (Executable and Linking Format).
 There are three main types of object files.
@@ -250,28 +350,29 @@ Object files participate in program linking (building a program) and program exe
 (running a program). For convenience and efficiency, the object file format provides parallel
 views of a file's contents, reflecting the differing needs of these activities. Figure 1-1 shows
 an object file's organization.
-Figure 1-1. Object File Format
-OSD1980
-ELF Header
-Program Header Table
+**Figure 1-1. Object File Format**
+Linking View Execution View
+ELF Header ELF Header
+Program Header Table Program Header Table
+optional
 Section 1
-Section Header Table
-. . .
-Sectionn
-. . .
-Linking View
-. . .
-optional
-ELF Header
-Program Header Table
 Segment 1
-Section Header Table
 . . .
-Execution View
+Section n
 Segment 2
+. . .
+. . . . . .
+Section Header Table Section Header Table
 optional
-Introduction
-1-2 Book I: ELF (Executable and Linking Format)
+OSD1980
+OBJECT FILES 1-1
+
+
+---
+
+## Page 16: Introduction
+
+Introduction
 An ELF header resides at the beginning and holds a "road map'' describing the file's
 organization. Sections hold the bulk of object file information for the linking view: instructions,
 data, symbol table, relocation information, and so on. Descriptions of special sections appear
@@ -294,13 +395,8 @@ Object files therefore represent some control data with a machine-independent fo
 it possible to identify object files and interpret their contents in a common way. Remaining
 data in an object file use the encoding of the target processor, regardless of the machine on
 which the file was created.
-All data structures that the object file format defines follow the "natural'' size and alignment
-guidelines for the relevant class. If necessary, data structures contain explicit padding to ensure
-4-byte alignment for 4-byte objects, to force structure sizes to a multiple of 4, and so on. Data
-also have suitable alignment from the beginning of the file. Thus, for example, a structure
-containing an Elf32_Addr member will be aligned on a 4-byte boundary within the file.
-For portability reasons, ELF uses no bit fields.
-Figure 1-2. 32-Bit Data Types
+**Figure 1-2. 32-Bit Data Types**
+```text
 Name Size Alignment Purpose
 Elf32_Addr 4 4 Unsigned program address
 Elf32_Half 2 2 Unsigned medium integer
@@ -308,8 +404,21 @@ Elf32_Off 4 4 Unsigned file offset
 Elf32_Sword 4 4 Signed large integer
 Elf32_Word 4 4 Unsigned large integer
 unsigned char 1 1 Unsigned small integer
-Introduction
-OBJECT FILES 1-3
+All data structures that the object file format defines follow the "natural'' size and alignment
+guidelines for the relevant class. If necessary, data structures contain explicit padding to ensure
+4-byte alignment for 4-byte objects, to force structure sizes to a multiple of 4, and so on. Data
+also have suitable alignment from the beginning of the file. Thus, for example, a structure
+containing an Elf32_Addr member will be aligned on a 4-byte boundary within the file.
+For portability reasons, ELF uses no bit fields.
+1-2 Book I: ELF (Executable and Linking Format)
+```
+
+
+---
+
+## Page 17: Introduction
+
+Introduction
 Character Representations
 This section describes the default ELF character representation and defines the standard
 character set used for external files that should be portable among systems. Several external
@@ -338,18 +447,21 @@ for example. However, pre-existing processor extensions not using this
 convention will be supported.
 Pre-existing Extensions
 DT_JMP_REL
-1-4 Book I: ELF (Executable and Linking Format)
+OBJECT FILES 1-3
+
+
+---
+
+## Page 18: ELF Header
+
 ELF Header
 Some object file control structures can grow, because the ELF header contains their actual sizes.
 If the object file format changes, a program may encounter control structures that are larger or
 smaller than expected. Programs might therefore ignore "extra" information. The treatment of
 "missing" information depends on context and will be specified when and if extensions are
 defined.
-e_ident The initial bytes mark the file as an object file and provide machine-independent
-data with which to decode and interpret the file's contents. Complete descriptions
-appear below, in "ELF Identification.''
-e_type This member identifies the object file type.
-Figure 1-3. ELF Header
+**Figure 1-3. ELF Header**
+```c
 #define EI_NIDENT 16
 typedef struct {
 unsigned char e_ident[EI_NIDENT];
@@ -367,6 +479,12 @@ Elf32_Half e_shentsize;
 Elf32_Half e_shnum;
 Elf32_Half e_shstrndx;
 } Elf32_Ehdr;
+```
+e_ident The initial bytes mark the file as an object file and provide machine-independent
+data with which to decode and interpret the file's contents. Complete descriptions
+appear below, in "ELF Identification.''
+e_type This member identifies the object file type.
+```text
 Name Value Meaning
 ET_NONE 0 No file type
 ET_REL 1 Relocatable file
@@ -375,18 +493,42 @@ ET_DYN 3 Shared object file
 ET_CORE 4 Core file
 ET_LOPROC 0xff00 Processor-specific
 ET_HIPROC 0xffff Processor-specific
-ELF Header
-OBJECT FILES 1-5
+1-4 Book I: ELF (Executable and Linking Format)
+```
+
+
+---
+
+## Page 19: ELF Header
+
+ELF Header
 Although the core file contents are unspecified, type ET_CORE is reserved to mark
 the file type. Values from ET_LOPROC through ET_HIPROC (inclusive) are
 reserved for processor-specific semantics. Other values are reserved and will be
 assigned to new object file types as necessary.
 e_machine This member's value specifies the required architecture for an individual file.
+```text
+Name Value Meaning
+ET_NONE 0 No machine
+EM_M32 1 AT&T WE 32100
+EM_SPARC 2 SPARC
+EM_386 3 Intel Architecture
+EM_68K 4 Motorola 68000
+EM_88K 5 Motorola 88000
+EM_860 7 Intel 80860
+EM_MIPS 8 MIPS RS3000 Big-Endian
+EM_MIPS_RS4_BE 10 MIPS RS4000 Big-Endian
+```
+RESERVED 11-16 Reserved for future use
 Other values are reserved and will be assigned to new machines as necessary.
 Processor-specific ELF names use the machine name to distinguish them. For
 example, the flags mentioned below use the prefix EF_; a flag named WIDGET for
 the EM_XYZ machine would be called EF_XYZ_WIDGET.
 e_version This member identifies the object file version.
+```text
+Name Value Meaning
+EV_NONE 0 Invalid versionn
+EV_CURRENT 1 Current version
 The value 1 signifies the original file format; extensions will create new versions
 with higher numbers. The value of EV_CURRENT, though given as 1 above, will
 change as necessary to reflect the current version number.
@@ -400,28 +542,21 @@ section header table, this member holds zero.
 e_flags This member holds processor-specific flags associated with the file. Flag names
 take the form EF_machine_flag.
 e_ehsize This member holds the ELF header's size in bytes.
-Name Value Meaning
-ET_NONE 0 No machine
-EM_M32 1 AT&T WE 32100
-EM_SPARC 2 SPARC
-EM_386 3 Intel Architecture
-EM_68K 4 Motorola 68000
-EM_88K 5 Motorola 88000
-EM_860 7 Intel 80860
-EM_MIPS 8 MIPS RS3000 Big-Endian
-EM_MIPS_RS4_BE 10 MIPS RS4000 Big-Endian
-RESERVED 11-16 Reserved for future use
-Name Value Meaning
-EV_NONE 0 Invalid versionn
-EV_CURRENT 1 Current version
-ELF Header
-1-6 Book I: ELF (Executable and Linking Format)
-e_phentsize This member holds the size in bytes of one entry in the file's program header table;
+```
+OBJECT FILES 1-5
+
+
+---
+
+## Page 20: ELF Header
+
+ELF Header
+e_phentsizeThis member holds the size in bytes of one entry in the file's program header table;
 all entries are the same size.
 e_phnum This member holds the number of entries in the program header table. Thus the
 product of e_phentsize and e_phnum gives the table's size in bytes. If a file
 has no program header table, e_phnum holds the value zero.
-e_shentsize This member holds a section header's size in bytes. A section header is one entry
+e_shentsizeThis member holds a section header's size in bytes. A section header is one entry
 in the section header table; all entries are the same size.
 e_shnum This member holds the number of entries in the section header table. Thus the
 product of e_shentsize and e_shnum gives the section header table's size in
@@ -436,7 +571,7 @@ multiple data encodings, and multiple classes of machines. To support this objec
 the initial bytes of the file specify how to interpret the file, independent of the processor on
 which the inquiry is made and independent of the file's remaining contents.
 The initial bytes of an ELF header (and an object file) correspond to the e_ident member.
-Figure 1-4. e_ident[] Identification Indexes
+**Figure 1-4. e_ident[] Identification Indexes**
 Name Value Purpose
 EI_MAG0 0 File identification
 EI_MAG1 1 File identification
@@ -447,93 +582,93 @@ EI_DATA 5 Data encoding
 EI_VERSION 6 File version
 EI_PAD 7 Start of padding bytes
 EI_NIDENT 16 Size of e_ident[]
-ELF Header
-OBJECT FILES 1-7
+1-6 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 21: ELF Header
+
+ELF Header
 These indexes access bytes that hold the following values.
 EI_MAG0 to EI_MAG3 A file's first 4 bytes hold a "magic number," identifying the file as an ELF
 object file.
+```text
+Name Value Meaning
+ELFMAG0 0x7f e_ident[EI_MAG0]
+ELFMAG1 ’E’ e_ident[EI_MAG1]
+ELFMAG2 ’L’ e_ident[EI_MAG2]
+ELFMAG3 ’F’ e_ident[EI_MAG3]
 EI_CLASS The next byte, e_ident[EI_CLASS], identifies the file's class, or
 capacity.
+Name Value Meaning
+```
+ELFCLASSNONE 0 Invalid class
+ELFCLASS32 1 32-bit objects
+ELFCLASS64 2 64-bit objects
 The file format is designed to be portable among machines of various sizes, without
 imposing the sizes of the largest machine on the smallest. Class ELFCLASS32
 supports machines with files and virtual address spaces up to 4 gigabytes; it uses
 the basic types defined above.
 Class ELFCLASS64 is incomplete and refers to the 64-bit architectures. Its
-appearancehere shows howthe object file maychange.Other classes willbedefined
+appearance here shows how the object file may change. Other classes will be defined
 as necessary, with different basic types and sizes for object file data.
 EI_DATA Byte e_ident[EI_DATA]specifies the data encoding of the
 processor-specific data in the object file. The following encodings are
 currently defined.
+```text
+Name Value Meaning
+```
+ELFDATANONE 0 Invalid data encoding
+ELFDATA2LSB 1 See below
+ELFDATA2MSB 2 See below
 More information on these encodings appears below. Other values are
 reserved and will be assigned to new encodings as necessary.
-EI_VERSION Byte e_ident[EI_VERSION] specifies the ELFheader version number.
+EI_VERSION Byte e_ident[EI_VERSION] specifies the ELF header version number.
 Currently, this value must be EV_CURRENT, as explained above for
 e_version.
 EI_PAD This value marks the beginning of the unused bytes in e_ident. These
 bytes are reserved and set to zero; programs that read object files should
 ignore them. The value of EI_PAD will change in the future if currently
 unused bytes are given meanings.
-Name Value Meaning
-ELFMAG0 0x7f e_ident[EI_MAG0]
-ELFMAG1 ’E’ e_ident[EI_MAG1]
-ELFMAG2 ’L’ e_ident[EI_MAG2]
-ELFMAG3 ’F’ e_ident[EI_MAG3]
-Name Value Meaning
-ELFCLASSNONE 0 Invalid class
-ELFCLASS32 1 32-bit objects
-ELFCLASS64 2 64-bit objects
-Name Value Meaning
-ELFDATANONE 0 Invalid data encoding
-ELFDATA2LSB 1 See below
-ELFDATA2MSB 2 See below
-ELF Header
-1-8 Book I: ELF (Executable and Linking Format)
+OBJECT FILES 1-7
+
+
+---
+
+## Page 22: ELF Header
+
+ELF Header
 A file's data encoding specifies how to interpret the basic objects in a file. As described above,
 class ELFCLASS32 files use objects that occupy 1, 2, and 4 bytes. Under the defined encodings,
 objects are represented as shown below. Byte numbers appear in the upper left corners.
 Encoding ELFDATA2LSB specifies 2's complement values, with the least significant byte
 occupying the lowest address.
+**Figure 1-5. Data Encoding ELFDATA2LSB**
+0
+0x01 01
+### 0 1
+0x0102 02 01
+### 0 1 2 3
+0x01020304 04 03 02 01
+OSD1981
 Encoding ELFDATA2MSB specifies 2's complement values, with the most significant byte
 occupying the lowest address.
-Figure 1-5. Data Encoding ELFDATA2LSB
-Figure 1-6. Data Encoding ELFDATA2MSB
-OSD1981
-04
+**Figure 1-6. Data Encoding ELFDATA2MSB**
 0
-03
-1
-02
-2
-01
-3
-0x01020304
-02
-0
-01
-1
-0x0102
-01
-0
-0x01
+0x01 01
+### 0 1
+0x0102 01 02
+### 0 1 2 3
+0x01020304 01 02 03 04
 OSD1982
-01
-0
-02
-1
-03
-2
-04
-3
-0x01020304
-01
-0
-02
-1
-0x0102
-01
-0
-0x01
-OBJECT FILES 1-9
+1-8 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 23: Sections
+
 Sections
 An object file's section header table lets one locate all the file's sections. The section header
 table is an array of Elf32_Shdr structures as described below. A section header table index
@@ -542,6 +677,15 @@ the beginning of the file to the section header table; e_shnum tells how many en
 section header table contains; e_shentsize gives the size in bytes of each entry.
 Some section header table indexes are reserved; an object file will not have sections for these
 special indexes.
+**Figure 1-7. Special Section Indexes**
+Name Value
+SHN_UNDEF 0
+SHN_LORESERVE 0xff00
+SHN_LOPROC 0xff00
+SHN_HIPROC 0xff1f
+SHN_ABS 0xfff1
+SHN_COMMON 0xfff2
+SHN_HIRESERVE 0xffff
 SHN_UNDEF This value marks an undefined, missing, irrelevant, or otherwise
 meaningless section reference. For example, a symbol "defined'' relative to
 section number SHN_UNDEF is an undefined symbol.
@@ -558,20 +702,17 @@ example, symbols defined relative to section number SHN_ABS have
 absolute values and are not affected by relocation.
 SHN_COMMON Symbols defined relative to this section are common symbols, such as
 FORTRAN COMMON or unallocated C external variables.
-Figure 1-7. Special Section Indexes
-Name Value
-SHN_UNDEF 0
-SHN_LORESERVE 0xff00
-SHN_LOPROC 0xff00
-SHN_HIPROC 0xff1f
-SHN_ABS 0xfff1
-SHN_COMMON 0xfff2
-SHN_HIRESERVE 0xffff
-Sections
-1-10 Book I: ELF (Executable and Linking Format)
+OBJECT FILES 1-9
+
+
+---
+
+## Page 24: Sections
+
+Sections
 SHN_HIRESERVE This value specifies the upper bound of the range of reserved indexes. The
 system reserves indexes between SHN_LORESERVE and
-SHN_HIRESERVE,inclusive; the valuesdo not reference the section header
+SHN_HIRESERVE, inclusive; the values do not reference the section header
 table.That is, the section header table does not contain entries for the
 reserved indexes.
 Sections contain all information in an object file, except the ELF header, the program header
@@ -583,17 +724,8 @@ exist that do not have a section.
 • An object file may have inactive space. The various headers and the sections might not "cover''
 every byte in an object file. The contents of the inactive data are unspecified.
 A section header has the following structure.
-sh_name This member specifies the name of the section. Its value is an index into
-the section header string table section [see "String Table'' below], giving
-the location of a null-terminated string.
-sh_type This member categorizes the section's contents and semantics. Section
-types and their descriptions appear below.
-sh_flags Sections support 1-bit flags that describe miscellaneous attributes. Flag
-definitions appear below.
-sh_addr If the section will appear in the memory image of a process, this member
-gives the address at which the section's first byte should reside. Otherwise,
-the member contains 0.
-Figure 1-8. Section Header
+**Figure 1-8. Section Header**
+```c
 typedef struct {
 Elf32_Word sh_name;
 Elf32_Word sh_type;
@@ -606,8 +738,25 @@ Elf32_Word sh_info;
 Elf32_Word sh_addralign;
 Elf32_Word sh_entsize;
 } Elf32_Shdr;
-Sections
-OBJECT FILES 1-11
+```
+sh_name This member specifies the name of the section. Its value is an index into
+the section header string table section [see "String Table'' below], giving
+the location of a null-terminated string.
+sh_type This member categorizes the section's contents and semantics. Section
+types and their descriptions appear below.
+sh_flags Sections support 1-bit flags that describe miscellaneous attributes. Flag
+definitions appear below.
+sh_addr If the section will appear in the memory image of a process, this member
+gives the address at which the section's first byte should reside. Otherwise,
+the member contains 0.
+1-10 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 25: Sections
+
+Sections
 sh_offset This member's value gives the byte offset from the beginning of the file to
 the first byte in the section. One section type, SHT_NOBITS described
 below, occupies no space in the file, and its sh_offset member locates
@@ -630,7 +779,7 @@ sh_entsize Some sections hold a table of fixed-size entries, such as a symbol ta
 such a section, this member gives the size in bytes of each entry. The
 member contains 0 if the section does not hold a table of fixed-size entries.
 A section header's sh_type member specifies the section's semantics.
-Figure 1-9. Section Types, sh_type
+**Figure 1-9. Section Types, sh_type**
 Name Value
 SHT_NULL 0
 SHT_PROGBITS 1
@@ -648,8 +797,14 @@ SHT_LOPROC 0x70000000
 SHT_HIPROC 0x7fffffff
 SHT_LOUSER 0x80000000
 SHT_HIUSER 0xffffffff
-Sections
-1-12 Book I: ELF (Executable and Linking Format)
+OBJECT FILES 1-11
+
+
+---
+
+## Page 26: Sections
+
+Sections
 SHT_NULL This value marks the section header as inactive; it does not have an
 associated section. Other members of the section header have undefined
 values.
@@ -671,8 +826,14 @@ SHT_REL The section holds relocation entries without explicit addends, such as t
 Elf32_Rel for the 32-bit class of object files. An object file may have
 multiple relocation sections. See "Relocation'' below for details.
 SHT_SHLIB This section type is reserved but has unspecified semantics.
-Sections
-OBJECT FILES 1-13
+1-12 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 27: Sections
+
+Sections
 SHT_LOPROC through Values in this inclusive range are reserved for processor-specific semantics.
 SHT_HIPROC
 SHT_LOUSER This value specifies the lower bound of the range of indexes reserved for
@@ -684,12 +845,7 @@ current or future system-defined section types.
 Other section type values are reserved. As mentioned before, the section header for index 0
 (SHN_UNDEF) exists, even though the index marks undefined section references. This entry
 holds the following.
-A section header's sh_flags member holds 1-bit flags that describe the section's attributes.
-Defined values appear below; other values are reserved.
-If a flag bit is set in sh_flags, the attribute is "on'' for the section. Otherwise, the attribute
-is "off" or does not apply. Undefined attributes are set to zero.
-SHF_WRITE The section contains data that should be writable during process execution.
-Figure 1-10. Section Header Table Entry: Index 0
+**Figure 1-10. Section Header Table Entry: Index 0**
 Name Value Note
 sh_name 0 No name
 sh_type SHT_NULL Inactive
@@ -701,14 +857,25 @@ sh_link SHN_UNDEF No link information
 sh_info 0 No auxiliary information
 sh_addralign 0 No alignment
 sh_entsize 0 No entries
-Figure 1-11. Section Attribute Flags, sh_flags
+A section header's sh_flags member holds 1-bit flags that describe the section's attributes.
+Defined values appear below; other values are reserved.
+**Figure 1-11. Section Attribute Flags, sh_flags**
 Name Value
 SHF_WRITE 0x1
 SHF_ALLOC 0x2
 SHF_EXECINSTR 0x4
 SHF_MASKPROC 0xf0000000
-Sections
-1-14 Book I: ELF (Executable and Linking Format)
+If a flag bit is set in sh_flags, the attribute is "on'' for the section. Otherwise, the attribute
+is "off" or does not apply. Undefined attributes are set to zero.
+SHF_WRITE The section contains data that should be writable during process execution.
+OBJECT FILES 1-13
+
+
+---
+
+## Page 28: Sections
+
+Sections
 SHF_ALLOC The section occupies memory during process execution. Some control
 sections do not reside in the memory image of an object file; this attribute
 is off for those sections.
@@ -716,6 +883,22 @@ SHF_EXECINSTR The section contains executable machine instructions.
 SHF_MASKPROC All bits included in this mask are reserved for processor-specific semantics.
 Two members in the section header, sh_link and sh_info, hold special information,
 depending on section type.
+**Figure 1-12. sh_link and sh_info Interpretation**
+```text
+sh_type sh_link sh_info
+SHT_DYNAMIC The section header index 0
+of the string table used by
+entries in the section.
+SHT_HASH The section header index 0
+of the symbol table to
+which the hash table
+applies.
+SHT_REL The section header index The section header index
+SHT_RELA of the associated symbol of the section to which the
+table. relocation applies.
+SHT_SYMTAB This information is This information is
+SHT_DYNSYM operating system specific. operating system specific.
+other SHN_UNDEF 0
 Special Sections
 Various sections in ELF are pre-defined and hold program and control information. These
 Sections are used by the operating system and have different types and attributes for different
@@ -734,55 +917,22 @@ Dynamic A set of object files, libraries, system shared resources and other shar
 libraries are linked together to create the executable. When this executable
 is loaded, other shared resources and dynamic libraries must be made
 available in the system for the program to run successfully.
-Figure 1-12. sh_link and sh_info Interpretation
-sh_type sh_link sh_info
-SHT_DYNAMIC The section header index
-of the string table used by
-entries in the section.
-0
-SHT_HASH The section header index
-of the symbol table to
-which the hash table
-applies.
-0
-SHT_REL
-SHT_RELA
-The section header index
-of the associated symbol
-table.
-The section header index
-of the section to which the
-relocation applies.
-SHT_SYMTAB
-SHT_DYNSYM
-This information is
-operating system specific.
-This information is
-operating system specific.
-other SHN_UNDEF 0
-Sections
-OBJECT FILES 1-15
+1-14 Book I: ELF (Executable and Linking Format)
+```
+
+
+---
+
+## Page 29: Sections
+
+Sections
 The general method used to resolve references at execution time for a
 dynamically linked executable file is described in the linkage model used
 by the operating system, and the actual implementation of this linkage
 model will contain processor-specific components.
 There are also sections that support debugging, such as .debug and .line, and program
 control, including.bss, .data, .data1, .rodata, and .rodata1.
-.bss This section holds uninitialized data that contribute to the program's
-memory image. By definition, the system initializes the data with zeros
-when the program begins to run. The section occupies no file space, as
-indicated by the section type, SHT_NOBITS.
-.comment This section holds version control information.
-.data and .data1 These sections hold initializeddata that contribute to the program'smemory
-image.
-.debug This section holds information for symbolic debugging. The contents are
-unspecified. All section names with the prefix .debug are reserved for
-future use.
-.dynamic This section holds dynamic linking information and has attributes such as
-SHF_ALLOC and SHF_WRITE. Whether the SHF_WRITE bit is set is
-determined by the operating system and processor.
-.hash This section holds a symbol hash table.
-Figure 1-13. Special Sections
+**Figure 1-13. Special Sections**
 Name Type Attributes
 .bss SHT_NOBITS SHF_ALLOC+SHF_WRITE
 .comment SHT_PROGBITS none
@@ -799,8 +949,28 @@ Name Type Attributes
 .strtab SHT_STRTAB see below
 .symtab SHT_SYMTAB see below
 .text SHT_PROGBITS SHF_ALLOC + SHF_EXECINSTR
-Sections
-1-16 Book I: ELF (Executable and Linking Format)
+.bss This section holds uninitialized data that contribute to the program's
+memory image. By definition, the system initializes the data with zeros
+when the program begins to run. The section occupies no file space, as
+indicated by the section type, SHT_NOBITS.
+.comment This section holds version control information.
+.data and .data1 These sections hold initialized data that contribute to the program's memory
+image.
+.debug This section holds information for symbolic debugging. The contents are
+unspecified. All section names with the prefix .debug are reserved for
+future use.
+.dynamic This section holds dynamic linking information and has attributes such as
+SHF_ALLOC and SHF_WRITE. Whether the SHF_WRITE bit is set is
+determined by the operating system and processor.
+.hash This section holds a symbol hash table.
+OBJECT FILES 1-15
+
+
+---
+
+## Page 30: Sections
+
+Sections
 .line This section holds line number information for symbolic debugging, which
 describes the correspondence between the source program and the machine
 code. The contents are unspecified.
@@ -823,7 +993,13 @@ Section names with a dot (.) prefix are reserved for the system, although applic
 these sections if their existing meanings are satisfactory. Applications may use names without
 the prefix to avoid conflicts with system sections. The object file format lets one define sections
 not in the list above. An object file may have more than one section with the same name.
-OBJECT FILES 1-17
+1-16 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 31: String Table
+
 String Table
 This section describes the default string table. String table sections hold null-terminated
 character sequences, commonly called strings. The object file uses these strings to represent
@@ -836,28 +1012,49 @@ zero. Non-zero indexes are invalid for an empty string table.
 A section header's sh_name member holds an index into the section header string table section,
 as designated by the e_shstrndx member of the ELF header. The following figures show a
 string table with 25 bytes and the strings associated with various indexes.
+Index +0 +1 +2 +3 +4 +5 +6 +7 +8 +9
+### 0 \0 n a m e . \0 V a r
+### 10 i a b l e \0 a b l e
+### 20 \0 \0 x x \0
+**Figure 1-14. String Table Indexes**
+```text
+Index String
+```
+0 none
+### 1 name.
+### 7 Variable
+### 11 able
+### 16 able
+### 24 null string
 As the example shows, a string table index may refer to any byte in the section. A string may
 appear more than once; references to substrings may exist; and a single string may be referenced
 multiple times. Unreferenced strings also are allowed.
-Index +0 +1 +2 +3 +4 +5 +6 +7 +8 +9
-0 \0 n a m e . \0 V a r
-10 i a b l e \0 a b l e
-20 \0 \0 x x \0
-Figure 1-14. String Table Indexes
-Index String
-0 none
-1 name.
-7 Variable
-11 able
-16 able
-24 null string
-1-18 Book I: ELF (Executable and Linking Format)
+OBJECT FILES 1-17
+
+
+---
+
+## Page 32: Symbol Table
+
 Symbol Table
 An object file's symbol table holds information needed to locate and relocate a program's
 symbolic definitions and references. A symbol table index is a subscript into this array. Index
-0 both designates the first entry in the table and serves as the undefined symbol index. The
+### 0 both designates the first entry in the table and serves as the undefined symbol index. The
 contents of the initial entry are specified later in this section.
+Name Value
+STN_UNDEF 0
 A symbol table entry has the following format.
+**Figure 1-15. Symbol Table Entry**
+```c
+typedef struct {
+Elf32_Word st_name;
+Elf32_Addr st_value;
+Elf32_Word st_size;
+unsigned char st_info;
+unsigned char st_other;
+Elf32_Half st_shndx;
+} Elf32_Sym;
+```
 st_name This member holds an index into the object file's symbol string table, which holds
 the character representations of the symbol names.
 st_value This member gives the value of the associated symbol. Depending on the context,
@@ -868,27 +1065,31 @@ an unknown size.
 st_info This member specifies the symbol's type and binding attributes. A list of the values
 and meanings appears below. The following code shows how to manipulate the
 values.
+```c
 #define ELF32_ST_BIND(i) ((i)>>4)
 #define ELF32_ST_TYPE(i) ((i)&0xf)
 #define ELF32_ST_INFO(b,t) (((b)<<4)+((t)&0xf))
-Name Value
-STN_UNDEF 0
-Figure 1-15. Symbol Table Entry
-typedef struct {
-Elf32_Word st_name;
-Elf32_Addr st_value;
-Elf32_Word st_size;
-unsigned char st_info;
-unsigned char st_other;
-Elf32_Half st_shndx;
-} Elf32_Sym;
-Symbol Table
-OBJECT FILES 1-19
+```
+1-18 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 33: Symbol Table
+
+Symbol Table
 st_other This member currently holds 0 and has no defined meaning.
 st_shndx Every symbol table entry is "defined'' in relation to some section; this member holds
 the relevant section header table index. As Figure 1-7 and the related text describe,
 some section indexes indicate special meanings.
 A symbol's binding determines the linkage visibility and behavior.
+**Figure 1-16. Symbol Binding, ELF32_ST_BIND**
+Name Value
+STB_LOCAL 0
+STB_GLOBAL 1
+STB_WEAK 2
+STB_LOPROC 13
+STB_HIPROC 15
 STB_LOCAL Local symbols are not visible outside the object file containing their
 definition. Local symbols of the same name may exist in multiple files
 without interfering with each other.
@@ -901,15 +1102,23 @@ STB_LOPROC through Values in this inclusive range are reserved for processor-spe
 STB_HIPROC
 In each symbol table, all symbols with STB_LOCAL binding precede the weak and global
 symbols. A symbol's type provides a general classification for the associated entity.
-Figure 1-16. Symbol Binding, ELF32_ST_BIND
+OBJECT FILES 1-19
+
+
+---
+
+## Page 34: Symbol Table
+
+Symbol Table
+**Figure 1-17. Symbol Types, ELF32_ST_TYPE**
 Name Value
-STB_LOCAL 0
-STB_GLOBAL 1
-STB_WEAK 2
-STB_LOPROC 13
-STB_HIPROC 15
-Symbol Table
-1-20 Book I: ELF (Executable and Linking Format)
+STT_NOTYPE 0
+STT_OBJECT 1
+STT_FUNC 2
+STT_SECTION 3
+STT_FILE 4
+STT_LOPROC 13
+STT_HIPROC 15
 STT_NOTYPE The symbol's type is not specified.
 STT_OBJECT The symbol is associated with a data object, such as a variable, an array,
 and so on.
@@ -926,7 +1135,7 @@ STT_FILE A file symbol has STB_LOCAL binding, its section index is SHN_ABS, and
 it precedes the other STB_LOCAL symbols for the file, if it is present.
 The symbols in ELF object files convey specific information to the linker and loader. See the
 operating system sections for a description of the actual linking model used in the system.
-SHN_ABS The symbol has anabsolute value that will not change because of relocation.
+SHN_ABS The symbol has an absolute value that will not change because of relocation.
 SHN_COMMON The symbol labels a common block that has not yet been allocated. The
 symbol's value gives alignment constraints, similar to a section's
 sh_addralign member. That is, the link editor will allocate the storage
@@ -936,19 +1145,24 @@ SHN_UNDEF This section table index means the symbol is undefined. When the link
 editor combines this object file with another that defines the indicated
 symbol, this file's references to the symbol will be linked to the actual
 definition.
-Figure 1-17. Symbol Types, ELF32_ST_TYPE
-Name Value
-STT_NOTYPE 0
-STT_OBJECT 1
-STT_FUNC 2
-STT_SECTION 3
-STT_FILE 4
-STT_LOPROC 13
-STT_HIPROC 15
-Symbol Table
-OBJECT FILES 1-21
+1-20 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 35: Symbol Table
+
+Symbol Table
 As mentioned above, the symbol table entry for index 0 (STN_UNDEF) is reserved; it holds the
 following.
+**Figure 1-18. Symbol Table Entry: Index 0**
+Name Value Note
+st_name 0 No name
+st_value 0 Zero value
+st_size 0 No size
+st_info 0 No type, local binding
+st_other 0
+st_shndx SHN_UNDEF No section
 Symbol Values
 Symbol table entries for different object file types have slightly different interpretations for
 the st_value member.
@@ -961,15 +1175,13 @@ symbols more useful for the dynamic linker, the section offset (file interpretat
 a virtual address (memory interpretation) for which the section number is irrelevant.
 Although the symbol table values have similar meanings for different object files, the data
 allow efficient access by the appropriate programs.
-Figure 1-18. Symbol Table Entry: Index 0
-Name Value Note
-st_name 0 No name
-st_value 0 Zero value
-st_size 0 No size
-st_info 0 No type, local binding
-st_other 0
-st_shndx SHN_UNDEF No section
-1-22 Book I: ELF (Executable and Linking Format)
+OBJECT FILES 1-21
+
+
+---
+
+## Page 36: Relocation
+
 Relocation
 Relocation is the process of connecting symbolic references with symbolic definitions. For
 example, when a program calls a function, the associated call instruction must transfer control
@@ -977,27 +1189,8 @@ to the proper destination address at execution. In other words, relocatable file
 information that describes how to modify their section contents, thus allowing executable and
 shared object files to hold the right information for a process's program image. Relocation
 entries are these data.
-r_offset This member gives the location at which to apply the relocation action. For
-a relocatable file, the value is the byte offset from the beginning of the
-section to the storage unit affected by the relocation. For an executable file
-or a shared object, the value is the virtual address of the storage unit affected
-by the relocation.
-r_info This member gives both the symbol table index with respect to which the
-relocation must be made, and the type of relocation to apply. For example,
-a call instruction's relocation entry would hold the symbol table index of
-the functionbeing called. If the index isSTN_UNDEF, the undefinedsymbol
-index, the relocation uses 0 as the "symbol value.'' Relocation types are
-processor-specific; descriptions of their behavior appear in the processor
-supplement. When the text in the processor supplement refers to a
-relocation entry's relocation type or symbol table index, it means the result
-of applying ELF32_R_TYPE or ELF32_R_SYM, respectively, to the
-entry's r_info member.
-#define ELF32_R_SYM(i) ((i)>>8)
-#define ELF32_R_TYPE(i) ((unsigned char)(i))
-#define ELF32_R_INFO(s,t) (((s)<<8)+(unsigned char)(t))
-r_addend This member specifies a constant addend used to compute the value to be
-stored into the relocatable field.
-Figure 1-19. Relocation Entries
+**Figure 1-19. Relocation Entries**
+```c
 typedef struct {
 Elf32_Addr r_offset;
 Elf32_Word r_info;
@@ -1007,8 +1200,37 @@ Elf32_Addr r_offset;
 Elf32_Word r_info;
 Elf32_Sword r_addend;
 } Elf32_Rela;
-Relocation
-1-23 Book I: ELF (Executable and Linking Format)
+```
+r_offset This member gives the location at which to apply the relocation action. For
+a relocatable file, the value is the byte offset from the beginning of the
+section to the storage unit affected by the relocation. For an executable file
+or a shared object, the value is the virtual address of the storage unit affected
+by the relocation.
+r_info This member gives both the symbol table index with respect to which the
+relocation must be made, and the type of relocation to apply. For example,
+a call instruction's relocation entry would hold the symbol table index of
+the function being called. If the index is STN_UNDEF, the undefined symbol
+index, the relocation uses 0 as the "symbol value.'' Relocation types are
+processor-specific; descriptions of their behavior appear in the processor
+supplement. When the text in the processor supplement refers to a
+relocation entry's relocation type or symbol table index, it means the result
+of applying ELF32_R_TYPE or ELF32_R_SYM, respectively, to the
+entry's r_info member.
+```c
+#define ELF32_R_SYM(i) ((i)>>8)
+#define ELF32_R_TYPE(i) ((unsigned char)(i))
+#define ELF32_R_INFO(s,t) (((s)<<8)+(unsigned char)(t))
+```
+r_addend This member specifies a constant addend used to compute the value to be
+stored into the relocatable field.
+1-22 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 37: Relocation
+
+Relocation
 As shown above, only Elf32_Rela entries contain an explicit addend. Entries of type
 Elf32_Rel store an implicit addend in the location to be modified. Depending on the processor
 architecture, one form or the other might be necessary or more convenient. Consequently, an
@@ -1026,7 +1248,20 @@ relocation entries more useful for the dynamic linker, the section offset (file 
 gives way to a virtual address (memory interpretation).
 Although the interpretation of r_offset changes for different object files to allow efficient
 access by the relevant programs, the relocation types' meanings stay the same.
-PROGRAM LOADING AND DYNAMIC LINKING 2-1
+1-23 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 38
+
+
+
+
+---
+
+## Page 39: Introduction
+
 Introduction
 This chapter describes the object file information and system actions that create running
 programs. Executable and shared object files statically represent programs. To execute such
@@ -1039,7 +1274,13 @@ memory image for the program.
 Given an object file, the system must load it into memory for the program to run. After the
 system loads the program, it must complete the process image by resolving symbolic references
 among the object files that compose the process.
-2-2 Book I: ELF (Executable and Linking Format)
+PROGRAM LOADING AND DYNAMIC LINKING 2-1
+
+
+---
+
+## Page 40: Program Header
+
 Program Header
 An executable or shared object file's program header table is an array of structures, each
 describing a segment or other information the system needs to prepare the program for
@@ -1047,6 +1288,19 @@ execution. An object file segment contains one or more sections. Program headers
 meaningful only for executable and shared object files. A file specifies its own program header
 size with the ELF header's e_phentsize and e_phnum members [see "ELF Header'' in
 Chapter 1].
+**Figure 2-1. Program Header**
+```c
+typedef struct {
+Elf32_Word p_type;
+Elf32_Off p_offset;
+Elf32_Addr p_vaddr;
+Elf32_Addr p_paddr;
+Elf32_Word p_filesz;
+Elf32_Word p_memsz;
+Elf32_Word p_flags;
+Elf32_Word p_align;
+} Elf32_Phdr;
+```
 p_type This member tells what kind of segment this array element describes or how to
 interpret the array element's information. Type values and their meanings appear
 below.
@@ -1067,21 +1321,27 @@ p_offset, modulo the page size.This member gives the value to which the
 segments are aligned in memory and in the file. Values 0 and 1 mean that no
 alignment is required. Otherwise, p_align should be a positive, integral power of
 2, and p_addr should equal p_offset, modulo p_align.
-Figure 2-1. Program Header
-typedef struct {
-Elf32_Word p_type;
-Elf32_Off p_offset;
-Elf32_Addr p_vaddr;
-Elf32_Addr p_paddr;
-Elf32_Word p_filesz;
-Elf32_Word p_memsz;
-Elf32_Word p_flags;
-Elf32_Word p_align;
-} Elf32_Phdr;
-Program Header
-PROGRAM LOADING AND DYNAMIC LINKING 2-3
+2-2 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 41: Program Header
+
+Program Header
 Some entries describe process segments; others give supplementary information and do not
 contribute to the process image.
+**Figure 2-2. Segment Types, p_type**
+Name Value
+PT_NULL 0
+PT_LOAD 1
+PT_DYNAMIC 2
+PT_INTERP 3
+PT_NOTE 4
+PT_SHLIB 5
+PT_PHDR 6
+PT_LOPROC 0x70000000
+PT_HIPROC 0x7fffffff
 PT_NULL The array element is unused; other members' values are undefined. This type lets
 the program header table have ignored entries.
 PT_LOAD The array element specifies a loadable segment, described by p_filesz and
@@ -1102,19 +1362,14 @@ type may not occur more than once in a file. Moreover, it may occur only if the
 program header table is part of the memory image of the program. If it is present,
 it must precede any loadable segment entry. See "Program Interpreter" in the
 appendix at the end of Book III for further information.
-Figure 2-2. Segment Types, p_type
-Name Value
-PT_NULL 0
-PT_LOAD 1
-PT_DYNAMIC 2
-PT_INTERP 3
-PT_NOTE 4
-PT_SHLIB 5
-PT_PHDR 6
-PT_LOPROC 0x70000000
-PT_HIPROC 0x7fffffff
-Program Header
-2-4 Book I: ELF (Executable and Linking Format)
+PROGRAM LOADING AND DYNAMIC LINKING 2-3
+
+
+---
+
+## Page 42: Program Header
+
+Program Header
 PT_LOPROC Values in this inclusive range are reserved for processor-specific semantics.
 through PT_HIPROC
 NOTE. Unless specifically required elsewhere, all program header segment types
@@ -1127,23 +1382,7 @@ and program header elements of type PT_NOTE can be used for this purpose. The no
 information in sections and program header elements holds any number of entries, each of
 which is an array of 4-byte words in the format of the target processor. Labels appear below
 to help explain note information organization, but they are not part of the specification.
-namesz and name The first namesz bytes in name contain a null-terminated character
-representation of the entry's owner or originator. There is no formal
-mechanism for avoiding name conflicts. By convention, vendors use their
-own name,such as "XYZComputer Company,'' as the identifier. If noname
-is present, namesz contains 0. Padding is present, if necessary, to ensure
-4-byte alignment for the descriptor. Such padding is not included in
-namesz.
-descsz and desc The first descsz bytes in desc hold the note descriptor. ELF places no
-constraints on a descriptor's contents. If no descriptor is present, descsz
-contains 0. Padding is present, if necessary, to ensure 4-byte alignment for
-the next note entry. Such padding is not included in descsz.
-type Thiswordgivestheinterpretation ofthedescriptor.Eachoriginatorcontrols
-its own types; multiple interpretations of a single type value may exist.
-Thus, a program must recognize both the name and the type to "understand"
-a descriptor. Types currently must be non-negative. ELF does not define
-what descriptors mean.
-Figure 2-3. Note Information
+**Figure 2-3. Note Information**
 namesz
 descsz
 type
@@ -1151,9 +1390,46 @@ name
 . . .
 desc
 . . .
-Program Header
-PROGRAM LOADING AND DYNAMIC LINKING 2-5
+namesz and name The first namesz bytes in name contain a null-terminated character
+representation of the entry's owner or originator. There is no formal
+mechanism for avoiding name conflicts. By convention, vendors use their
+own name, such as "XYZ Computer Company,'' as the identifier. If no name
+is present, namesz contains 0. Padding is present, if necessary, to ensure
+4-byte alignment for the descriptor. Such padding is not included in
+namesz.
+descsz and desc The first descsz bytes in desc hold the note descriptor. ELF places no
+constraints on a descriptor's contents. If no descriptor is present, descsz
+contains 0. Padding is present, if necessary, to ensure 4-byte alignment for
+the next note entry. Such padding is not included in descsz.
+type This word gives the interpretation of the descriptor. Each originator controls
+its own types; multiple interpretations of a single type value may exist.
+Thus, a program must recognize both the name and the type to "understand"
+a descriptor. Types currently must be non-negative. ELF does not define
+what descriptors mean.
+2-4 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 43: Program Header
+
+Program Header
 To illustrate, the following note segment holds two entries.
+**Figure 2-4. Example Note Segment**
++0 +1 +2 +3
+namesz 7
+descsz 0 No descriptor
+type 1
+name X Y Z
+C o \0 pad
+namesz 7
+descsz 8
+type 3
+name X Y Z
+C o \0 pad
+desc word 0
+word 1
+OSD1983
 NOTE. The system reserves note information with no name (namesz==0) and
 with a zero-length name (name[0]=='\0') but currently defines no
 types. All other names must have at least one non-null character.
@@ -1173,40 +1449,34 @@ work, and there are ELF sections and header elements reserved for this purpose. 
 definition of the linkage model is determined by the operating system and implementation.
 Therefore, the contents of these sections are both operating system and processor specific. (See
 the appendix at the end of Book III.)
-Figure 2-4. Example Note Segment
-7
-0
-1
-X Y Z
-C o \0 pad
-7
-8
-3
-+0 +1 +2 +3
-X Y Z
-C o \0 pad
-word 0
-word 1
-No descriptor
-namesz
-descsz
-type
-name
-namesz
-descsz
-type
-name
-desc
-OSD1983
-RESERVED NAMES A-1
+PROGRAM LOADING AND DYNAMIC LINKING 2-5
+
+
+---
+
+## Page 44
+
+
+
+
+---
+
+## Page 45: Introduction
+
 Introduction
 This appendix lists the operating system and processor specific reserved names, as well as
 historical names and pre-existing naming conventions.
-A-2 Book I: ELF (Executable and Linking Format)
+### RESERVED NAMES A-1
+
+
+---
+
+## Page 46: Special Sections Names
+
 Special Sections Names
 Various sections hold program and control information. Sections in the list below are specified
 in Book I and Book III.
-Figure A-1. Special Sections
+**Figure A-1. Special Sections**
 Name
 .bss
 .comment
@@ -1232,10 +1502,16 @@ Name
 .strtab
 .symtab
 .text
-RESERVED NAMES A-3
+A-2 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 47: Dynamic Section Names
+
 Dynamic Section Names
 _DYNAMIC
-Figure A-2. Dynamic Array Tags, d_tag
+**Figure A-2. Dynamic Array Tags, d_tag**
 Name
 DT_NULL
 DT_NEEDED
@@ -1264,7 +1540,13 @@ DT_JMPREL
 DT_BIND_NOW
 DT_LOPROC
 DT_HIPROC
-A-4 Book I: ELF (Executable and Linking Format)
+### RESERVED NAMES A-3
+
+
+---
+
+## Page 48: Pre-existing Extensions
+
 Pre-existing Extensions
 There are naming conventions for ELF constants that have processor ranges specified. Names
 such as DT_, PT_, for processor specific extensions, incorporate the name of the processor:
@@ -1282,49 +1564,113 @@ Pre-existing Extensions
 . .lit8 .reginfo
 .gptab .liblist
 .conflict
-Book II:
+A-4 Book I: ELF (Executable and Linking Format)
+
+
+---
+
+## Page 49: Book II:
+
+### Book II:
 Processor Specific
 (Intel Architecture)
-Table of Contents i
-Contents
-1 OBJECT FILES
+
+
+---
+
+## Page 50
+
+
+
+
+---
+
+## Page 51: Contents
+
+### Contents
+### 1 OBJECT FILES
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-1
-ELF Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
-Machine Information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
+ELF Header. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
+Machine Information. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
 Relocation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-3
 Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-3
-Contents
+Table of Contents i
+
+
+---
+
+## Page 52: Contents
+
+### Contents
 ii Book II: Processor Specific (Intel Architecture)
-Table of Contents iii
-Figures
+
+
+---
+
+## Page 53: Figures
+
+### Figures
 1-1. Intel Identification, e_ident . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
 1-2. Relocatable Fields . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-3
 1-3. Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-4
-OBJECT FILES 1-1
+Table of Contents iii
+
+
+---
+
+## Page 54
+
+
+
+
+---
+
+## Page 55: Introduction
+
 Introduction
 This section describes the Intel Architecture specific information necessary to comply with
 the ELF object file format. This information is independent of operating system type. Further
 information on Intel platforms that is both Intel Architecture and operating system dependent,
 is described in Book III.
-1-2 Book II: Processor Specific (Intel Architecture)
+OBJECT FILES 1-1
+
+
+---
+
+## Page 56: ELF Header
+
 ELF Header
 Machine Information
 For file identification in e_ident, the Intel architecture requires the following values.
+**Figure 1-1. Intel Identification, e_ident**
+Position Value
+e_ident[EI_CLASS] ELFCLASS32
+e_ident[EI_DATA] ELFDATA2LSB
 Processor identification resides in the ELF header's e_machine member and must have the
 value EM_386.
 The ELF header's e_flags member holds bit flags associated with the file. The Intel
 architecture defines no flags; so this member contains zero.
-Figure 1-1. Intel Identification, e_ident
-Position Value
-e_ident[EI_CLASS] ELFCLASS32
-e_ident[EI_DATA] ELFDATA2LSB
-OBJECT FILES 1-3
+1-2 Book II: Processor Specific (Intel Architecture)
+
+
+---
+
+## Page 57: Relocation
+
 Relocation
 Relocation Types
 Relocation entries describe how to alter the following instruction and data fields (bit numbers
 appear in the lower box corners).
+**Figure 1-2. Relocatable Fields**
+word32
+### 31 0
+OSD1975
 word32 This specifies a 32-bit field occupying 4 bytes with arbitrary byte alignment. These
 values use the same byte order as other word values in the Intel architecture.
+### 3 2 1 0
+0x01020304 01 02 03 04
+### 31 0
+OSD1976
 Calculations below assume the actions are transforming a relocatable file into either an
 executable or a shared object file. Conceptually, the link editor merges one or more relocatable
 files to form the output. It first decides how to combine and locate the input files, then updates
@@ -1340,56 +1686,65 @@ of the affected storage unit. The relocation type specifies which bits to change
 calculate their values. The Intel architecture uses only Elf32_Rel relocation entries, the field
 to be relocated holds the addend. In all cases, the addend and the computed result use the same
 byte order.
-Figure 1-2. Relocatable Fields
-word32
-31 0
-OSD1975
-31
-OSD1976
-01
-3
-02
-2
-03
-1
-04
-0
-0
-0x01020304
-Relocation
-1-4 Book II: Processor Specific (Intel Architecture)
-NOTE. Relocation types 3 through 10 are reserved. (See Book III, Appendix A.)
-Figure 1-3. Relocation Types
+OBJECT FILES 1-3
+
+
+---
+
+## Page 58: Relocation
+
+Relocation
+**Figure 1-3. Relocation Types**
 Name Value Field Calculation
 R_386_NONE 0 none none
 R_386_32 1 word32 S+A
 R_386_PC32 2 word32 S+A-P
-Book III:
+NOTE. Relocation types 3 through 10 are reserved. (See Book III, Appendix A.)
+1-4 Book II: Processor Specific (Intel Architecture)
+
+
+---
+
+## Page 59: Book III:
+
+### Book III:
 Operating System Specific
 (UNIX System V Release 4)
-Table of Contents i
-Contents
-1 OBJECT FILES
+
+
+---
+
+## Page 60
+
+
+
+
+---
+
+## Page 61: Contents
+
+### Contents
+### 1 OBJECT FILES
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-1
 Sections. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
-Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
+Special Sections. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-2
 Symbol Table. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1-5
-2 PROGRAM LOADING AND DYNAMIC LINKING
+### 2 PROGRAM LOADING AND DYNAMIC LINKING
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-1
 Program Header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-2
-Base Address . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-3
-Segment Permissions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-3
-Segment Contents . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-4
+Base Address . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-3
+Segment Permissions. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-3
+Segment Contents . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-4
 Dynamic Linking . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-6
-Program Interpreter. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-6
-Dynamic Linker . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-6
-Dynamic Section . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-8
-Shared Object Dependencies. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-12
-Global Offset Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-13
-Procedure Linkage Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-13
-Hash Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2-14
-Initialization and Termination Funcitons . . . . . . . . . . . . . . . . . . . . . . . . . . 2-14
-A INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES
+Program Interpreter. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-6
+Dynamic Linker. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-6
+Dynamic Section. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-8
+Shared Object Dependencies. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-12
+Global Offset Table. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-13
+Procedure Linkage Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-13
+Hash Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-14
+Initialization and Termination Funcitons . . . . . . . . . . . . . . . . . . . . . . . . . .2-14
+### A INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES
 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-1
 Sections. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-2
 Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-2
@@ -1397,16 +1752,28 @@ Symbol Table. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 Symbol Values . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-3
 Relocation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-4
 Relocation Types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-4
-Contents
-ii
+Table of Contents i
+
+
+---
+
+## Page 62: Contents
+
+### Contents
 Program Loading and Dynamic Linking. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-7
 Program Loading . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-7
 Dynamic Linking . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-10
-Dynamic Section . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-10
-Global Offset Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-10
+Dynamic Section. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-10
+Global Offset Table. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-10
 Program Interpreter. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . A-14
-Table of Contents iii
-Figures
+ii
+
+
+---
+
+## Page 63: Figures
+
+### Figures
 1-1. sh_link and sh_info Interpretation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-2
 1-2. Special Sections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .1-3
 2-1. Segment Types, p_type . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2-2
@@ -1429,16 +1796,34 @@ A-7. Shared Object Segment Addresses Example . . . . . . . . . . . . . . . . . .
 A-8. Global Offset Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-11
 A-9. Absolute Procedure Linkage Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-12
 A-10. Position-Independent Procedure Linkage Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .A-13
-Figures
+Table of Contents iii
+
+
+---
+
+## Page 64: Figures
+
+### Figures
 iv
-OBJECT FILES 1-1
+
+
+---
+
+## Page 65: Introduction
+
 Introduction
 This book describes aspects of the ELF format that are specific to application programs
 designed to run on UNIX System V Release 4 or other operating systems that comply with the
 System V Interface Definition.
 NOTE. For information on references such as BA_OS, refer to the System V
 Interface Definition, 3rd Edition.
-1-2 Book III: Operating System Specific (UNIX System V Release 4)
+OBJECT FILES 1-1
+
+
+---
+
+## Page 66: Sections
+
 Sections
 The following sections are UNIX System V Release 4 specific:
 SHT_SYMTAB and These sections hold a symbol table. Currently, an object file may have only
@@ -1446,7 +1831,7 @@ SHT_DYNSYM one section of each type, but this restriction may be relaxed in the 
 Typically, SHT_SYMTAB provides symbols for link editing, though it may
 also be used for dynamic linking. As a complete symbol table, it may
 contain many symbols unnecessary for dynamic linking. Consequently, an
-object file may also containaSHT_DYNSYM section,which holds a minimal
+object file may also contain a SHT_DYNSYM section, which holds a minimal
 set of dynamic linking symbols, to save space. See "Symbol Table"
 descriptions in Book I for details.
 SHT_STRTAB An object file may have multiple string table sections. See "String Table''
@@ -1462,6 +1847,13 @@ Two members in the section header, sh_link and sh_info, hold special information
 depending on section type. A symbol table section's sh_info section header member holds
 the symbol table index for the first non-local symbol.
 .
+**Figure 1-1. sh_link and sh_info Interpretation**
+```text
+sh_type sh_link sh_info
+SHT_SYMTAB The section header index One greater than the
+SHT_DYNSYM of the associated string symbol table index of the
+table. last local symbol (binding
+STB_LOCAL).
 Special Sections
 The following sections hold program and control information used in UNIX System V
 Release 4. The sections in the list below are used by the system and have the indicated types
@@ -1469,20 +1861,25 @@ and attributes. Most of these sections are required for the linking process. The
 dynamic linking is provided in the .dynsym, .dynstr, .interp, .hash, .dynamic, .rel,
 .rela, .got and.plt sections. The actual contents of some of these sections (.plt and .got,
 for example) are processor specific, but they all support the same linkage model.
-Figure 1-1. sh_link and sh_info Interpretation
-sh_type sh_link sh_info
-SHT_SYMTAB
-SHT_DYNSYM
-The section header index
-of the associated string
-table.
-One greater than the
-symbol table index of the
-last local symbol (binding
-STB_LOCAL).
-Sections
-OBJECT FILES 1-3
+1-2 Book III: Operating System Specific (UNIX System V Release 4)
+```
+
+
+---
+
+## Page 67: Sections
+
+Sections
 The .init and .fini sections contribute to the process initialization and termination code.
+**Figure 1-2. Special Sections**
+Name Type Attributes
+.dynstr SHT_STRTAB SHF_ALLOC
+.dynsym SHT_DYNSYM SHF_ALLOC
+.fini SHT_PROGBITS SHF_ALLOC + SHF_EXECINSTR
+.init SHT_PROGBITS SHF_ALLOC + SHF_EXECINSTR
+.interp SHT_PROGBITS see below
+.relname SHT_REL see below
+.relaname SHT_RELA see below
 .dynstr This section holds strings needed for dynamic linking, most commonly the
 strings that represent the names associated with symbol table entries. See
 Chapter 2 for more information.
@@ -1499,24 +1896,27 @@ main for C programs).
 loadable segment that includes the section, the section's attributes will
 include the SHF_ALLOC bit; otherwise, that bit will be off. See Chapter 2
 for more information.
-Figure 1-2. Special Sections
-Name Type Attributes
-.dynstr SHT_STRTAB SHF_ALLOC
-.dynsym SHT_DYNSYM SHF_ALLOC
-.fini SHT_PROGBITS SHF_ALLOC + SHF_EXECINSTR
-.init SHT_PROGBITS SHF_ALLOC + SHF_EXECINSTR
-.interp SHT_PROGBITS see below
-.relname SHT_REL see below
-.relaname SHT_RELA see below
-Sections
-1-4 Book III: Operating System Specific (UNIX System V Release 4)
+OBJECT FILES 1-3
+
+
+---
+
+## Page 68: Sections
+
+Sections
 .relname and These sections hold relocation information, as "Relocation'' below
 .relaname describes. If the file has a loadable segment that includes relocation, the
 sections' attributes will include the SHF_ALLOC bit; otherwise, that bit
 will be off. Conventionally, name is supplied by the section to which the
 relocations apply. Thus a relocation section for .text normally would
 have the name .rel.text or .rela.text.
-OBJECT FILES 1-5
+1-4 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 69: Symbol Table
+
 Symbol Table
 st_name If the value is non-zero, it represents a string table index that gives the symbol name.
 Otherwise, the symbol table entry has no name.
@@ -1540,12 +1940,31 @@ honors the common definition and ignores the weak ones.
 definitions of undefined global symbols. The member's definition may be either a global or a
 weak symbol. The link editor does not extract archive members to resolve undefined weak
 symbols. Unresolved weak symbols have a zero value.
-PROGRAM LOADING AND DYNAMIC LINKING 2-1
+OBJECT FILES 1-5
+
+
+---
+
+## Page 70
+
+
+
+
+---
+
+## Page 71: Introduction
+
 Introduction
 This section describes the operating system specific information, including the object file
 information and system actions used to create running programs on systems running the UNIX
 System V Release 4 operating system.
-2-2 Book III: Operating System Specific (UNIX System V Release 4)
+PROGRAM LOADING AND DYNAMIC LINKING 2-1
+
+
+---
+
+## Page 72: Program Header
+
 Program Header
 The following program header information is specific to UNIX System V Release 4.
 p_paddr On systems for which physical addressing is relevant, this member is reserved for
@@ -1557,6 +1976,17 @@ p_offset, modulo the page size.
 Some entries describe process segments; others give supplementary information and do not
 contribute to the process image. Segment entries may appear in any order, except as explicitly
 noted below. Defined type values follow; other values are reserved for future use.
+**Figure 2-1. Segment Types, p_type**
+Name Value
+PT_NULL 0
+PT_LOAD 1
+PT_DYNAMIC 2
+PT_INTERP 3
+PT_NOTE 4
+PT_SHLIB 5
+PT_PHDR 6
+PT_LOPROC 0x70000000
+PT_HIPROC 0x7fffffff
 PT_LOAD The array element specifies a loadable segment, described by p_filesz and
 p_memsz.
 PT_DYNAMIC The array element specifies dynamic linking information. See "Dynamic Section''
@@ -1569,19 +1999,14 @@ Interpreter'' below for further information.
 PT_SHLIB This segment type is reserved but has unspecified semantics. Programs that contain
 an array element of this type do not conform to the ELF specification for UNIX
 System V.
-Figure 2-1. Segment Types, p_type
-Name Value
-PT_NULL 0
-PT_LOAD 1
-PT_DYNAMIC 2
-PT_INTERP 3
-PT_NOTE 4
-PT_SHLIB 5
-PT_PHDR 6
-PT_LOPROC 0x70000000
-PT_HIPROC 0x7fffffff
-Program Header
-PROGRAM LOADING AND DYNAMIC LINKING 2-3
+2-2 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 73: Program Header
+
+Program Header
 PT_PHDR The array element, if present, specifies the location and size of the program header
 table itself, both in the file and in the memory image of the program.
 Base Address
@@ -1609,22 +2034,40 @@ Segment Permissions
 A program to be loaded by the system must have at least one loadable segment (although this
 is not required by the file format). When the system creates loadable segments' memory images,
 it gives access permissions as specified in the p_flags member.
-All bits included in the PF_MASKPROC mask are reserved for processor-specific semantics. If
-meanings are specified, the processor supplement explains them.
-If a permission bit is 0, that type of access is denied. Actual memory permissions depend on
-the memory management unit, which may vary from one system to another. Although all flag
-combinations are valid, the system may grant more access than requested. In no case, however,
-Figure 2-2. Segment Flag Bits, p_flags
+**Figure 2-2. Segment Flag Bits, p_flags**
+```text
 Name Value Meaning
 PF_X 0x1 Execute
 PF_W 0x2 Write
 PF_R 0x4 Read
 PF_MASKPROC 0xf0000000 Unspecified
-Program Header
-2-4 Book III: Operating System Specific (UNIX System V Release 4)
+All bits included in the PF_MASKPROC mask are reserved for processor-specific semantics. If
+meanings are specified, the processor supplement explains them.
+If a permission bit is 0, that type of access is denied. Actual memory permissions depend on
+the memory management unit, which may vary from one system to another. Although all flag
+combinations are valid, the system may grant more access than requested. In no case, however,
+```
+PROGRAM LOADING AND DYNAMIC LINKING 2-3
+
+
+---
+
+## Page 74: Program Header
+
+Program Header
 will a segment have write permission unless it is specified explicitly. The following table shows
 both the exact flag interpretation and the allowable flag interpretation. TIS-conforming systems
 may provide either.
+**Figure 2-3. Segment Permissions**
+Flag Value Exact Allowable
+none 0 All access denied All access denied
+PF_X 1 Execute only Read, execute
+PF_W 2 Write only Read, write, execute
+PF_W + PF_X 3 Write, execute Read, write, execute
+PF_R 4 Read only Read, execute
+PF_R + PF_X 5 Read, execute Read, execute
+PF_R + PF_W 6 Read, write Read, write, execute
+PF_R + PF_W + PF_X 7 Read, write, execute Read, write, execute
 For example, typical text segments have read and execute —but not write —permissions. Data
 segments normally have read, write, and execute permissions.
 Segment Contents
@@ -1637,28 +2080,15 @@ constraints may alter the examples below.
 Text segments contain read-only instructions and data, typically including the following
 sections. Other sections may also reside in loadable segments; these examples are not meant
 to give complete and exclusive segment contents.
-Figure 2-3. Segment Permissions
-Flag Value Exact Allowable
-none 0 All access denied All access denied
-PF_X 1 Execute only Read, execute
-PF_W 2 Write only Read, write, execute
-PF_W + PF_X 3 Write, execute Read, write, execute
-PF_R 4 Read only Read, execute
-PF_R + PF_X 5 Read, execute Read, execute
-PF_R + PF_W 6 Read, write Read, write, execute
-PF_R + PF_W + PF_X 7 Read, write, execute Read, write, execute
-Program Header
-PROGRAM LOADING AND DYNAMIC LINKING 2-5
-Data segments contain writable data and instructions, typically including the following
-sections.
-A PT_DYNAMIC program header element points at the .dynamic section, explained in
-"Dynamic Section" below. The .got and .plt sections also hold information related to
-position-independent code and dynamic linking. Although the .plt appears in a text segment
-above, it may reside in a text or a data segment, depending on the processor.
-As "Sections" describes, the .bss section has the type SHT_NOBITS. Although it occupies no
-space in the file, it contributes to the segment's memory image. Normally, these uninitialized
-data reside at the end of the segment, thereby making p_memsz larger than p_filesz.
-Figure 2-4. Text Segment
+2-4 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 75: Program Header
+
+Program Header
+**Figure 2-4. Text Segment**
 .text
 .rodata
 .hash
@@ -1666,12 +2096,27 @@ Figure 2-4. Text Segment
 .dynstr
 .plt
 .rel.got
-Figure 2-5. Data Segment
+Data segments contain writable data and instructions, typically including the following
+sections.
+**Figure 2-5. Data Segment**
 .data
 .dynamic
 .got
 .bss
-2-6 Book III: Operating System Specific (UNIX System V Release 4)
+A PT_DYNAMIC program header element points at the .dynamic section, explained in
+"Dynamic Section" below. The .got and .plt sections also hold information related to
+position-independent code and dynamic linking. Although the .plt appears in a text segment
+above, it may reside in a text or a data segment, depending on the processor.
+As "Sections" describes, the .bss section has the type SHT_NOBITS. Although it occupies no
+space in the file, it contributes to the segment's memory image. Normally, these uninitialized
+data reside at the end of the segment, thereby making p_memsz larger than p_filesz.
+PROGRAM LOADING AND DYNAMIC LINKING 2-5
+
+
+---
+
+## Page 76: Dynamic Linking
+
 Dynamic Linking
 Program Interpreter
 An executable file that participates in dynamic linking shall have one PT_INTERP program
@@ -1711,8 +2156,14 @@ program, which entails the following actions:
 dynamic linker;
 • Transferring control to the program, making it look as if the program had received control
 directly from the executable file.
-Dynamic Linking
-PROGRAM LOADING AND DYNAMIC LINKING 2-7
+2-6 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 77: Dynamic Linking
+
+Dynamic Linking
 The link editor also constructs various data that assist the dynamic linker for executable and
 shared object files. As shown above in "Program Header,'' these data reside in loadable
 segments, making them available during execution. (Note that the exact segment contents are
@@ -1742,12 +2193,29 @@ example, all the following environment entries would specify this behavior.
 Otherwise, LD_BIND_NOW either does not occur in the environment or has a null value. The
 dynamic linker is permitted to evaluate procedure linkage table entries lazily, thus avoiding
 symbol resolution and relocation overhead for functions that are not called.
-Dynamic Linking
-2-8 Book III: Operating System Specific (UNIX System V Release 4)
+PROGRAM LOADING AND DYNAMIC LINKING 2-7
+
+
+---
+
+## Page 78: Dynamic Linking
+
+Dynamic Linking
 Dynamic Section
 If an object file participates in dynamic linking, its program header table will have an element
 of type PT_DYNAMIC. This "segment" contains the .dynamic section. A special symbol,
 _DYNAMIC, labels the section, which contains an array of the following structures.
+**Figure 2-6. Dynamic Structure**
+```c
+typedef struct {
+Elf32_Sword d_tag;
+```
+union {
+Elf32_Word d_val;
+Elf32_Addr d_ptr;
+} d_un;
+} Elf32_Dyn;
+extern Elf32_Dyn _DYNAMIC[];
 For each object with this type, d_tag controls the interpretation of d_un.
 d_val These Elf32_Word objects represent integer values with various interpretations.
 d_ptr These Elf32_Addr objects represent program virtual addresses. As mentioned
@@ -1760,18 +2228,15 @@ The following table summarizes the tag requirements for executable and shared ob
 a tag is marked "mandatory," then the dynamic linking array for a TIS ELF conforming file
 must have an entry of that type. Likewise, "optional" means an entry for the tag may appear
 but is not required.
-Figure 2-6. Dynamic Structure
-typedef struct {
-Elf32_Sword d_tag;
-union {
-Elf32_Word d_val;
-Elf32_Addr d_ptr;
-} d_un;
-} Elf32_Dyn;
-extern Elf32_Dyn _DYNAMIC[];
-Dynamic Linking
-PROGRAM LOADING AND DYNAMIC LINKING 2-9
-Figure 2-7. Dynamic Array Tags, d_tag
+2-8 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 79: Dynamic Linking
+
+Dynamic Linking
+**Figure 2-7. Dynamic Array Tags, d_tag**
 Name Value d_un Executable Shared Object
 DT_NULL 0 ignored mandatory mandatory
 DT_NEEDED 1 d_val optional optional
@@ -1800,8 +2265,14 @@ DT_JMPREL 23 d_ptr optional optional
 DT_BIND_NOW 24 ignored optional optional
 DT_LOPROC 0x70000000 unspecified unspecified unspecified
 DT_HIPROC 0x7fffffff unspecified unspecified unspecified
-Dynamic Linking
-2-10 Book III: Operating System Specific (UNIX System V Release 4)
+PROGRAM LOADING AND DYNAMIC LINKING 2-9
+
+
+---
+
+## Page 80: Dynamic Linking
+
+Dynamic Linking
 DT_NULL An entry with a DT_NULL tag marks the end of the _DYNAMIC array.
 DT_NEEDED This element holds the string table offset of a null-terminated string, giving
 the name of a needed library. The offset is an index into the table recorded
@@ -1810,7 +2281,7 @@ information about these names. The dynamic array may contain multiple
 entries with this type. These entries' relative order is significant, though
 their relation to entries of other types is not.
 DT_PLTRELSZ This element holds the total size, in bytes, of the relocation entries
-associatedwiththeprocedurelinkage table.IfanentryoftypeDT_JMPREL
+associated with the procedure linkage table. If an entry of type DT_JMPREL
 is present, a DT_PLTRELSZ must accompany it.
 DT_PLTGOT This element holds an address associated with the procedure linkage table
 and/or the global offset table.
@@ -1822,7 +2293,7 @@ Symbol names, library names, and other strings reside in this table.
 DT_SYMTAB This element holds the address of the symbol table, described in
 Chapter 1, with Elf32_Sym entries for the 32-bit class of files.
 DT_RELA This element holds the address of a relocation table, described in
-Chapter 1. Entries in the table have explicit addends,such asElf32_Rela
+Chapter 1. Entries in the table have explicit addends, such as Elf32_Rela
 for the 32-bit file class. An object file may have multiple relocation
 sections. When building the relocation table for an executable or shared
 object file, the link editor catenates those sections to form a single table.
@@ -1841,8 +2312,14 @@ DT_INIT This element holds the address of the initialization function, discussed
 "Initialization and Termination Functions" below.
 DT_FINI This element holds the address of the termination function, discussed in
 "Initialization and Termination Functions" below.
-Dynamic Linking
-PROGRAM LOADING AND DYNAMIC LINKING 2-11
+2-10 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 81: Dynamic Linking
+
+Dynamic Linking
 DT_SONAME This element holds the string table offset of a null-terminated string, giving
 the name of the shared object. The offset is an index into the table recorded
 in the DT_STRTAB entry. See "Shared Object Dependencies" below for
@@ -1850,7 +2327,7 @@ more information about these names.
 DT_RPATH This element holds the string table offset of a null-terminated search library
 search path string, discussed in "Shared Object Dependencies". The offset
 is an index into the table recorded in the DT_STRTAB entry.
-DT_SYMBOLIC This element's presence in a sharedobject library alters the dynamic linker's
+DT_SYMBOLIC This element's presence in a shared object library alters the dynamic linker's
 symbol resolution algorithm for references within the library. Instead of
 starting a symbol search with the executable file, the dynamic linker starts
 from the shared object itself. If the shared object fails to supply the
@@ -1882,8 +2359,14 @@ linker to process all relocations for the object containing this entry before
 transferring control to the program. The presence of this entry takes
 precedence over a directive to use lazy binding for this object when
 specified through the environment or via dlopen(BA_LIB).
-Dynamic Linking
-2-12 Book III: Operating System Specific (UNIX System V Release 4)
+PROGRAM LOADING AND DYNAMIC LINKING 2-11
+
+
+---
+
+## Page 82: Dynamic Linking
+
+Dynamic Linking
 DT_LOPROC through DT_HIPROC
 Values in this inclusive range are reserved for processor-specific semantics.
 If meanings are specified, the processor supplement explains them.
@@ -1921,12 +2404,17 @@ and then the current directory to find dependencies.
 • Second, a variable called LD_LIBRARY_PATH in the process environment [see
 exec(BA_OS)] may hold a list of directories as above, optionally followed by a semicolon (;)
 and another directory list. The following values would be equivalent to the previous example:
-■
-LD_LIBRARY_PATH=/home/dir/lib:/home/dir2/lib:
-■ LD_LIBRARY_PATH=/home/dir/lib;/home/dir2/lib:
-■ LD_LIBRARY_PATH=/home/dir/lib:/home/dir2/lib:;
-Dynamic Linking
-PROGRAM LOADING AND DYNAMIC LINKING 2-13
+n LD_LIBRARY_PATH=/home/dir/lib:/home/dir2/lib:
+n LD_LIBRARY_PATH=/home/dir/lib;/home/dir2/lib:
+n LD_LIBRARY_PATH=/home/dir/lib:/home/dir2/lib:;
+2-12 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 83: Dynamic Linking
+
+Dynamic Linking
 All LD_LIBRARY_PATH directories are searched after those from DT_RPATH. Although some
 programs (such as the link editor) treat the lists before and after the semicolon differently, the
 dynamic linker does not. Nevertheless, the dynamic linker accepts the semicolon notation, with
@@ -1953,11 +2441,26 @@ from one executable or shared object to another. Consequently, the link editor a
 the program transfer control to entries in the procedure linkage table. The actual contents,
 layout and location of the procedure linkage table is determined by the processor and are
 described in the appendix at the end of this book.
-Dynamic Linking
-2-14 Book III: Operating System Specific (UNIX System V Release 4)
+PROGRAM LOADING AND DYNAMIC LINKING 2-13
+
+
+---
+
+## Page 84: Dynamic Linking
+
+Dynamic Linking
 Hash Table
 A hash table of Elf32_Word objects supports symbol table access. Labels appear below to
 help explain the hash table organization, but they are not part of the specification.
+**Figure 2-8. Symbol Hash Table**
+nbucket
+nchain
+bucket[0]
+. . .
+bucket[nbucket-1]
+chain[0]
+. . .
+chain[nchain-1]
 The bucket array contains nbucket entries, and the chain array contains nchain entries;
 indexes start at 0. Both bucket and chain hold symbol table indexes. Chain table entries
 parallel the symbol table. The number of symbol table entries should equal nchain; so symbol
@@ -1968,20 +2471,7 @@ into both the symbol table and the chain table. If the symbol table entry is not
 chain[y] gives the next symbol table entry with the same hash value. One can follow the chain
 links until either the selected symbol table entry holds the desired name or the chain entry
 contains the value STN_UNDEF.
-Initialization and Termination Functions
-After the dynamic linker has built the process image and performed the relocations, each shared
-object gets the opportunity to execute some initialization code. All shared object initializations
-happen before the executable file gains control.
-Figure 2-8. Symbol Hash Table
-nbucket
-nchain
-bucket[0]
-. . .
-bucket[nbucket-1]
-chain[0]
-. . .
-chain[nchain-1]
-Figure 2-9. Hashing Function
+**Figure 2-9. Hashing Function**
 unsigned long
 elf_hash(const unsigned char *name)
 {
@@ -1995,8 +2485,18 @@ h &= ~g;
 }
 return h;
 }
-Dynamic Linking
-PROGRAM LOADING AND DYNAMIC LINKING 2-15
+Initialization and Termination Functions
+After the dynamic linker has built the process image and performed the relocations, each shared
+object gets the opportunity to execute some initialization code. All shared object initializations
+happen before the executable file gains control.
+2-14 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 85: Dynamic Linking
+
+Dynamic Linking
 Before the initialization code for any object A is called, the initialization code for any other
 objects that object A depends on are called. For these purposes, an object A depends on another
 object B, if B appears in A’s list of needed objects (recorded in the DT_NEEDED entries of
@@ -2006,16 +2506,32 @@ initialization code for an object is invoked after the needed entries for that o
 processed. The order of processing among the entries of a particular list of needed objects is
 unspecified
 NOTE. Each processor supplement may optionally further restrict the algorithm
-usedtodetermine theorder of initialization.Anysuchrestriction,however,
+used to determine the order of initialization. Any such restriction, however,
 may not conflict with the rules described by this specification.
 The following example illustrates two of the possible correct orderings which can be generated
 for the example NEEDED lists. In this example the a.out is dependent on b, d, and e. b is
 dependent on d and f, while d is dependent on e and g. From this information, a dependency
 graph can be drawn. The above algorithm on initialization will then allow the following
 specified initialization orderings among others.
-Dynamic Linking
-2-16 Book III: Operating System Specific (UNIX System V Release 4)
+PROGRAM LOADING AND DYNAMIC LINKING 2-15
+
+
+---
+
+## Page 86: Dynamic Linking
+
+Dynamic Linking
 .
+**Figure 2-10. Initialization Ordering Example**
+NEEDED Lists Dependency Graph
+a.out b d a.out
+b d e b d e
+d f g f g
+e
+Init Orderings
+e g d f b a.out
+g f e d b a.out
+OSD1977
 Similarly, shared objects may have termination functions, which are executed with the
 atexit(BA_OS) mechanism after the base process begins its termination sequence. The order
 in which the dynamic linker calls termination functions is the exact reverse order of their
@@ -2023,33 +2539,14 @@ corresponding initialization functions. If a shared object has a termination fun
 initialization function, the termination function will execute in the order it would have as if the
 shared object's initialization function was present. The dynamic linker ensures that it will not
 execute any initialization or termination functions more than once.
-Figure 2-10. Initialization Ordering Example
-OSD1977
-a.out
-d
-g
-e
-b
-f
-d
-f
-e
-b
-d g
-e
-a.out b d
-NEEDED Lists Dependency Graph
-b a.out
-f
-g d
-e
-Init Orderings
-b a.out
-d
-f e
-g
-Dynamic Linking
-PROGRAM LOADING AND DYNAMIC LINKING 2-17
+2-16 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 87: Dynamic Linking
+
+Dynamic Linking
 Shared objects designate their initialization and termination functions through the DT_INIT
 and DT_FINI entries in the dynamic structure, described in "Dynamic Section'' above.
 Typically, the code for these functions resides in the .init and .fini sections, mentioned in
@@ -2063,26 +2560,50 @@ The dynamic linker is not responsible for calling the executable file's .init se
 registering the executable file's .fini section with atexit(BA_OS). Termination functions
 specified by users via the atexit(BA_OS) mechanism must be executed before any
 termination functions of shared objects.
-Program Header
+PROGRAM LOADING AND DYNAMIC LINKING 2-17
+
+
+---
+
+## Page 88: Program Header
+
+Program Header
 2-18 Book III: Operating System Specific (UNIX System V Release 4)
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-1
+
+
+---
+
+## Page 89: Introduction
+
 Introduction
 This appendix describes the ELF features and functions that are both Intel Architecture and
 System V Release 4 dependent.
-A-2 Book III: Operating System Specific (UNIX System V Release 4)
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-1
+
+
+---
+
+## Page 90: Sections
+
 Sections
 Special Sections
 Various sections hold program and control information. Sections in the list below are used by
 the system and have the indicated types and attributes.
+**Figure A-1. Special Sections**
+Name Type Attributes
+.got SHT_PROGBITS SHF_ALLOC+SHF_WRITE
+.plt SHT_PROGBITS SHF_ALLOC+SHF_EXECINSTR
 .got This section holds the global offset table. See "Global Offset Table'' below for more
 information.
 .plt This section holds the procedure linkage table. See "Procedure Linkage Table''
 Chapter 2 for more information.
-Figure A-1. Special Sections
-Name Type Attributes
-.got SHT_PROGBITS SHF_ALLOC+SHF_WRITE
-.plt SHT_PROGBITS SHF_ALLOC+SHF_EXECINSTR
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-3
+A-2 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 91: Symbol Table
+
 Symbol Table
 Symbol Values
 If an executable file contains a reference to a function defined in one of its associated shared
@@ -2095,13 +2616,27 @@ address of the first instruction of that procedure linkage table entry. Otherwis
 member contains zero. This procedure linkage table entry address is used by the dynamic linker
 in resolving references to the address of the function. See "Function Addresses'' below for
 details.
-A-4 Book III: Operating System Specific (UNIX System V Release 4)
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-3
+
+
+---
+
+## Page 92: Relocation
+
 Relocation
 Relocation Types
 Relocation entries describe how to alter the following instruction and data fields (bit numbers
 appear in the lower box corners).
+**Figure A-2. Relocatable Fields**
+word32
+### 31 0
+OSD1975
 word32 This specifies a 32-bit field occupying 4 bytes with arbitrary byte alignment. These
 values use the same byte order as other word values in the Intel architecture.
+### 3 2 1 0
+0x01020304 01 02 03 04
+### 31 0
+OSD1976
 Calculations below assume the actions are transforming a relocatable file into either an
 executable or a shared object file. Conceptually, the link editor merges one or more relocatable
 files to form the output. It first decides how to combine and locate the input files, then updates
@@ -2110,7 +2645,7 @@ shared object files are similar and accomplish the same result. Descriptions bel
 following notation.
 A This means the addend used to compute the value of the relocatable field.
 B This means the base address at which a shared object has been loaded into memory
-duringexecution. Generally,a shared object file is built with a 0 base virtual address,
+during execution. Generally, a shared object file is built with a 0 base virtual address,
 but the execution address will be different.
 G This means the offset into the global offset table at which the address of the
 relocation entry's symbol will reside during execution. See "Global Offset Table''
@@ -2122,24 +2657,14 @@ for a symbol. A procedure linkage table entry redirects a function call to the p
 destination. The link editor builds the initial procedure linkage table, and the
 dynamic linker modifies the entries during execution. See "Procedure Linkage
 Table'' below for more information.
-Figure A-2. Relocatable Fields
-word32
-31 0
-OSD1975
-31
-OSD1976
-01
-3
-02
-2
-03
-1
-04
-0
-0
-0x01020304
-Relocation
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-5
+A-4 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 93: Relocation
+
+Relocation
 P This means the place (section offset or address) of the storage unit being relocated
 (computed using r_offset ).
 S This means the value of the symbol whose index resides in the relocation entry.
@@ -2148,9 +2673,19 @@ of the affected storage unit. The relocation type specifies which bits to change
 calculate their values. The Intel architecture uses only Elf32_Rel relocation entries, the field
 to be relocated holds the addend. In all cases, the addend and the computed result use the same
 byte order.
+**Figure A-3. Relocation Types**
+Name Value Field Calculation
+R_386_GOT32 3 word32 G + A
+R_386_PLT32 4 word32 L + A - P
+R_386_COPY 5 none none
+R_386_GLOB_DAT 6 word32 S
+R_386_JMP_SLOT 7 word32 S
+R_386_RELATIVE 8 word32 B + A
+R_386_GOTOFF 9 word32 S + A - GOT
+R_386_GOTPC 10 word32 GOT + A - P
 Some relocation types have semantics beyond simple calculation.
 R_386_GLOB_DAT This relocation type is used to set a global offset table entry to the address
-of the specifiedsymbol.The specialrelocationtype allows one todetermine
+of the specified symbol. The special relocation type allows one to determine
 the correspondence between symbols and global offset table entries.
 R_386_JMP_SLOT The link editor creates this relocation type for dynamic linking. Its offset
 member gives the location of a procedure linkage table entry. The dynamic
@@ -2165,23 +2700,25 @@ type must specify 0 for the symbol table index.
 R_386_GOTOFF This relocation type computes the difference between a symbol's value and
 the address of the global offset table. It additionally instructs the link editor
 to build the global offset table.
-Figure A-3. Relocation Types
-Name Value Field Calculation
-R_386_GOT32 3 word32 G + A
-R_386_PLT32 4 word32 L + A - P
-R_386_COPY 5 none none
-R_386_GLOB_DAT 6 word32 S
-R_386_JMP_SLOT 7 word32 S
-R_386_RELATIVE 8 word32 B + A
-R_386_GOTOFF 9 word32 S + A - GOT
-R_386_GOTPC 10 word32 GOT + A - P
-Relocation
-A-6 Book III: Operating System Specific (UNIX System V Release 4)
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-5
+
+
+---
+
+## Page 94: Relocation
+
+Relocation
 R_386_GOTPC This relocation type resembles R_386_PC32, except it uses the address
 of the global offset table in its calculation. The symbol referenced in this
 relocation normally is _GLOBAL_OFFSET_TABLE_, which additionally
 instructs the link editor to build the global offset table.
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-7
+A-6 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 95: Program Loading and Dynamic Linking
+
 Program Loading and Dynamic Linking
 Program Loading
 As the system creates or augments a process image, it logically copies a file's segment to a
@@ -2195,33 +2732,39 @@ modulo the page size.
 Virtual addresses and file offsets for the Intel architecture segments are congruent modulo 4KB
 (0x1000) or larger powers of 2. Because 4KB is the maximum page size for the Intel
 Architecture, the files will be suitable for paging regardless of physical page size.
-Figure A-5 describes the Executable File Example in Figure A-4.
-Figure A-4. Executable File Example
-OSD1978
-ELF Header
+**Figure A-4. Executable File Example**
+File Offset File Virtual Address
+### 0 ELF Header
 Program Header Table
 Other Information
-Text Segment
-Other Information
-0x2be00 Bytes
-Data Segment
-0x4ee00 Bytes
-0
-0x100
-0x2bf00
-0x30d00
-0x8048100
-0x8074f00
-0x8073eff
-0x8079cff
-Virtual Address
-File
-File Offset
+0x100 Text Segment 0x8048100
 . . .
+0x2be00 Bytes 0x8073eff
+0x2bf00 Data Segment 0x8074f00
 . . .
+0x4ee00 Bytes 0x8079cff
+0x30d00 Other Information
 . . .
-Program Loading and Dynamic Linking
-A-8 Book III: Operating System Specific (UNIX System V Release 4)
+OSD1978
+**Figure A-5 describes the Executable File Example in Figure A-4.**
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-7
+
+
+---
+
+## Page 96: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
+**Figure A-5. Program Header Segments**
+Member Text Data
+p_type PT_LOAD PT_LOAD
+p_offset 0x100 0x2bf00
+p_vaddr 0x8048100 0x8074f00
+p_paddr unspecified unspecified
+p_filesz 0x2be00 0x4e00
+p_memsz 0x2be00 0x5e24
+p_flags PF_R+PF_X PF_R+PF_W+PF_X
+p_align 0x1000 0x1000
 Although the example's file offsets and virtual addresses are congruent modulo 4KB for both
 text and data, up to four file pages hold impure text or data (depending on page size and file
 system block size).
@@ -2240,18 +2783,35 @@ logical memory page, the extraneous data must be set to zero, not the unknown co
 executable file. "Impurities'' in the other three pages are not logically part of the process image;
 whether the system expunges them is unspecified. The memory image for this program follows,
 assuming 4 KB (0x1000 pages).
-Figure A-5. Program Header Segments
-Member Text Data
-p_type PT_LOAD PT_LOAD
-p_offset 0x100 0x2bf00
-p_vaddr 0x8048100 0x8074f00
-p_paddr unspecified unspecified
-p_filesz 0x2be00 0x4e00
-p_memsz 0x2be00 0x5e24
-p_flags PF_R+PF_X PF_R+PF_W+PF_X
-p_align 0x1000 0x1000
-Program Loading and Dynamic Linking
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-9
+A-8 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 97: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
+**Figure A-6. Process Image Segments Example**
+Virtual Address Contents Segment
+0x8048000
+Header Padding
+0x100 Bytes
+0x8048100 Text Segment
+. . . Text
+0x2be00 Bytes
+0x8073f00 Data Padding
+0x100 Bytes
+0x8074000
+Text Padding
+0xf00 Bytes
+0x8074f00 Data Segment
+. . . Data
+0x4e00 Bytes
+0x8079d00 Uninitialized Data
+0x1024 Zero Bytes
+0x807ad24 Page Padding
+0x2dc Zero Bytes
+OSD1979
 One aspect of segment loading differs between executable files and shared objects. Executable
 file segments typically contain absolute code. To let the process execute correctly, the segments
 must reside at the virtual addresses used to build the executable file. Thus the system uses the
@@ -2264,38 +2824,21 @@ addressing between segments, the difference between virtual addresses in memory 
 the difference between virtual addresses in the file. The following table shows possible shared
 object virtual address assignments for several processes, illustrating constant relative
 positioning. The table also illustrates the base address computations.
-Figure A-6. Process Image Segments Example
-Header Padding
-Text Segment
-0x2be00 Bytes
-0x100 Bytes
-0x8048000
-Text
-Segment
-Contents
-Virtual Address
-0x100 Bytes
-Data Padding
-0x8048100
-0x8073f00
-OSD1979
-Text Padding
-Data Segment
-0x4e00 Bytes
-0x1024 Zero Bytes
-0x8074000
-Data
-0xf00 Bytes
-Uninitialized Data
-0x8074f00
-0x8079d00
-0x2dc Zero Bytes
-Page Padding
-0x807ad24
-. . .
-. . .
-Program Loading and Dynamic Linking
-A-10 Book III: Operating System Specific (UNIX System V Release 4)
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-9
+
+
+---
+
+## Page 98: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
+**Figure A-7. Shared Object Segment Addresses Example**
+Source Text Data Base Address
+File 0x200 0x2a400 0x0
+Process 1 0x80000200 0x8002a400 0x80000000
+Process 2 0x80081200 0x800ab400 0x80081000
+Process 3 0x900c0200 0x900ea400 0x900c0000
+Process 4 0x900c6200 0x900f0400 0x900c6000
 Dynamic Linking
 Dynamic Section
 Dynamic section entries give information to the dynamic linker. Some of this information is
@@ -2323,15 +2866,14 @@ a global offset table entry. Because the executable file and shared objects have
 offset tables, a symbol's address may appear in several tables. The dynamic linker processes
 all the global offset table relocations before giving control to any code in the process image,
 thus ensuring the absolute addresses are available during execution.
-Figure A-7. Shared Object Segment Addresses Example
-Source Text Data Base Address
-File 0x200 0x2a400 0x0
-Process 1 0x80000200 0x8002a400 0x80000000
-Process 2 0x80081200 0x800ab400 0x80081000
-Process 3 0x900c0200 0x900ea400 0x900c0000
-Process 4 0x900c6200 0x900f0400 0x900c6000
-Program Loading and Dynamic Linking
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-11
+A-10 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 99: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
 The table's entry zero is reserved to hold the address of the dynamic structure, referenced with
 the symbol _DYNAMIC. This allows a program, such as the dynamic linker, to find its own
 dynamic structure without having yet processed its relocation entries. This is especially
@@ -2345,6 +2887,8 @@ image is established. As long as a process exists, its memory segments reside at
 addresses.
 A global offset table's format and interpretation are processor-specific. For the Intel
 architecture, the symbol _GLOBAL_OFFSET_TABLE_ may be used to access the table.
+**Figure A-8. Global Offset Table**
+extern Elf32_Addr _GLOBAL_OFFSET_TABLE_[];
 The symbol _GLOBAL_OFFSET_TABLE_ may reside in the middle of the .got section,
 allowing both negative and non-negative "subscripts'' into the array of addresses.
 Function Addresses
@@ -2367,10 +2911,14 @@ st_value member is not zero, the dynamic linker recognizes this entry as special
 st_value member as the symbol's address.
 3. Otherwise, the dynamic linker considers the symbol to be undefined within the executable file
 and continues processing.
-Figure A-8. Global Offset Table
-extern Elf32_Addr _GLOBAL_OFFSET_TABLE_[];
-Program Loading and Dynamic Linking
-A-12 Book III: Operating System Specific (UNIX System V Release 4)
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-11
+
+
+---
+
+## Page 100: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
 Some relocations are associated with procedure linkage table entries. These entries are used
 for direct function calls rather than for references to function addresses. These relocations are
 not treated in the special way described above because the dynamic linker must not redirect
@@ -2386,7 +2934,7 @@ table. The dynamic linker determines the destinations' absolute addresses and mo
 global offset table's memory image accordingly. The dynamic linker thus can redirect the entries
 without compromising the position-independence and sharability of the program's text.
 Executable files and shared object files have separate procedure linkage tables.
-Figure A-9. Absolute Procedure Linkage Table
+**Figure A-9. Absolute Procedure Linkage Table**
 .PLT0: pushl got_plus_4
 jmp *got_plus_8
 nop; nop
@@ -2398,7 +2946,7 @@ jmp .PLT0@PC
 pushl $offset
 jmp .PLT0@PC
 ...
-Figure A-10. Position-Independent Procedure Linkage Table
+**Figure A-10. Position-Independent Procedure Linkage Table**
 .PLT0: pushl 4(%ebx)
 jmp *8(%ebx)
 nop; nop
@@ -2410,8 +2958,14 @@ jmp .PLT0@PC
 pushl $offset
 jmp .PLT0@PC
 ...
-Program Loading and Dynamic Linking
-INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-13
+A-12 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 101: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
 NOTE. As the figures show, the procedure linkage table instructions use different
 operand addressing modes for absolute code and for
 position-independent code. Nonetheless, their interfaces to the dynamic
@@ -2452,8 +3006,14 @@ control to the program. That is, the dynamic linker processes relocation entries
 R_3862_JMP_SLOT during process initialization. Otherwise, the dynamic linker evaluates
 procedure linkage table entries lazily, delaying symbol resolution and relocation until the first
 execution of a table entry.
-Program Loading and Dynamic Linking
-A-14 Book III: Operating System Specific (UNIX System V Release 4)
+### INTEL ARCHITECTURE AND SYSTEM V RELEASE 4 DEPENDENCIES A-13
+
+
+---
+
+## Page 102: Program Loading and Dynamic Linking
+
+Program Loading and Dynamic Linking
 NOTE. Lazy binding generally improves overall application performance,
 because unused symbols do not incur the dynamic linking overhead.
 Nevertheless, two situations make lazy binding undesirable for some
@@ -2469,149 +3029,134 @@ initialization, before the application receives control.
 Program Interpreter
 There is one valid program interpreter for programs conforming to the ELF specification for
 the Intel architecture: /usr/lib/libc.so.1
-1
+A-14 Book III: Operating System Specific (UNIX System V Release 4)
+
+
+---
+
+## Page 103: Index
+
 Index
-Book I: Executable and Linkable
+### Book I: Executable and Linkable M
 Format
-2's complement, 1-7
-A
-Absolute symbols, 1-9
-Alignment, section, 1-11
-ASCII, 1-3
-Assembler, 1-1
-B-C
-Byte order, 1-7
-Character sets, 1-3
-Common symbols, 1-9
-D
-Data representation, 1-2, 1-7
-Dynamic library. See Shared object file
-Dynamic linking, symbol table, 1-12
-E
-ELF, 1-1
-Entry point. See Process, entry point
-Executable file, 1-1
-F
-File, object, 1-1
-Formats, object file, 1-1
-FORTRAN, 1-9
-H-L
-Hash table, 1-16
-Library
-Dynamic. See Shared object file
-Shared. See Shared object file
-Link editor, 1-1
-M
 Magic marker, 1-5
-Magic number, 1-7
+2's complement, 1-7 Magic number, 1-7
 Multibyte characters, 1-3
+A
 O
-Object file. See also Archive file, Executable file, Relocatable
-file, Shared object file
+Absolute symbols, 1-9
+Alignment, section, 1-11 Object file. See also Archive file, Executable file, Relocatable
+ASCII, 1-3 file, Shared object file
 Data representation, 1-2
+Assembler, 1-1
 Data types, 1-2
 ELF header, 1-2, 1-4
-Extensions, 1-5
+B-C Extensions, 1-5
 Format, 1-1
-Program header, 2-2
+Byte order, 1-7 Program header, 2-2
 Program loading, 2-2
+Character sets, 1-3
 Relocation, 1-14, 1-23
+Common symbols, 1-9
 Section, 1-9
 Alignment, 1-11
-Attributes, 1-14
+D Attributes, 1-14
 Header, 1-2, 1-9
 Names, 1-17
+Data representation, 1-2, 1-7
 Types, 1-11
+Dynamic library. See Shared object file
 Segment, 2-1, 2-2
+Dynamic linking, symbol table, 1-12
 Special sections, 1-15, A-2
 String table, 1-18, 1-19
 Symbol table, 1-19
+E
 Type, 1-4
 Version, 1-5
+ELF, 1-1
+Entry point. See Process, entry point
 P
+Executable file, 1-1
 Process
+F
 Entry point, 1-5
 Image, 2-1, 2-2
-Virtual addressing, 2-2
-Processor-specific information, 1-21, 1-23
-Program
+File, object, 1-1 Virtual addressing, 2-2
+Formats, object file, 1-1 Processor-specific information, 1-21, 1-23
+FORTRAN, 1-9 Program
 Header, 2-1, 2-2
 Interpreter, 1-16
+H-L
 Loading, 2-1
+Hash table, 1-16
 R
-Relocatable file, 1-1
-Relocation. See Object file
-2
+Library
+Dynamic. See Shared object file
+Shared. See Shared object file Relocatable file, 1-1
+Link editor, 1-1 Relocation. See Object file
+1
+
+
+---
+
+## Page 104: Index
+
 Index
-S-T
+S-T Book III: Operating System Specific
+(UNIX System V Release 4)
 Segment
 Object file, 2-1, 2-2
+_DYNAMIC. See Dynamic linking
 Process, 2-1
 Program header, 2-2
-Shared library. See Shared object file
+Shared library. See Shared object file A
 Shared object file, 1-1
-String table. See Object file
-Symbol table. See Object file
-Symbols. See also Hash table
-Absolute, 1-9
+String table. See Object file ABI conformance 2-8, 2-15
+Symbol table. See Object file Absolute code A-9
+Symbols. See also Hash table Address, virtual A-7
+Absolute, 1-9 Alignment, executable file A-7
 Binding, 1-20
+Archive file 1-5
 Common, 1-9
+Assembler, symbol names 1-5
 Type, 1-21
 Undefined, 1-9
-Value, 1-22
+Value, 1-22 B-C
 TIS conformance, 1-3, 2-6
-U-V
-Undefined behavior, 1-12, 2-6
-Undefined symbols, 1-9
-Unspecified property, 1-2, 1-10, 1-12, 1-16, 2-2, 2-5
-Virtual addressing, 2-2
-Book II: Processor Specific
-(Intel Architecture)
-A-F
-Archive file 1-2
-File, object. See Object file
-O
-Object file 1-2. See also Executable file, Relocatable file
-ELF header 1-2
-Relocation 1-3
-R-S
-Relocation. See Object file
-Shared object file 1-2
-Book III: Operating System Specific
-(UNIX System V Release 4)
-_DYNAMIC. See Dynamic linking
-A
-ABI conformance 2-8, 2-15
-Absolute code A-9
-Address, virtual A-7
-Alignment, executable file A-7
-Archive file 1-5
-Assembler, symbol names 1-5
-B-C
 Base address 2-14, A-4, A-9
 Definition 2-9
+U-V
 C language, assembly names 1-5
-D
-Data, uninitialized A-8
+Undefined behavior, 1-12, 2-6
+Undefined symbols, 1-9 D
+Unspecified property, 1-2, 1-10, 1-12, 1-16, 2-2, 2-5
+Virtual addressing, 2-2 Data, uninitialized A-8
 Dynamic library. See Shared object file
-Dynamic linker 2-13. See also Dynamic linking, Link editor,
-Shared object file
+### Book II: Processor Specific Dynamic linker 2-13. See also Dynamic linking, Link editor,
+(Intel Architecture) Shared object file
 Dynamic linking 2-12, A-10. See also Dynamic linker, Hash
 table, Procedure linkage table
+A-F
 _DYNAMIC 2-14
 Base address 2-9
-Environment 2-13, 2-18, A-14
-Hash function 2-20
+Archive file 1-2 Environment 2-13, 2-18, A-14
+File, object. See Object file Hash function 2-20
 Initialization function 2-16, 2-20
-Lazy binding 2-13, A-14
+O Lazy binding 2-13, A-14
 LD_BIND_NOW 2-13, A-14
 LD_LIBRARY_PATH 2-18
+Object file 1-2. See also Executable file, Relocatable file
 Relocation 2-16, A-10, A-13
+ELF header 1-2
 String table 2-16
+Relocation 1-3
 Symbol resolution 2-18
 Symbol table 1-2, 1-3, 2-16
-Termination function 2-16, 2-20
+R-S Termination function 2-16, 2-20
 Dynamic segments A-9
+Relocation. See Object file
+Shared object file 1-2
 E
 ELF 1-1
 Environment 2-13, 2-18, A-14
@@ -2619,90 +3164,83 @@ exec(BA_OS) 2-12, 2-13, 2-18
 Paging A-7
 Executable file, segments A-9
 exit 2-23
-Index
-3
-F-G
-File offset A-7
-File, object. See Object file
-Global offset table 2-13, A-2, A-4, A-5, A-6, A-10
-H-I
-Hash function 2-20
-Hash table 1-2, 2-13, 2-16, 2-20
-Intel architecture A-7
-Interpreter. See Program interpreter
-J-L
-jmp instruction A-12, A-13
-Lazy binding 2-13, A-14
-ld(SD_CMD). See Link editor
-LD_BIND_NOW 2-13, A-14
-LD_LIBRARY_PATH 2-18
-Library
-Dynamic. See Shared object file
-Shared. See Shared object file
-Link editor 1-5, 2-13, 2-16, 2-19, A-10. See also Dynamic
-linker
-M
-main 1-3
-Memory management 2-9
-mmap(KE_OS) 2-12
-O
-Object file 1-1. See also Archive file, Dynamic linking, Exe-
-cutable File, Relocatable file, Shared object file
-Archive file 1-5
-Hash table 2-13, 2-16, 2-20
-Program header 2-8
-Program loading 2-8
-Relocation 1-2, 2-16, A-4
-Section A-2
-Segment 2-8, A-7
-Shared object file 2-12
-Special sections 1-2, A-2
-String table 1-2
-Symbol table 1-2, 1-5
-P
-Page size A-7
-Paging A-7
-Paging, performance A-7
+2
+
+
+---
+
+## Page 105: Index
+
+Index
+F-G P
+File offset A-7 Page size A-7
+File, object. See Object file Paging A-7
+Global offset table 2-13, A-2, A-4, A-5, A-6, A-10 Paging, performance A-7
 Performance, paging A-7
-Permissions, process segments. See Segment permissions
+H-I Permissions, process segments. See Segment permissions
 Position-independent code 2-13, A-9
-Procedure linkage table 1-5, 2-13, 2-16, 2-17, A-2, A-4, A-5,
+Hash function 2-20 Procedure linkage table 1-5, 2-13, 2-16, 2-17, A-2, A-4, A-5,
 A-10, A-12
+Hash table 1-2, 2-13, 2-16, 2-20
 Process
+Intel architecture A-7
 Entry point 1-3, 2-20
+Interpreter. See Program interpreter
 Image 2-8
 Processor-specific 2-12
-Information 2-9, 2-10, 2-18, A-7, A-10, A-11, A-12
+J-L Information 2-9, 2-10, 2-18, A-7, A-10, A-11, A-12
 Program
-Header 2-8
-Interpreter 1-3, 2-12
+jmp instruction A-12, A-13 Header 2-8
+Lazy binding 2-13, A-14 Interpreter 1-3, 2-12
 Loading 2-7, A-7
+ld(SD_CMD). See Link editor
 pushl instruction A-12, A-13
-R-S
-Relocation. See Object file
-Section, object file A-7
-Segment
+LD_BIND_NOW 2-13, A-14
+LD_LIBRARY_PATH 2-18
+Library R-S
+Dynamic. See Shared object file
+Shared. See Shared object file Relocation. See Object file
+Link editor 1-5, 2-13, 2-16, 2-19, A-10. See also Dynamic Section, object file A-7
+linker Segment
 Dynamic 2-14
 Object file 2-8
+M
 Permissions 2-9, A-8
 Process 2-12, 2-18, A-7, A-11
+main 1-3
 Set-user ID programs 2-19
+Memory management 2-9
 Shared library. See Shared object file
+mmap(KE_OS) 2-12
 Shared object file. See also Dynamic linking, Object file
 Functions 1-5
-Segments A-9
+O Segments A-9
 Symbol names, C and assembly 1-5
-Symbol table. See Object file
-Symbols, shared object file functions 1-5
+Object file 1-1. See also Archive file, Dynamic linking, Exe- Symbol table. See Object file
+cutable File, Relocatable file, Shared object file Symbols, shared object file functions 1-5
+Archive file 1-5
 Symbols, value 1-5
-T
-These 2-18
+Hash table 2-13, 2-16, 2-20
+Program header 2-8
+Program loading 2-8 T
+Relocation 1-2, 2-16, A-4
+Section A-2 These 2-18
+Segment 2-8, A-7
 TIS conformance 2-10
-U-Z
+Shared object file 2-12
+Special sections 1-2, A-2
+String table 1-2 U-Z
+Symbol table 1-2, 1-5
 Undefined behavior A-8
 Uninitialized data A-8
 Unspecified property 2-8, 2-9, 2-17, 2-18, A-8
 Zero, uninitialized data A-8
-4
+3
+
+
+---
+
+## Page 106: Index
+
 Index
-
+4

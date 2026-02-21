@@ -55,20 +55,6 @@ run_fatal() {
   fi
 }
 
-assert_et_dyn() {
-  local bin="$1"
-  if ! readelf -h "${bin}" | grep -q "Type:[[:space:]]*DYN"; then
-    panic "fixture is not ET_DYN: ${bin}"
-  fi
-}
-
-require_src() {
-  local src="$1"
-  if [[ ! -f "${TESTS_DIR}/${src}" ]]; then
-    panic "missing test source: ${TESTS_DIR}/${src}"
-  fi
-}
-
 if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
   if [[ -z "${LOADER_CONTAINER:-}" ]]; then
     panic "LOADER_CONTAINER is required in container mode"
@@ -78,32 +64,10 @@ if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
   fi
 
   TESTS_DIR="/work/tests"
-  BUILD_DIR="/tmp/veriload-tests"
+  BUILD_DIR="${TESTS_DIR}/build"
   rm -rf "${BUILD_DIR}"
-  mkdir -p "${BUILD_DIR}"
 
-  require_src "pos_minimal_pie.S"
-  require_src "libvlfoo.S"
-  require_src "pos_one_dso.S"
-  require_src "libvlb.S"
-  require_src "libvla.S"
-  require_src "pos_multi_dso_bfs.S"
-  require_src "neg_missing_needed.S"
-
-  cc -nostdlib -fPIC -shared -Wl,-soname,libvlfoo.so -o "${BUILD_DIR}/libvlfoo.so" "${TESTS_DIR}/libvlfoo.S"
-  cc -nostdlib -fPIC -shared -Wl,-soname,libvlb.so -o "${BUILD_DIR}/libvlb.so" "${TESTS_DIR}/libvlb.S"
-  cc -nostdlib -fPIC -shared -Wl,-soname,libvla.so -o "${BUILD_DIR}/libvla.so" "${TESTS_DIR}/libvla.S" -L"${BUILD_DIR}" -lvlb
-  cc -nostdlib -fPIC -shared -Wl,-soname,libvlmissing.so -o "${BUILD_DIR}/libvlmissing.so" "${TESTS_DIR}/libvlfoo.S"
-
-  cc -nostdlib -fPIE -pie -Wl,-e,_start -o "${BUILD_DIR}/pos_minimal_pie" "${TESTS_DIR}/pos_minimal_pie.S"
-  cc -nostdlib -fPIE -pie -Wl,-e,_start -o "${BUILD_DIR}/pos_one_dso" "${TESTS_DIR}/pos_one_dso.S" -L"${BUILD_DIR}" -lvlfoo
-  cc -nostdlib -fPIE -pie -Wl,-e,_start -Wl,-rpath-link,"${BUILD_DIR}" -o "${BUILD_DIR}/pos_multi_dso_bfs" "${TESTS_DIR}/pos_multi_dso_bfs.S" -L"${BUILD_DIR}" -lvla
-  cc -nostdlib -fPIE -pie -Wl,-e,_start -o "${BUILD_DIR}/neg_missing_needed" "${TESTS_DIR}/neg_missing_needed.S" -L"${BUILD_DIR}" -lvlmissing
-
-  assert_et_dyn "${BUILD_DIR}/pos_minimal_pie"
-  assert_et_dyn "${BUILD_DIR}/pos_one_dso"
-  assert_et_dyn "${BUILD_DIR}/pos_multi_dso_bfs"
-  assert_et_dyn "${BUILD_DIR}/neg_missing_needed"
+  make -C "${TESTS_DIR}" BUILD_DIR="${BUILD_DIR}"
 
   cp "${BUILD_DIR}/libvlfoo.so" /lib/
   cp "${BUILD_DIR}/libvlb.so" /lib/
