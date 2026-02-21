@@ -47,7 +47,7 @@ The following may remain unverified, but you still need to implement them:
 - runtime code that consumes `LoaderOutput`
 
 ## Initialization Code Responsibilities
-- read files from the filesystem.
+- read the current executable and all shared libraries (.so files) from the same directory from the filesystem.
 - build `LoaderInput`.
 - invoke the verified loader.
 
@@ -56,7 +56,7 @@ Given `LoaderOutput`, runtime code must:
 - perform segment `mmap`s
 - call initializers in order
 - set up stack state
-- jump to the entry point
+- jump to the entry point: you will need to write some assembly code to do this.
 
 ## Testing
 - Test dependency discovery order.
