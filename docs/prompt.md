@@ -11,7 +11,7 @@ Based on `docs/elf.md` and `docs/x86_64.md`, derive and implement a formal Verus
 ## LoaderInput
 - `LoaderInput` is provided by unverified code calling into the loader.
 - `LoaderInput` contains a sequence of objects; each object has a name and raw bytes.
-- Assume `/lib` is the only directory used to search for `.so` files.
+- Assume that all shared libraries are placed at the same directory as the executable.
 
 ## LoaderOutput
 `LoaderOutput` must include:

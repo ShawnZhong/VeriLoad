@@ -11,13 +11,6 @@ log() {
 }
 
 if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
-  if [[ -z "${LOADER_CONTAINER:-}" ]]; then
-    panic "LOADER_CONTAINER is required in container mode"
-  fi
-  if [[ ! -x "${LOADER_CONTAINER}" ]]; then
-    panic "loader is missing or not executable in container: ${LOADER_CONTAINER}"
-  fi
-
   TESTS_DIR="/work/tests"
   BUILD_DIR="${TESTS_DIR}/build"
   rm -rf "${BUILD_DIR}"
@@ -29,13 +22,9 @@ if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
     fi
   done
 
-  cp "${BUILD_DIR}/libfoo.so" /lib/libfoo.so
-  cp "${BUILD_DIR}/libbar.so" /lib/libbar.so
-  cp "${BUILD_DIR}/libbaz.so" /lib/libbaz.so
-
   OUT="${BUILD_DIR}/single_case.log"
   RC=0
-  if "${LOADER_CONTAINER}" "${BUILD_DIR}/main" >"${OUT}" 2>&1; then
+  if LD_LIBRARY_PATH="${BUILD_DIR}" "${BUILD_DIR}/main" >"${OUT}" 2>&1; then
     RC=0
   else
     RC=$?
@@ -55,12 +44,8 @@ if [[ "${VERILOAD_TEST_IN_CONTAINER:-0}" == "1" ]]; then
 fi
 
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
-LOADER="${LOADER:-./veriload}"
-LOADER_CONTAINER="/work/${LOADER#./}"
-
-log "running tests with loader ${LOADER} via run.sh"
+log "running tests via run.sh"
 ./run.sh \
   env \
   VERILOAD_TEST_IN_CONTAINER=1 \
-  LOADER_CONTAINER="${LOADER_CONTAINER}" \
   bash -eu /work/test.sh

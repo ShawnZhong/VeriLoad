@@ -15,8 +15,7 @@ COMMON_CFLAGS := \
 	-I$(NOLIBC_DIR)
 
 COMMON_LDFLAGS := \
-	-Wl,--gc-sections \
-	-Wl,-z,norelro
+	-Wl,--gc-sections
 
 LIBS := \
 	$(BUILD_DIR)/libfoo.so \
@@ -35,13 +34,13 @@ $(BUILD_DIR)/libbaz.so: libbaz.c | $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbaz.so -o $@ $<
 
 $(BUILD_DIR)/libbar.so: libbar.c $(BUILD_DIR)/libbaz.so | $(BUILD_DIR)
-	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbar.so -Wl,--no-as-needed -L$(BUILD_DIR) -lbaz -Wl,--as-needed -o $@ $<
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbar.so $< -L$(BUILD_DIR) -lbaz -o $@
 
 $(BUILD_DIR)/libfoo.so: libfoo.c | $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libfoo.so -o $@ $<
 
 $(BUILD_DIR)/main: main.c $(BUILD_DIR)/libfoo.so $(BUILD_DIR)/libbar.so | $(BUILD_DIR)
-	$(CC) $(COMMON_CFLAGS) -no-pie -Wl,-e,_start -Wl,--no-dynamic-linker $(COMMON_LDFLAGS) -Wl,--no-as-needed -L$(BUILD_DIR) -lfoo -lbar -Wl,--as-needed -Wl,-rpath-link,$(BUILD_DIR) -o $@ $<
+	$(CC) $(COMMON_CFLAGS) -no-pie -Wl,-e,_start $(COMMON_LDFLAGS) $< -L$(BUILD_DIR) -lfoo -lbar -Wl,-rpath-link,$(BUILD_DIR) -o $@
 
 .PHONY: clean
 clean:
