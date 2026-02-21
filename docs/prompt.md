@@ -17,7 +17,8 @@ The resulting binary should be able to load and run the `tests/main` executable.
 ## LoaderOutput
 `LoaderOutput` must include:
 - entry PC
-- ordered list of initializers to call
+- ordered list of initialization functions to call
+- ordered list of termination functions to call
 - sequence of `mmap` plans
 
 Each `mmap` plan must include:
@@ -29,7 +30,7 @@ Each `mmap` plan must include:
 - Organize the loader into explicit stages, with spec/struct per stage when useful.
 - For each stage, write spec in `src/<stage_name>_spec.rs` and implementation in `src/<stage_name>_impl.rs`. 
 - Put all the structs and constants common to all stages in `src/types.rs` and `src/consts.rs`.
-- Suggested stages: parse, dependency discovery, symbol resolution, relocation.
+- Suggested stages: parse, dependency resolution, symbol resolution, relocation.
 - Keep the design easy to implement and verify.
 - Do not omit details required for a correct loader specification.
 - Since input is bytes, model all required ELF constants from the spec.
