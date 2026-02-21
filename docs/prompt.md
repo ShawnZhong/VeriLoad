@@ -9,7 +9,7 @@ Based on `docs/elf.md` and `docs/x86_64.md`, derive and implement a formal Verus
 4. Then implement and most importantly, prove the loader stage by stage. Do not do everything at once.
 
 ## LoaderInput
-- `LoaderInput` is provided by unverified code calling into the loader.
+- `LoaderInput` is provided by unverified initialization code calling into the verified code.
 - `LoaderInput` contains a sequence of objects; each object has a name and raw bytes.
 - Assume that all shared libraries are placed at the same directory as the executable.
 
