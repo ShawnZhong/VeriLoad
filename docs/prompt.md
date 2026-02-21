@@ -1,11 +1,12 @@
 ## Objective
 Based on `docs/elf.md` and `docs/x86_64.md`, derive and implement a formal Verus specification for an ELF dynamic loader in `src/`.
-The result should be suitable for a real implementation. Use `third_party/verus/examples` as style guidance.
 
 ## Start Here
-1. Write `src/design.md` and `src/todo.md` first. Use as a guide.
-2. At the beginning, implement the core interface types (`LoaderInput`, `LoaderOutput`).
-3. Then implement and most importantly, prove the loader stage by stage. Do not do everything at once.
+0. Read `docs/elf.md` and `docs/x86_64.md`.
+1. Refer to `third_party/verus/examples` on how to write Verus code.
+2. Write `src/design.md` and `src/todo.md` first. Use as a guide.
+3. At the beginning, implement the core interface types (`LoaderInput`, `LoaderOutput`).
+4. Then implement and most importantly, prove the loader stage by stage. Do not do everything at once.
 
 ## LoaderInput
 - `LoaderInput` is provided by unverified code calling into the loader.

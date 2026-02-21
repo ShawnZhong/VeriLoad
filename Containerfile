@@ -5,4 +5,5 @@ RUN apk add --no-cache \
   binutils \
   build-base \
   file \
+  linux-headers \
   musl-dev

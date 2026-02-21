@@ -1,51 +1,47 @@
 CC ?= cc
 BUILD_DIR ?= build
+NOLIBC_DIR ?= ../third_party/nolibc
+
+COMMON_CFLAGS := \
+	-nostdlib \
+	-ffunction-sections \
+	-fdata-sections \
+	-fno-asynchronous-unwind-tables \
+	-fno-unwind-tables \
+	-fno-stack-protector \
+	-fno-ident \
+	-DNOLIBC_NO_RUNTIME \
+	-DNOLIBC_IGNORE_ERRNO \
+	-I$(NOLIBC_DIR)
+
+COMMON_LDFLAGS := \
+	-Wl,--gc-sections \
+	-Wl,-z,norelro
 
 LIBS := \
-	$(BUILD_DIR)/libveriload_basic.so \
-	$(BUILD_DIR)/libveriload_dep_b.so \
-	$(BUILD_DIR)/libveriload_dep_a.so \
-	$(BUILD_DIR)/libveriload_missing_leaf.so \
-	$(BUILD_DIR)/libveriload_missing_top.so
+	$(BUILD_DIR)/libfoo.so \
+	$(BUILD_DIR)/libbar.so \
+	$(BUILD_DIR)/libbaz.so
 
-BINS := \
-	$(BUILD_DIR)/pos_no_deps \
-	$(BUILD_DIR)/pos_one_dep \
-	$(BUILD_DIR)/pos_transitive_dep \
-	$(BUILD_DIR)/neg_missing_dep
+BIN := $(BUILD_DIR)/main
 
 .PHONY: all
-all: $(LIBS) $(BINS)
+all: $(LIBS) $(BIN)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/libveriload_basic.so: libveriload_basic.c | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_basic.so -o $@ $<
+$(BUILD_DIR)/libbaz.so: libbaz.c | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbaz.so -o $@ $<
 
-$(BUILD_DIR)/libveriload_dep_b.so: libveriload_dep_b.c | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_dep_b.so -o $@ $<
+$(BUILD_DIR)/libbar.so: libbar.c $(BUILD_DIR)/libbaz.so | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbar.so -Wl,--no-as-needed -L$(BUILD_DIR) -lbaz -Wl,--as-needed -o $@ $<
 
-$(BUILD_DIR)/libveriload_dep_a.so: libveriload_dep_a.c $(BUILD_DIR)/libveriload_dep_b.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_dep_a.so -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_dep_b -Wl,--as-needed -o $@ $<
+$(BUILD_DIR)/libfoo.so: libfoo.c | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libfoo.so -o $@ $<
 
-$(BUILD_DIR)/libveriload_missing_leaf.so: libveriload_missing_leaf.c | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_missing_leaf.so -o $@ $<
-
-$(BUILD_DIR)/libveriload_missing_top.so: libveriload_missing_top.c $(BUILD_DIR)/libveriload_missing_leaf.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIC -shared -Wl,-soname,libveriload_missing_top.so -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_missing_leaf -Wl,--as-needed -o $@ $<
-
-$(BUILD_DIR)/pos_no_deps: pos_no_deps.c | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -o $@ $<
-
-$(BUILD_DIR)/pos_one_dep: pos_one_dep.c $(BUILD_DIR)/libveriload_basic.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_basic -Wl,--as-needed -o $@ $<
-
-$(BUILD_DIR)/pos_transitive_dep: pos_transitive_dep.c $(BUILD_DIR)/libveriload_dep_a.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_dep_a -Wl,--as-needed -Wl,-rpath-link,$(BUILD_DIR) -o $@ $<
-
-$(BUILD_DIR)/neg_missing_dep: neg_missing_dep.c $(BUILD_DIR)/libveriload_missing_top.so | $(BUILD_DIR)
-	$(CC) -nostdlib -fPIE -pie -Wl,-e,_start -Wl,--no-dynamic-linker -Wl,--no-as-needed -L$(BUILD_DIR) -lveriload_missing_top -Wl,--as-needed -Wl,-rpath-link,$(BUILD_DIR) -o $@ $<
+$(BUILD_DIR)/main: main.c $(BUILD_DIR)/libfoo.so $(BUILD_DIR)/libbar.so | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -no-pie -Wl,-e,_start -Wl,--no-dynamic-linker $(COMMON_LDFLAGS) -Wl,--no-as-needed -L$(BUILD_DIR) -lfoo -lbar -Wl,--as-needed -Wl,-rpath-link,$(BUILD_DIR) -o $@ $<
 
 .PHONY: clean
 clean:
