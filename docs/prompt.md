@@ -31,6 +31,7 @@ Each `mmap` plan must include:
 - Keep the design easy to implement and verify.
 - Do not omit details required for a correct loader specification.
 - Since input is bytes, model all required ELF constants from the spec.
+- DO NOT CHEAT!!! external_body is only allowed in the verification boundary.
 
 ## Implementation and Proof Requirements
 - Ensure implementation behavior matches the formal spec.
