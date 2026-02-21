@@ -51,3 +51,16 @@ Given `LoaderOutput`, runtime code must:
 - call initializers in order
 - set up stack state
 - jump to the entry point
+
+## Testing
+- Test dependency discovery order.
+- Test symbol resolution and relocation results.
+- Test that generated `mmap` plans match expected addresses, bytes, and flags.
+- Test initializer call order.
+- Run Verus proofs and test commands on every change.
+
+## Final Deliverable
+- `design.md` with the full design.
+- `todo.md` with staged implementation plan and progress.
+- Verified loader spec and model code in `src/`.
+- Implemented and tested initialization and runtime code at the verification boundary.
