@@ -1,11 +1,11 @@
 ## Objective
 Based on `docs/elf.md` and `docs/x86_64.md`, derive and implement a formal Verus specification for an ELF dynamic loader in `src/`.
-The result should be suitable for a real implementation. Use `verus/examples` as style guidance.
+The result should be suitable for a real implementation. Use `third_party/verus/examples` as style guidance.
 
 ## Start Here
-1. Write `design.md` and `todo.md` first.
+1. Write `src/design.md` and `src/todo.md` first. Use as a guide.
 2. At the beginning, implement the core interface types (`LoaderInput`, `LoaderOutput`).
-3. Then implement and prove the loader stage by stage. Do not implement everything at once.
+3. Then implement and most importantly, prove the loader stage by stage. Do not do everything at once.
 
 ## LoaderInput
 - `LoaderInput` is provided by unverified code calling into the loader.
@@ -32,6 +32,8 @@ Each `mmap` plan must include:
 
 ## Implementation and Proof Requirements
 - Ensure implementation behavior matches the formal spec.
+- Prove that the implementation satisfies the spec, stage by stage and end-to-end.
+- For each implemented loader stage, include explicit refinement/correctness lemmas that connect implementation results to spec results.
 - Fully prove spec/implementation correspondence; no proof shortcuts.
 - Do not read git history.
 

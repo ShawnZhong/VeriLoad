@@ -1,9 +1,9 @@
 [submodule "verus"]
-	path = verus
+	path = third_party/verus
 	url = https://github.com/verus-lang/verus.git
 [submodule "musl"]
-	path = musl
+	path = third_party/musl
 	url = https://github.com/kraj/musl.git
 [submodule "nolibc"]
-	path = nolibc
+	path = third_party/nolibc
 	url = https://github.com/wtarreau/nolibc.git
