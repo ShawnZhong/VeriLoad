@@ -37,6 +37,7 @@ Each `mmap` plan must include:
 - For each implemented loader stage, include explicit refinement/correctness lemmas that connect implementation results to spec results.
 - Fully prove spec/implementation correspondence; no proof shortcuts.
 - Do not read git history.
+- Use `tests/` to test the loader.
 
 ## Verification Boundary
 The following may remain unverified, but you still need to implement them:
