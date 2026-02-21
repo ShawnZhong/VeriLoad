@@ -1,7 +1,6 @@
 #include "nolibc.h"
-
-extern void libfoo_print(void);
-extern void libbar_print(void);
+#include "libfoo.h"
+#include "libbar.h"
 
 void main_print(void) {
     write(1, "[main] function\n", 16);
@@ -10,6 +9,11 @@ void main_print(void) {
 __attribute__((constructor))
 static void main_ctor(void) {
     write(1, "[main] ctor\n", 12);
+}
+
+__attribute__((destructor))
+static void main_dtor(void) {
+    write(1, "[main] dtor\n", 12);
 }
 
 void _start(void) {
