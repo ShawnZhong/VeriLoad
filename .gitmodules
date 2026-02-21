@@ -4,3 +4,6 @@
 [submodule "musl"]
 	path = musl
 	url = https://github.com/kraj/musl.git
+[submodule "nolibc"]
+	path = nolibc
+	url = https://github.com/wtarreau/nolibc.git
