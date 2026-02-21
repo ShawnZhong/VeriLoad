@@ -1,3 +1,53 @@
-based on spec.md, derive a formal spec in Verus in src/{spec.rs, model.rs} about the elf dynamic loader that can be used for a real implementation. use verus/examples to guide you on how to write verus code. For the spec, the input should start with a sequence of objects, where the objects consist of their name and sequence of bytes. the output should be the entry pc, a list of initializer to call, and a sequence of plans about mmap, where each of them consist of a starting address, the bytes to be mapped and the protection flags. it would be very helpful for you to organize the loader into different stages, and have spec and struct about each stage. for example, we could have a parse stage, a dependency discovery stage, a symbol resolution stage, a relocation stage, etc. just to give some examples. make sure that you have some implementation in mind while you are writing down the spec. don't make it hard to implement or verify. do not miss any detail about the spec that is required to implemnt a loader. do not cheat and read git history.  And since you are taking the bytes as input, you will also need to model the constants specified by the ELF spec. First write down design.md and todo.md. You can implement and verify gradually step by step based on different stages. You don't need to implement everything at once.
+## Objective
+Based on `docs/elf.md` and `docs/x86_64.md`, derive and implement a formal Verus specification for an ELF dynamic loader in `src/`.
+The result should be suitable for a real implementation. Use `verus/examples` as style guidance.
 
-Implement the spec in spec.rs and model.rs. Make sure that the implementation matches the spec. The only thing not verified is the loading of inputs, and the runtime code given LoaderOutput. Do not implement everything in one file. You can assume that the only directory to search for .so files is /lib. Do not take shortcuts on proving the implementation matches the spec. Make sure everything is proven. The runtime needs to implement the actual logic to mmap the segments and call the initializers, setup stack and call the entry point.
+## Start Here
+1. Write `design.md` and `todo.md` first.
+2. At the beginning, implement the core interface types (`LoaderInput`, `LoaderOutput`).
+3. Then implement and prove the loader stage by stage. Do not implement everything at once.
+
+## LoaderInput
+- `LoaderInput` is provided by unverified code calling into the loader.
+- `LoaderInput` contains a sequence of objects; each object has a name and raw bytes.
+- Assume `/lib` is the only directory used to search for `.so` files.
+
+## LoaderOutput
+`LoaderOutput` must include:
+- entry PC
+- ordered list of initializers to call
+- sequence of `mmap` plans
+
+Each `mmap` plan must include:
+- starting address
+- bytes to map
+- protection flags
+
+## Staged Modeling Requirements
+- Organize the loader into explicit stages, with spec/struct per stage when useful.
+- Suggested stages: parse, dependency discovery, symbol resolution, relocation.
+- Keep the design easy to implement and verify.
+- Do not omit details required for a correct loader specification.
+- Since input is bytes, model all required ELF constants from the spec.
+
+## Implementation and Proof Requirements
+- Ensure implementation behavior matches the formal spec.
+- Fully prove spec/implementation correspondence; no proof shortcuts.
+- Do not read git history.
+
+## Verification Boundary
+The following may remain unverified, but you still need to implement them:
+- initialization code that invokes verified loader with `LoaderInput`
+- runtime code that consumes `LoaderOutput`
+
+## Initialization Code Responsibilities
+- read files from the filesystem.
+- build `LoaderInput`.
+- invoke the verified loader.
+
+## Runtime Responsibilities
+Given `LoaderOutput`, runtime code must:
+- perform segment `mmap`s
+- call initializers in order
+- set up stack state
+- jump to the entry point
