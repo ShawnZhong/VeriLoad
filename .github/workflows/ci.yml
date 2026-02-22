@@ -18,5 +18,8 @@ jobs:
       - name: Install Verus
         run: ./install_verus.sh
 
+      - name: Build
+        run: make
+
       - name: Run
         run: ./run.sh
