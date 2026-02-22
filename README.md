@@ -18,6 +18,7 @@ See [`design.md`](design.md) for the full design and refinement details.
 
 ```bash
 ./install_verus.sh
+make
 ./run.sh
 ```
 
