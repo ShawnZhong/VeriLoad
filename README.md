@@ -12,7 +12,7 @@ VeriLoad is a research prototype for verified ELF loading with Verus.
 - Unverified runtime code executes that plan (`mmap`, memory writes, permission setup, constructor calls, jump to entry).
 - Current scope focuses on ELF64/x86_64 with `R_X86_64_RELATIVE` and `R_X86_64_JUMP_SLOT`.
 
-See `src/design.md` for the full design and refinement details.
+See [`design.md`](design.md) for the full design and refinement details.
 
 ## Quick Start
 
