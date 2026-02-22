@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/ShawnZhong/VeriLoad/actions/workflows/ci.yml/badge.svg)](https://github.com/ShawnZhong/VeriLoad/actions/workflows/ci.yml)
 
-VeriLoad is a research prototype for verified ELF loading with Verus.
+VeriLoad is a research prototype for a verified ELF loader in Verus.
 
 ## Design Overview
 
@@ -17,6 +17,8 @@ See [`design.md`](design.md) for the full design and refinement details.
 ## Quick Start
 
 ```bash
+git clone --recursive https://github.com/ShawnZhong/VeriLoad.git
+cd VeriLoad
 ./install_verus.sh
 make
 ./run.sh
