@@ -15,18 +15,6 @@ jobs:
       - name: Init nolibc submodule
         run: git submodule update --init --depth 1 third_party/nolibc
 
-      - name: Cache Verus and Rust
-        uses: actions/cache@v4
-        with:
-          path: |
-            .verus
-            ~/.cargo/bin
-            ~/.cargo/registry/index
-            ~/.cargo/registry/cache
-            ~/.cargo/git/db
-            ~/.rustup/toolchains
-            ~/.rustup/update-hashes
-          key: ${{ hashFiles('install_verus.sh') }}
       - name: Install Verus
         run: ./install_verus.sh
 
