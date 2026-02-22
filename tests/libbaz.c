@@ -3,9 +3,8 @@
 #include "libbar.h"
 
 void libbaz_step(int depth) {
-    write(1, "[libbaz] step\n", 14);
+    printf("[libbaz] step=%d\n", depth);
     if (depth <= 0) {
-        write(1, "[libbaz] stop\n", 14);
         return;
     }
 
@@ -14,10 +13,10 @@ void libbaz_step(int depth) {
 
 __attribute__((constructor))
 static void libbaz_ctor(void) {
-    write(1, "[libbaz] ctor\n", 14);
+    printf("[libbaz] ctor\n");
 }
 
 __attribute__((destructor))
 static void libbaz_dtor(void) {
-    write(1, "[libbaz] dtor\n", 14);
+    printf("[libbaz] dtor\n");
 }

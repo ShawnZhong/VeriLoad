@@ -2,15 +2,15 @@
 #include "libfoo.h"
 
 void libfoo_print(void) {
-    write(1, "[libfoo] function\n", 18);
+    printf("[libfoo] function\n");
 }
 
 __attribute__((constructor))
 static void libfoo_ctor(void) {
-    write(1, "[libfoo] ctor\n", 14);
+    printf("[libfoo] ctor\n");
 }
 
 __attribute__((destructor))
 static void libfoo_dtor(void) {
-    write(1, "[libfoo] dtor\n", 14);
+    printf("[libfoo] dtor\n");
 }

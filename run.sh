@@ -3,9 +3,11 @@ set -euo pipefail
 
 make
 
-exec ./build/veriload \
-  build/main \
-  build/libfoo.so \
-  build/libbar.so \
-  build/libbaz.so \
-  build/libunused.so
+cd build
+
+exec ./veriload \
+  main \
+  libfoo.so \
+  libbar.so \
+  libbaz.so \
+  libunused.so
