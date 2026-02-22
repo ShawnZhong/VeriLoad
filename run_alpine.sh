@@ -3,7 +3,7 @@ set -euo pipefail
 
 IMAGE_NAME="veriload"
 
-podman build -q -t $(IMAGE_NAME) -f Containerfile .
+podman build -q -t ${IMAGE_NAME} -f Containerfile .
 
 if [[ $# -eq 0 ]]; then
   exec podman run --rm -it \

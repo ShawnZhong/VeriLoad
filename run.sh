@@ -5,9 +5,4 @@ make
 
 cd build
 
-exec ./veriload \
-  main \
-  libfoo.so \
-  libbar.so \
-  libbaz.so \
-  libunused.so
+./veriload main libfoo.so libbar.so libbaz.so libunused.so
