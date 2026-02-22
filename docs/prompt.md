@@ -1,12 +1,21 @@
 ## Objective
-Based on `docs/elf.md` and `docs/x86_64.md`, derive and implement a formal Verus specification for an ELF dynamic loader in `src/`.
-The resulting binary should be able to load and run the `tests/main` executable.
+Based on the ELF documentation, derive and implement a formal Verus specification for an ELF dynamic loader in `src/`.
+The resulting binary should be able to load and run the `build/main` executable.
 
 ## Start Here
-0. Read `docs/elf.md`. Refer to `docs/x86_64.md` only when needed.
-1. Read the code examples in `third_party/verus/examples` on how to write Verus code. In particular
-    - `source/docs/guide/src/triangle.md` and `examples/guide/recursion.rs`
-2. Write `src/design.md` and `src/todo.md` first. Use as a guide.
+1. Reading List
+    - ELF gABI specification: `third_party/gABI/docsrc/elf`. Focus on the following sections:
+        - 02-eheader.rst
+        - 03-sheader.rst
+        - 06-reloc.rst
+        - 07-pheader.rst
+        - 08-dynamic.rst
+    - x86_84 psABI: `third_party/psABI_x86_64/x86-64-ABI`. Focus on the following sections:
+        - object-files.tex
+    - Verus examples: `third_party/verus/examples`. Focus on the following files:
+        - `examples/guide/recursion.rs`
+        - `source/docs/guide/src/triangle.md` and 
+2. Plan the design in `design.md` and the todo list in `todo.md` first.
 3. Stage by stage, come up with the spec/struct for each stage first. Then implement, and most importantly, prove the implementation refines the spec.
 
 ## LoaderInput
