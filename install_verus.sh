@@ -11,5 +11,7 @@ mkdir -p "$VERUS_ROOT"
 curl -fsSL -o "${VERUS_ROOT}/${ARCHIVE}" "$URL"
 unzip -qo "${VERUS_ROOT}/${ARCHIVE}" -d "$VERUS_ROOT"
 
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+if ! command -v rustup &>/dev/null; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
 "$HOME/.cargo/bin/rustup" toolchain install "$RUST_TOOLCHAIN"
