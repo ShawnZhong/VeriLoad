@@ -2,9 +2,14 @@
 #include "libbar.h"
 #include "libbaz.h"
 
-void libbar_print(void) {
-    write(1, "[libbar] function\n", 18);
-    libbaz_print();
+void libbar_step(int depth) {
+    write(1, "[libbar] step\n", 14);
+    if (depth <= 0) {
+        write(1, "[libbar] stop\n", 14);
+        return;
+    }
+
+    libbaz_step(depth - 1);
 }
 
 __attribute__((constructor))

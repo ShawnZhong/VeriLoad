@@ -20,6 +20,6 @@ int main(void) {
     write(1, "[main] entry\n", 13);
     main_print();
     libfoo_print();
-    libbar_print();
+    libbar_step(3);
     return 0;
 }

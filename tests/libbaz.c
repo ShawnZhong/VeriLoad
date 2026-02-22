@@ -1,8 +1,15 @@
 #include "nolibc.h"
 #include "libbaz.h"
+#include "libbar.h"
 
-void libbaz_print(void) {
-    write(1, "[libbaz] function\n", 18);
+void libbaz_step(int depth) {
+    write(1, "[libbaz] step\n", 14);
+    if (depth <= 0) {
+        write(1, "[libbaz] stop\n", 14);
+        return;
+    }
+
+    libbar_step(depth - 1);
 }
 
 __attribute__((constructor))

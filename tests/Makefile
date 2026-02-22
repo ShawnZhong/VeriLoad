@@ -30,8 +30,11 @@ all: $(LIBS) $(BIN)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(BUILD_DIR)/libbaz.so: libbaz.c libbaz.h | $(BUILD_DIR)
-	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbaz.so -o $@ $<
+$(BUILD_DIR)/libbar.bootstrap.so: libbar.c libbar.h libbaz.h | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbar.so -o $@ $<
+
+$(BUILD_DIR)/libbaz.so: libbaz.c libbaz.h libbar.h $(BUILD_DIR)/libbar.bootstrap.so | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbaz.so $< $(BUILD_DIR)/libbar.bootstrap.so -o $@
 
 $(BUILD_DIR)/libbar.so: libbar.c libbar.h libbaz.h $(BUILD_DIR)/libbaz.so | $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libbar.so $< -L$(BUILD_DIR) -lbaz -o $@
