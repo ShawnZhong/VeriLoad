@@ -7,3 +7,9 @@
 [submodule "nolibc"]
 	path = third_party/nolibc
 	url = https://github.com/wtarreau/nolibc.git
+[submodule "third_party/gABI"]
+	path = third_party/gABI
+	url = https://github.com/xinuos/gabi.git
+[submodule "third_party/psABI_x86_64"]
+	path = third_party/psABI_x86_64
+	url = https://gitlab.com/x86-psABIs/x86-64-ABI.git
