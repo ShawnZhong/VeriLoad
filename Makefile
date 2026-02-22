@@ -1,5 +1,5 @@
 VERUS := ./.verus/verus-x86-linux/verus
-SOURCE := src/main.rs
+SOURCE := src/main_impl.rs
 BINARY := veriload
 IMAGE_NAME := veriload
 

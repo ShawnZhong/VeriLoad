@@ -67,7 +67,7 @@ The following may remain unverified, but you still need to implement them:
 ## Runtime Responsibilities
 Given `LoaderOutput`, runtime code must:
 - perform segment `mmap`s
-- call initializers in order
+- call constructors in order
 - set up stack state
 - jump to the entry point: you will need to write some assembly code to do this.
 
