@@ -21,16 +21,13 @@ See `src/design.md` for the full design and refinement details.
 ./run.sh
 ```
 
-`./run.sh` builds and loads a small dynamic-linked executable with the loader:
+`./run.sh` builds the loader and runs a dynamic-linked executable with it (see [`tests/main.c`](tests/main.c)):
 
-- `main` depends on `libfoo.so` and `libbar.so`.
+- `main` depends on `libfoo.so` and `libbar.so`. It calls `libfoo_print` and `libbar_step`.
 - `libbar.so` and `libbaz.so` depend on each other with mutual recursion on `libbar_step` and `libbaz_step`.
-- `libunused.so` is present in the input list but not needed by `main`, so it is parsed but not loaded/executed.
 - Each loaded object has a constructor and destructor to be called.
 
-<details>
-<summary>Expected output</summary>
-
+Expected output:
 ```text
 [libbaz] ctor
 [libbar] ctor
@@ -47,9 +44,7 @@ See `src/design.md` for the full design and refinement details.
 [libfoo] dtor
 [libbar] dtor
 [libbaz] dtor
-```
 
-</details>
 
 <details>
 <summary>Debug output</summary>
