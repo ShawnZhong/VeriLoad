@@ -47,8 +47,7 @@ Expected output:
 ```
 
 
-<details>
-<summary>Debug output: <code>./run.sh --debug</code></summary>
+Debug output: `./run.sh --debug`
 
 ```text
 entry_pc=0x00000000004064ee
@@ -144,5 +143,3 @@ debug.resolved.resolved_relocs=22
   resolved_reloc[20] requester=3 is_jmprel=true reloc_index=1 sym_index=1 provider_object=Some(2) provider_symbol=Some(11)
   resolved_reloc[21] requester=3 is_jmprel=true reloc_index=2 sym_index=4 provider_object=Some(0) provider_symbol=Some(5)
 ```
-
-</details>
