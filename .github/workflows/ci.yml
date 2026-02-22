@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Init nolibc submodule
+        run: git submodule update --init --depth 1 third_party/nolibc
+
       - name: Cache Verus and Rust
         uses: actions/cache@v4
         with:
@@ -27,8 +30,5 @@ jobs:
       - name: Install Verus
         run: ./install_verus.sh
 
-      - name: Verify
-        run: make verify
-
-      - name: Build
-        run: make build
+      - name: Run
+        run: ./run.sh

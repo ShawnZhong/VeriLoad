@@ -2,11 +2,10 @@
 set -euo pipefail
 
 make
-make -C tests
 
-exec ./veriload \
-  tests/build/main \
-  tests/build/libfoo.so \
-  tests/build/libbar.so \
-  tests/build/libbaz.so \
-  tests/build/libunused.so
+exec ./build/veriload \
+  build/main \
+  build/libfoo.so \
+  build/libbar.so \
+  build/libbaz.so \
+  build/libunused.so

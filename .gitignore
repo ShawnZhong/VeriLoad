@@ -1,3 +1,2 @@
 .verus/
-veriload
-tests/build/
+build/
