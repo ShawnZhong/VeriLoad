@@ -19,7 +19,8 @@ COMMON_LDFLAGS := \
 LIBS := \
 	$(BUILD_DIR)/libfoo.so \
 	$(BUILD_DIR)/libbar.so \
-	$(BUILD_DIR)/libbaz.so
+	$(BUILD_DIR)/libbaz.so \
+	$(BUILD_DIR)/libunused.so
 
 BIN := $(BUILD_DIR)/main
 
@@ -37,6 +38,9 @@ $(BUILD_DIR)/libbar.so: libbar.c libbar.h libbaz.h $(BUILD_DIR)/libbaz.so | $(BU
 
 $(BUILD_DIR)/libfoo.so: libfoo.c libfoo.h | $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libfoo.so -o $@ $<
+
+$(BUILD_DIR)/libunused.so: libunused.c | $(BUILD_DIR)
+	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libunused.so -o $@ $<
 
 $(BUILD_DIR)/main: main.c libfoo.h libbar.h $(BUILD_DIR)/libfoo.so $(BUILD_DIR)/libbar.so | $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) -no-pie -Wl,-e,_start $(COMMON_LDFLAGS) $< -L$(BUILD_DIR) -lfoo -lbar -Wl,-rpath-link,$(BUILD_DIR) -o $@
