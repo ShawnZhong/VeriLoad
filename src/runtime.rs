@@ -96,6 +96,11 @@ fn call_constructor(pc: u64) {
     f();
 }
 
+fn call_destructor(pc: u64) {
+    let f: extern "C" fn() = unsafe { std::mem::transmute(pc as usize) };
+    f();
+}
+
 fn alloc_initial_stack() -> Result<*mut usize, LoaderError> {
     let mapped = unsafe {
         mmap(
@@ -130,19 +135,25 @@ fn alloc_initial_stack() -> Result<*mut usize, LoaderError> {
 }
 
 #[cfg(target_arch = "x86_64")]
-unsafe fn jump_to_entry(entry_pc: u64, stack_ptr: *mut usize) -> ! {
+unsafe fn call_entry(entry_pc: u64, stack_ptr: *mut usize) -> i32 {
+    let mut status: usize;
     asm!(
+        "mov r12, rsp",
         "mov rsp, {stack}",
         "xor rbp, rbp",
-        "jmp {entry}",
+        "call {entry}",
+        "mov rsp, r12",
         stack = in(reg) stack_ptr,
         entry = in(reg) (entry_pc as usize),
-        options(noreturn)
+        lateout("rax") status,
+        lateout("r12") _,
+        clobber_abi("C")
     );
+    status as i32
 }
 
 #[cfg(not(target_arch = "x86_64"))]
-unsafe fn jump_to_entry(_entry_pc: u64, _stack_ptr: *mut usize) -> ! {
+unsafe fn call_entry(_entry_pc: u64, _stack_ptr: *mut usize) -> i32 {
     std::process::abort()
 }
 
@@ -161,5 +172,11 @@ pub fn run_runtime(plan: &LoaderOutput) -> Result<(), LoaderError> {
     }
 
     let sp = alloc_initial_stack()?;
-    unsafe { jump_to_entry(plan.entry_pc, sp) }
+    let status = unsafe { call_entry(plan.entry_pc, sp) };
+
+    for d in &plan.destructors {
+        call_destructor(d.pc);
+    }
+
+    std::process::exit(status);
 }

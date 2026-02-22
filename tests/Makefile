@@ -10,6 +10,7 @@ COMMON_CFLAGS := \
 	-fno-unwind-tables \
 	-fno-stack-protector \
 	-fno-ident \
+	-DNOLIBC_NO_RUNTIME \
 	-DNOLIBC_IGNORE_ERRNO \
 	-I$(NOLIBC_DIR)
 
@@ -46,7 +47,7 @@ $(BUILD_DIR)/libunused.so: libunused.c | $(BUILD_DIR)
 	$(CC) $(COMMON_CFLAGS) -fPIC -shared $(COMMON_LDFLAGS) -Wl,-soname,libunused.so -o $@ $<
 
 $(BUILD_DIR)/main: main.c libfoo.h libbar.h $(BUILD_DIR)/libfoo.so $(BUILD_DIR)/libbar.so | $(BUILD_DIR)
-	$(CC) $(COMMON_CFLAGS) -no-pie -Wl,-e,_start $(COMMON_LDFLAGS) $< -L$(BUILD_DIR) -lfoo -lbar -Wl,-rpath-link,$(BUILD_DIR) -o $@
+	$(CC) $(COMMON_CFLAGS) -no-pie -Wl,-e,main $(COMMON_LDFLAGS) $< -L$(BUILD_DIR) -lfoo -lbar -Wl,-rpath-link,$(BUILD_DIR) -o $@
 
 .PHONY: clean
 clean:

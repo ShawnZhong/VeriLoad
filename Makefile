@@ -4,7 +4,7 @@ BINARY := veriload
 IMAGE_NAME := veriload
 
 .PHONY: all
-all: build container
+all: build
 
 .PHONY: verify
 verify:
@@ -17,7 +17,3 @@ build:
 .PHONY: clean
 clean:
 	rm -f $(BINARY)
-
-.PHONY: container
-container: Containerfile
-	podman build -q -t $(IMAGE_NAME) -f Containerfile .

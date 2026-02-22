@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Verus and Rust
+        uses: actions/cache@v4
+        with:
+          path: |
+            .verus
+            ~/.cargo/bin
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            ~/.rustup/toolchains
+            ~/.rustup/update-hashes
+          key: ${{ hashFiles('install_verus.sh') }}
+      - name: Install Verus
+        run: ./install_verus.sh
+
+      - name: Verify
+        run: make verify
+
+      - name: Build
+        run: make build
