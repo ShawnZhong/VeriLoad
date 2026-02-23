@@ -6,11 +6,10 @@ VeriLoad is a research prototype for a verified ELF loader in Verus.
 
 ## Design Overview
 
-- Input is a set of ELF objects (`main` + shared libraries) as raw bytes.
-- The verified planner is stage-based: parse -> dependency discovery -> symbol resolution -> relocation and mapping plan.
-- The planner produces `LoaderOutput` with mmap plans, relocation writes, entry PC, and constructor/destructor call order.
-- Unverified runtime code executes that plan (`mmap`, memory writes, permission setup, constructor calls, jump to entry).
-- Current scope focuses on ELF64/x86_64 with `R_X86_64_RELATIVE` and `R_X86_64_JUMP_SLOT`.
+VeriLoad runs in three steps:
+1. Unverified input setup: read the provided ELF objects (`main` + shared libraries) into `LoaderInput`.
+2. Verified planner: `parse -> discover -> resolve -> mmap_plan -> relocate_plan -> relocate_apply -> final`, producing `LoaderOutput`.
+3. Unverified runtime: execute `LoaderOutput` (`mmap`, copy bytes, set permissions, call constructors, jump to entry, call destructors).
 
 See [`design.md`](design.md) for the full design and refinement details.
 
