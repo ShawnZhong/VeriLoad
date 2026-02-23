@@ -2,11 +2,17 @@ mod debug;
 mod discover_impl;
 mod discover_spec;
 mod consts;
+mod final_stage_impl;
+mod final_stage_spec;
 mod main_spec;
+mod mmap_plan_impl;
+mod mmap_plan_spec;
 mod parse_impl;
 mod parse_spec;
-mod relocate_impl;
-mod relocate_spec;
+mod relocate_plan_impl;
+mod relocate_apply_impl;
+mod relocate_apply_spec;
+mod relocate_plan_spec;
 mod runtime;
 mod resolve_impl;
 mod resolve_spec;
@@ -33,7 +39,30 @@ pub fn plan_loader(input: LoaderInput) -> (out: Result<LoaderOutput, LoaderError
                     let resolved_res = resolve_impl::resolve_stage_ref(&parsed, &discovered);
                     match resolved_res {
                         Err(e) => Err(e),
-                        Ok(resolved) => relocate_impl::relocate_stage(parsed, discovered, resolved),
+                        Ok(resolved) => {
+                            let mmap_plans_res = mmap_plan_impl::mmap_plan_stage(&parsed, &discovered);
+                            match mmap_plans_res {
+                                Err(e) => Err(e),
+                                Ok(mmap_plans) => {
+                                    let plan_reloc_res = relocate_plan_impl::plan_relocate_stage(
+                                        parsed,
+                                        discovered,
+                                        resolved,
+                                        mmap_plans,
+                                    );
+                                    match plan_reloc_res {
+                                        Err(e) => Err(e),
+                                        Ok(plan_reloc) => {
+                                            let reloc_apply_res = relocate_apply_impl::relocate_apply_stage(plan_reloc);
+                                            match reloc_apply_res {
+                                                Err(e) => Err(e),
+                                                Ok(reloc_applied) => final_stage_impl::final_stage(reloc_applied),
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

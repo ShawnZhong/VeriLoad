@@ -63,6 +63,24 @@ pub struct RelocWrite {
 }
 
 #[derive(Clone, Debug)]
+pub struct RelocatePlanOutput {
+    pub mmap_plans: Vec<MmapPlan>,
+    pub reloc_plan: Vec<RelocWrite>,
+    pub parsed: Vec<ParsedObject>,
+    pub discovered: DiscoveryResult,
+    pub resolved: ResolutionResult,
+}
+
+#[derive(Clone, Debug)]
+pub struct RelocateApplyOutput {
+    pub mmap_plans: Vec<MmapPlan>,
+    pub reloc_writes: Vec<RelocWrite>,
+    pub parsed: Vec<ParsedObject>,
+    pub discovered: DiscoveryResult,
+    pub resolved: ResolutionResult,
+}
+
+#[derive(Clone, Debug)]
 pub struct LoaderOutput {
     pub entry_pc: u64,
     pub constructors: Vec<InitCall>,

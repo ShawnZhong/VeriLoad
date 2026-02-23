@@ -1,4 +1,4 @@
-use crate::types::{LoaderError, LoaderOutput, MmapPlan, ProtFlags, RelocWrite};
+use crate::types::{LoaderError, LoaderOutput, MmapPlan, ProtFlags};
 use core::arch::asm;
 use std::ffi::c_void;
 use std::ptr;
@@ -68,13 +68,6 @@ fn map_segment(plan: &MmapPlan) -> Result<(), LoaderError> {
         ptr::copy_nonoverlapping(plan.bytes.as_ptr(), mapped as *mut u8, len);
     }
     Ok(())
-}
-
-fn apply_reloc_write(write: &RelocWrite) {
-    let slot = write.write_addr as usize as *mut u64;
-    unsafe {
-        ptr::write_unaligned(slot, write.value);
-    }
 }
 
 fn protect_segment(plan: &MmapPlan) -> Result<(), LoaderError> {
@@ -160,9 +153,6 @@ unsafe fn call_entry(_entry_pc: u64, _stack_ptr: *mut usize) -> i32 {
 pub fn run_runtime(plan: &LoaderOutput) -> Result<(), LoaderError> {
     for m in &plan.mmap_plans {
         map_segment(m)?;
-    }
-    for w in &plan.reloc_writes {
-        apply_reloc_write(w);
     }
     for m in &plan.mmap_plans {
         protect_segment(m)?;
