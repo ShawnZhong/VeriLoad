@@ -10,7 +10,7 @@ proof fn same_plan_layout_refl(a: MmapPlan)
     ensures
         same_plan_layout(a, a),
 {
-    assert(a.object_name == a.object_name);
+    assert(a.object_name@ == a.object_name@);
     assert(a.start == a.start);
     assert(a.prot == a.prot);
     assert(a.bytes@.len() == a.bytes@.len());
@@ -23,9 +23,9 @@ proof fn same_plan_layout_transitive(a: MmapPlan, b: MmapPlan, c: MmapPlan)
     ensures
         same_plan_layout(a, c),
 {
-    assert(a.object_name == b.object_name);
-    assert(b.object_name == c.object_name);
-    assert(a.object_name == c.object_name);
+    assert(a.object_name@ == b.object_name@);
+    assert(b.object_name@ == c.object_name@);
+    assert(a.object_name@ == c.object_name@);
 
     assert(a.start == b.start);
     assert(b.start == c.start);
@@ -96,7 +96,7 @@ proof fn same_plan_layout_preserves_mmap_sound(
             ph_idx,
             new_plan,
         ) by {
-        assert(old_plan.object_name == new_plan.object_name);
+        assert(old_plan.object_name@ == new_plan.object_name@);
         assert(old_plan.start == new_plan.start);
         assert(old_plan.prot == new_plan.prot);
         assert(old_plan.bytes@.len() == new_plan.bytes@.len());
@@ -189,7 +189,7 @@ proof fn apply_write_to_plan_bytes_same_layout(a: MmapPlan, b: MmapPlan, cur: Se
     ensures
         apply_write_to_plan_bytes(a, cur, write) == apply_write_to_plan_bytes(b, cur, write),
 {
-    assert(a.object_name == b.object_name);
+    assert(a.object_name@ == b.object_name@);
     assert(a.start == b.start);
 }
 
@@ -325,7 +325,7 @@ fn apply_write_to_plans(plans: &mut Vec<MmapPlan>, write: &RelocWrite)
         let ghost should_patch_expr = write.write_addr >= plan.start
             && write.write_addr - plan.start <= usize::MAX as u64;
         proof {
-            assert(plan.object_name == before_i.object_name);
+            assert(plan.object_name@ == before_i.object_name@);
             assert(plan.start == before_i.start);
             assert(should_patch == should_patch_expr);
         }
@@ -353,7 +353,7 @@ fn apply_write_to_plans(plans: &mut Vec<MmapPlan>, write: &RelocWrite)
             assert(before_i == old(plans)@[i as int]);
             assert(plans@[i as int] == plan);
 
-            assert(plans@[i as int].object_name == before_i.object_name);
+            assert(plans@[i as int].object_name@ == before_i.object_name@);
             assert(plans@[i as int].start == before_i.start);
             assert(plans@[i as int].prot == before_i.prot);
             assert(bytes_before == before_i.bytes@);

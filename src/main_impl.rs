@@ -84,8 +84,8 @@ fn read_loader_input(paths: &[String]) -> Result<LoaderInput, LoaderError> {
 
         let name = std::path::Path::new(path)
             .file_name()
-            .map(|n| n.to_string_lossy().into_owned())
-            .unwrap_or_else(|| path.clone());
+            .map(|n| n.to_string_lossy().into_owned().into_bytes())
+            .unwrap_or_else(|| path.clone().into_bytes());
 
         objects.push(LoaderObject { name, bytes });
     }

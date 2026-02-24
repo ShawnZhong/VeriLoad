@@ -227,7 +227,7 @@ pub fn plan_relocate_stage(
                     let write_addr = add_u64_or_zero_exec(base, rel.offset);
                     let write_value = add_i64_or_zero_exec(base, rel.addend);
                     let write = RelocWrite {
-                        object_name: parsed[obj_idx].input_name.clone(),
+                        object_name: clone_u8_vec(&parsed[obj_idx].input_name),
                         write_addr,
                         value: write_value,
                         reloc_type: R_X86_64_RELATIVE,
@@ -335,7 +335,7 @@ pub fn plan_relocate_stage(
                     let write_addr = add_u64_or_zero_exec(base, rel.offset);
                     let write_value = add_i64_or_zero_exec(base, rel.addend);
                     let write = RelocWrite {
-                        object_name: parsed[obj_idx].input_name.clone(),
+                        object_name: clone_u8_vec(&parsed[obj_idx].input_name),
                         write_addr,
                         value: write_value,
                         reloc_type: R_X86_64_RELATIVE,
@@ -463,7 +463,7 @@ pub fn plan_relocate_stage(
                     let req_base = object_base_exec(&parsed, &discovered.order, req_idx);
                     let value = rr_provider_value_exec(&parsed, &discovered.order, rr);
                     let write = RelocWrite {
-                        object_name: parsed[req_idx].input_name.clone(),
+                        object_name: clone_u8_vec(&parsed[req_idx].input_name),
                         write_addr: add_u64_or_zero_exec(req_base, rel.offset),
                         value,
                         reloc_type: rel_type,

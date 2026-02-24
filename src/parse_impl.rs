@@ -957,8 +957,8 @@ fn parse_object_with_code(input: LoaderObject) -> (out: Result<ParsedObject, Loa
 
     assert(e_type == ET_EXEC || e_type == ET_DYN);
     let parsed = ParsedObject {
-        input_name: input.name.clone(),
-        file_bytes: input.bytes.clone(),
+        input_name: clone_u8_vec(&input.name),
+        file_bytes: clone_u8_vec(&input.bytes),
         elf_type: e_type,
         entry: e_entry,
         phdrs,
@@ -988,7 +988,7 @@ fn parse_object_with_code(input: LoaderObject) -> (out: Result<ParsedObject, Loa
         fini_array,
     };
     proof {
-        assert(parsed.input_name == input.name);
+        assert(parsed.input_name@ == input.name@);
         assert(parsed.file_bytes@ == input.bytes@);
         assert(input.bytes@.len() >= ELF64_EHDR_SIZE);
         assert(has_elf_magic(input.bytes@));
@@ -1054,14 +1054,14 @@ pub fn parse_stage(input: LoaderInput) -> (out: Result<Vec<ParsedObject>, Loader
         decreases input.objects.len() - i,
     {
         let cur = LoaderObject {
-            name: input.objects[i].name.clone(),
-            bytes: input.objects[i].bytes.clone(),
+            name: clone_u8_vec(&input.objects[i].name),
+            bytes: clone_u8_vec(&input.objects[i].bytes),
         };
         let one = parse_object(cur);
         match one {
             Ok(obj) => {
                 proof {
-                    assert(cur.name == input.objects@[i as int].name);
+                    assert(cur.name@ == input.objects@[i as int].name@);
                     assert(cur.bytes@ == input.objects@[i as int].bytes@);
                     assert(parse_object_spec(input.objects@[i as int], obj));
                     assert forall|k: int| 0 <= k < i + 1 implies parse_object_spec(input.objects@[k],

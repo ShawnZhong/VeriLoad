@@ -87,7 +87,7 @@ pub open spec fn mmap_plan_for_segment(
     &&& 0 <= obj_idx < parsed.len()
     &&& 0 <= ph_idx < parsed[obj_idx].phdrs@.len()
     &&& ph.p_type == PT_LOAD
-    &&& plan.object_name == parsed[obj_idx].input_name
+    &&& plan.object_name@ == parsed[obj_idx].input_name@
     &&& plan.prot == prot_of_flags(ph.p_flags)
     &&& plan.start == rounded_seg_start(base_for_load_pos(parsed, order, obj_pos), ph.p_vaddr)
     &&& plan.bytes@.len() == rounded_seg_len(ph.p_vaddr, ph.p_memsz)
@@ -111,7 +111,7 @@ pub open spec fn plan_ranges_overlap(a: MmapPlan, b: MmapPlan) -> bool {
 }
 
 pub open spec fn same_plan_layout(a: MmapPlan, b: MmapPlan) -> bool {
-    &&& a.object_name == b.object_name
+    &&& a.object_name@ == b.object_name@
     &&& a.start == b.start
     &&& a.prot == b.prot
     &&& a.bytes@.len() == b.bytes@.len()

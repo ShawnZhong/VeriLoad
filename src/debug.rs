@@ -1,20 +1,24 @@
 use crate::types::LoaderOutput;
 
+fn render_name(bytes: &[u8]) -> String {
+    String::from_utf8_lossy(bytes).into_owned()
+}
+
 pub fn print_loader_plan(plan: &LoaderOutput) {
     println!("entry_pc=0x{:016x}", plan.entry_pc);
     println!("constructors={}", plan.constructors.len());
     for ctor in &plan.constructors {
-        println!("  ctor {} @ 0x{:016x}", ctor.object_name, ctor.pc);
+        println!("  ctor {} @ 0x{:016x}", render_name(&ctor.object_name), ctor.pc);
     }
     println!("destructors={}", plan.destructors.len());
     for dtor in &plan.destructors {
-        println!("  dtor {} @ 0x{:016x}", dtor.object_name, dtor.pc);
+        println!("  dtor {} @ 0x{:016x}", render_name(&dtor.object_name), dtor.pc);
     }
     println!("mmap_plans={}", plan.mmap_plans.len());
     for p in &plan.mmap_plans {
         println!(
             "  map {} start=0x{:016x} len={} prot={}",
-            p.object_name,
+            render_name(&p.object_name),
             p.start,
             p.bytes.len(),
             p.prot.render(),
@@ -24,7 +28,7 @@ pub fn print_loader_plan(plan: &LoaderOutput) {
     for w in &plan.reloc_writes {
         println!(
             "  reloc {} addr=0x{:016x} value=0x{:016x} type={}",
-            w.object_name,
+            render_name(&w.object_name),
             w.write_addr,
             w.value,
             w.reloc_type,
@@ -35,7 +39,7 @@ pub fn print_loader_plan(plan: &LoaderOutput) {
         println!(
             "  parsed[{}] name={} elf_type={} phdrs={} needed={} dynsyms={} relas={} jmprels={}",
             i,
-            obj.input_name,
+            render_name(&obj.input_name),
             obj.elf_type,
             obj.phdrs.len(),
             obj.needed_offsets.len(),

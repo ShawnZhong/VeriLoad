@@ -257,7 +257,7 @@ pub fn mmap_plan_stage(
                     let bytes = segment_mmap_bytes_exec(&parsed[obj_idx], ph);
                     let cand_len = bytes.len();
                     let cand = MmapPlan {
-                        object_name: parsed[obj_idx].input_name.clone(),
+                        object_name: clone_u8_vec(&parsed[obj_idx].input_name),
                         start: cand_start,
                         bytes,
                         prot: prot_of_flags_exec(ph.p_flags),
@@ -290,7 +290,7 @@ pub fn mmap_plan_stage(
                         proof {
                             assert(ci == old_plans.len());
                             let old_last = old_plans.len() as int;
-                            assert(mmap_plans@[old_last].object_name == parsed@[obj_idx as int].input_name);
+                            assert(mmap_plans@[old_last].object_name@ == parsed@[obj_idx as int].input_name@);
                             assert(mmap_plans@[old_last].prot == prot_of_flags(parsed@[obj_idx as int].phdrs@[pi as int].p_flags));
                             assert(mmap_plans@[old_last].start == cand_start);
                             assert(mmap_plans@[old_last].bytes@.len() == cand_len as nat);
@@ -338,7 +338,7 @@ pub fn mmap_plan_stage(
                                         assert(obj == discovered.order@[p] as int);
                                         assert(0 <= h < parsed@[obj].phdrs@.len());
                                         assert(parsed@[obj].phdrs@[h].p_type == PT_LOAD);
-                                        assert(mmap_plans@[k].object_name == parsed@[obj].input_name);
+                                        assert(mmap_plans@[k].object_name@ == parsed@[obj].input_name@);
                                         assert(mmap_plans@[k].prot == prot_of_flags(parsed@[obj].phdrs@[h].p_flags));
                                         assert(mmap_plans@[k].start == rounded_seg_start(
                                             base_for_load_pos(parsed@, discovered.order@, p),

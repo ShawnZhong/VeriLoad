@@ -124,7 +124,7 @@ pub fn final_stage(plan: RelocateApplyOutput) -> (out: Result<LoaderOutput, Load
             decreases parsed@[obj_idx as int].init_array@.len() - j,
         {
             let call = InitCall {
-                object_name: parsed[obj_idx].input_name.clone(),
+                object_name: clone_u8_vec(&parsed[obj_idx].input_name),
                 pc: add_u64_or_zero_exec(base, parsed[obj_idx].init_array[j]),
             };
             let ghost old_calls = constructors@;
@@ -192,7 +192,7 @@ pub fn final_stage(plan: RelocateApplyOutput) -> (out: Result<LoaderOutput, Load
         {
             let idx = j - 1;
             let call = TermCall {
-                object_name: parsed[obj_idx].input_name.clone(),
+                object_name: clone_u8_vec(&parsed[obj_idx].input_name),
                 pc: add_u64_or_zero_exec(base, parsed[obj_idx].fini_array[idx]),
             };
             let ghost old_calls = destructors@;

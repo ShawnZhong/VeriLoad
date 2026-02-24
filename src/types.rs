@@ -4,7 +4,7 @@ verus! {
 
 #[derive(Clone, Debug)]
 pub struct LoaderObject {
-    pub name: String,
+    pub name: Vec<u8>,
     pub bytes: Vec<u8>,
 }
 
@@ -15,6 +15,15 @@ pub struct LoaderInput {
 
 #[derive(Clone, Debug)]
 pub struct LoaderError {}
+
+#[verifier::external_body]
+pub fn clone_u8_vec(v: &Vec<u8>) -> (out: Vec<u8>)
+    ensures
+        out == *v,
+        out@ == v@,
+{
+    v.clone()
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct ProtFlags {
@@ -36,7 +45,7 @@ impl ProtFlags {
 
 #[derive(Clone, Debug)]
 pub struct MmapPlan {
-    pub object_name: String,
+    pub object_name: Vec<u8>,
     pub start: u64,
     pub bytes: Vec<u8>,
     pub prot: ProtFlags,
@@ -44,19 +53,19 @@ pub struct MmapPlan {
 
 #[derive(Clone, Debug)]
 pub struct InitCall {
-    pub object_name: String,
+    pub object_name: Vec<u8>,
     pub pc: u64,
 }
 
 #[derive(Clone, Debug)]
 pub struct TermCall {
-    pub object_name: String,
+    pub object_name: Vec<u8>,
     pub pc: u64,
 }
 
 #[derive(Clone, Debug)]
 pub struct RelocWrite {
-    pub object_name: String,
+    pub object_name: Vec<u8>,
     pub write_addr: u64,
     pub value: u64,
     pub reloc_type: u32,
@@ -162,7 +171,7 @@ impl RelaEntry {
 
 #[derive(Clone, Debug)]
 pub struct ParsedObject {
-    pub input_name: String,
+    pub input_name: Vec<u8>,
     pub file_bytes: Vec<u8>,
     pub elf_type: u16,
     pub entry: u64,

@@ -29,7 +29,7 @@ pub open spec fn has_supported_ident(bytes: Seq<u8>) -> bool {
 
 pub open spec fn parse_object_spec(input: LoaderObject, parsed: ParsedObject) -> bool {
     &&& input.bytes@.len() >= ELF64_EHDR_SIZE
-    &&& parsed.input_name == input.name
+    &&& parsed.input_name@ == input.name@
     &&& parsed.file_bytes@ == input.bytes@
     &&& has_elf_magic(input.bytes@)
     &&& has_supported_ident(input.bytes@)
