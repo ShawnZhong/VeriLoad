@@ -22,15 +22,23 @@ pub open spec fn cstr_eq_from(a: Seq<u8>, ai: nat, b: Seq<u8>, bi: nat) -> bool
 pub open spec fn dep_edge(parsed: Seq<ParsedObject>, from: int, to: int) -> bool {
     &&& 0 <= from < parsed.len()
     &&& 0 <= to < parsed.len()
-    &&& match parsed[to].soname_offset {
-        Some(soname_off) => exists|k: int|
-            0 <= k < parsed[from].needed_offsets@.len() && cstr_eq_from(
-                parsed[from].dynstr@,
-                parsed[from].needed_offsets@[k] as nat,
-                parsed[to].dynstr@,
-                soname_off as nat,
-            ),
-        None => false,
+    &&& exists|k: int|
+        0 <= k < parsed[from].needed_offsets@.len() && dep_target_matches(
+            parsed,
+            from,
+            to,
+            parsed[from].needed_offsets@[k] as nat,
+        )
+}
+
+pub open spec fn dep_target_matches(parsed: Seq<ParsedObject>, from: int, to: int, need_off: nat) -> bool
+    recommends
+        0 <= from < parsed.len(),
+        0 <= to < parsed.len(),
+{
+    match parsed[to].soname_offset {
+        Some(soname_off) => cstr_eq_from(parsed[from].dynstr@, need_off, parsed[to].dynstr@, soname_off as nat),
+        None => cstr_eq_from(parsed[from].dynstr@, need_off, parsed[to].input_name@.push(0u8), 0),
     }
 }
 

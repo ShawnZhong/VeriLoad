@@ -49,15 +49,6 @@ fn contains_index(order: &Vec<usize>, idx: usize) -> (r: bool)
     false
 }
 
-fn soname_offset_of(parsed: &Vec<ParsedObject>, to: usize) -> (opt: Option<u32>)
-    requires
-        to < parsed@.len(),
-    ensures
-        opt == parsed@[to as int].soname_offset,
-{
-    parsed[to].soname_offset
-}
-
 fn depends_on(parsed: &Vec<ParsedObject>, from: usize, to: usize) -> (r: bool)
     requires
         from < parsed@.len(),
@@ -70,14 +61,12 @@ fn depends_on(parsed: &Vec<ParsedObject>, from: usize, to: usize) -> (r: bool)
         assert(to < parsed.len());
     }
 
-    let soname_opt = soname_offset_of(parsed, to);
+    let soname_opt = parsed[to].soname_offset;
+    let mut input_name_cstr: Vec<u8> = Vec::new();
     if soname_opt.is_none() {
-        proof {
-            assert(!dep_edge(parsed@, from as int, to as int));
-        }
-        return false;
+        input_name_cstr = clone_u8_vec(&parsed[to].input_name);
+        input_name_cstr.push(0u8);
     }
-    let soname_off = soname_opt.unwrap();
 
     let mut k: usize = 0;
     while k < parsed[from].needed_offsets.len()
@@ -85,60 +74,81 @@ fn depends_on(parsed: &Vec<ParsedObject>, from: usize, to: usize) -> (r: bool)
             from < parsed.len(),
             to < parsed.len(),
             soname_opt == parsed@[to as int].soname_offset,
-            soname_opt == Some(soname_off),
+            soname_opt.is_none() ==> input_name_cstr@ == parsed@[to as int].input_name@.push(0u8),
             k <= parsed@[from as int].needed_offsets@.len(),
             forall|j: int|
-                0 <= j < k ==> !cstr_eq_from(
-                    parsed@[from as int].dynstr@,
+                0 <= j < k ==> !dep_target_matches(
+                    parsed@,
+                    from as int,
+                    to as int,
                     parsed@[from as int].needed_offsets@[j] as nat,
-                    parsed@[to as int].dynstr@,
-                    soname_off as nat,
                 ),
         decreases parsed@[from as int].needed_offsets@.len() - k,
     {
         let need_off = parsed[from].needed_offsets[k];
-        let eq = cstr_eq_from_exec(
-            &parsed[from].dynstr,
-            need_off as usize,
-            &parsed[to].dynstr,
-            soname_off as usize,
-        );
-        if eq {
-            proof {
-                assert(cstr_eq_from(
-                    parsed@[from as int].dynstr@,
-                    need_off as nat,
-                    parsed@[to as int].dynstr@,
-                    soname_off as nat,
-                ));
-                assert(soname_opt == Some(soname_off));
-                assert(parsed@[to as int].soname_offset == soname_opt);
-                assert(parsed@[to as int].soname_offset == Some(soname_off));
-                let k_int: int = k as int;
-                assert(0 <= k_int && k_int < parsed@[from as int].needed_offsets@.len());
-                assert(parsed@[from as int].needed_offsets@[k as int] == need_off);
-                assert(exists|j: int|
-                    0 <= j < parsed@[from as int].needed_offsets@.len() && cstr_eq_from(
-                        parsed@[from as int].dynstr@,
-                        parsed@[from as int].needed_offsets@[j] as nat,
-                        parsed@[to as int].dynstr@,
-                        soname_off as nat,
-                    )) by {
-                    let j = k as int;
-                    assert(0 <= j < parsed@[from as int].needed_offsets@.len());
-                    assert(parsed@[from as int].needed_offsets@[j] as nat == need_off as nat);
-                };
-                assert(dep_edge(parsed@, from as int, to as int));
+        if soname_opt.is_some() {
+            let soname_off = soname_opt.unwrap();
+            let eq = cstr_eq_from_exec(
+                &parsed[from].dynstr,
+                need_off as usize,
+                &parsed[to].dynstr,
+                soname_off as usize,
+            );
+            if eq {
+                proof {
+                    assert(dep_target_matches(parsed@, from as int, to as int, need_off as nat));
+                    let k_int: int = k as int;
+                    assert(0 <= k_int && k_int < parsed@[from as int].needed_offsets@.len());
+                    assert(parsed@[from as int].needed_offsets@[k_int] == need_off);
+                    assert(exists|j: int|
+                        0 <= j < parsed@[from as int].needed_offsets@.len() && dep_target_matches(
+                            parsed@,
+                            from as int,
+                            to as int,
+                            parsed@[from as int].needed_offsets@[j] as nat,
+                        )) by {
+                        let j = k as int;
+                        assert(0 <= j < parsed@[from as int].needed_offsets@.len());
+                        assert(parsed@[from as int].needed_offsets@[j] as nat == need_off as nat);
+                    };
+                    assert(dep_edge(parsed@, from as int, to as int));
+                }
+                return true;
             }
-            return true;
-        }
-        proof {
-            assert(!cstr_eq_from(
-                parsed@[from as int].dynstr@,
-                need_off as nat,
-                parsed@[to as int].dynstr@,
-                soname_off as nat,
-            ));
+            proof {
+                assert(!dep_target_matches(parsed@, from as int, to as int, need_off as nat));
+            }
+        } else {
+            let eq = cstr_eq_from_exec(
+                &parsed[from].dynstr,
+                need_off as usize,
+                &input_name_cstr,
+                0,
+            );
+            if eq {
+                proof {
+                    assert(dep_target_matches(parsed@, from as int, to as int, need_off as nat));
+                    let k_int: int = k as int;
+                    assert(0 <= k_int && k_int < parsed@[from as int].needed_offsets@.len());
+                    assert(parsed@[from as int].needed_offsets@[k_int] == need_off);
+                    assert(exists|j: int|
+                        0 <= j < parsed@[from as int].needed_offsets@.len() && dep_target_matches(
+                            parsed@,
+                            from as int,
+                            to as int,
+                            parsed@[from as int].needed_offsets@[j] as nat,
+                        )) by {
+                        let j = k as int;
+                        assert(0 <= j < parsed@[from as int].needed_offsets@.len());
+                        assert(parsed@[from as int].needed_offsets@[j] as nat == need_off as nat);
+                    };
+                    assert(dep_edge(parsed@, from as int, to as int));
+                }
+                return true;
+            }
+            proof {
+                assert(!dep_target_matches(parsed@, from as int, to as int, need_off as nat));
+            }
         }
         k = k + 1;
     }
@@ -147,27 +157,19 @@ fn depends_on(parsed: &Vec<ParsedObject>, from: usize, to: usize) -> (r: bool)
         assert(k == parsed@[from as int].needed_offsets@.len());
         assert(!dep_edge(parsed@, from as int, to as int)) by {
             if dep_edge(parsed@, from as int, to as int) {
-                assert(parsed@[to as int].soname_offset == Some(soname_off));
-                assert(exists|j: int|
-                    0 <= j < parsed@[from as int].needed_offsets@.len() && cstr_eq_from(
-                        parsed@[from as int].dynstr@,
-                        parsed@[from as int].needed_offsets@[j] as nat,
-                        parsed@[to as int].dynstr@,
-                        soname_off as nat,
-                    ));
                 let j = choose|j: int|
-                    0 <= j < parsed@[from as int].needed_offsets@.len() && cstr_eq_from(
-                        parsed@[from as int].dynstr@,
+                    0 <= j < parsed@[from as int].needed_offsets@.len() && dep_target_matches(
+                        parsed@,
+                        from as int,
+                        to as int,
                         parsed@[from as int].needed_offsets@[j] as nat,
-                        parsed@[to as int].dynstr@,
-                        soname_off as nat,
                     );
                 assert(j < k as int);
-                assert(!cstr_eq_from(
-                    parsed@[from as int].dynstr@,
+                assert(!dep_target_matches(
+                    parsed@,
+                    from as int,
+                    to as int,
                     parsed@[from as int].needed_offsets@[j] as nat,
-                    parsed@[to as int].dynstr@,
-                    soname_off as nat,
                 ));
                 assert(false);
             }
@@ -180,8 +182,7 @@ fn has_needed_match(parsed: &Vec<ParsedObject>, from: usize, need_off: u32) -> (
     if from >= parsed.len() {
         return false;
     }
-    assert(from < parsed.len());
-    let from_dynstr = parsed[from].dynstr.clone();
+
     let mut to: usize = 0;
     while to < parsed.len()
         invariant
@@ -193,10 +194,22 @@ fn has_needed_match(parsed: &Vec<ParsedObject>, from: usize, need_off: u32) -> (
         if soname_opt.is_some() {
             let soname_off = soname_opt.unwrap();
             let eq = cstr_eq_from_exec(
-                &from_dynstr,
+                &parsed[from].dynstr,
                 need_off as usize,
                 &parsed[to].dynstr,
                 soname_off as usize,
+            );
+            if eq {
+                return true;
+            }
+        } else {
+            let mut input_name_cstr = clone_u8_vec(&parsed[to].input_name);
+            input_name_cstr.push(0u8);
+            let eq = cstr_eq_from_exec(
+                &parsed[from].dynstr,
+                need_off as usize,
+                &input_name_cstr,
+                0,
             );
             if eq {
                 return true;
