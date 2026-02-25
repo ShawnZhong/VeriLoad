@@ -15,8 +15,3 @@ __attribute__((constructor))
 static void libbar_ctor(void) {
     printf("[libbar] ctor\n");
 }
-
-__attribute__((destructor))
-static void libbar_dtor(void) {
-    printf("[libbar] dtor\n");
-}

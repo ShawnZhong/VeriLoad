@@ -15,8 +15,3 @@ __attribute__((constructor))
 static void libbaz_ctor(void) {
     printf("[libbaz] ctor\n");
 }
-
-__attribute__((destructor))
-static void libbaz_dtor(void) {
-    printf("[libbaz] dtor\n");
-}

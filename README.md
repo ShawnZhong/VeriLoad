@@ -18,7 +18,7 @@ See [`design.md`](design.md) for the full design and refinement details.
 ```bash
 git clone --recursive https://github.com/ShawnZhong/VeriLoad.git
 cd VeriLoad
-./install_verus.sh
+./install_deps.sh
 make
 ./run.sh
 ```
@@ -42,10 +42,6 @@ Expected output:
 [libbar] step=1
 [libbaz] step=0
 [main] exit
-[main] dtor
-[libfoo] dtor
-[libbar] dtor
-[libbaz] dtor
 ```
 
 
