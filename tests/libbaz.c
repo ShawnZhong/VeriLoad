@@ -1,4 +1,4 @@
-#include "nolibc.h"
+#include <stdio.h>
 #include "libbaz.h"
 #include "libbar.h"
 

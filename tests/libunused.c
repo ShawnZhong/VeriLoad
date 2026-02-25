@@ -1,4 +1,4 @@
-#include "nolibc.h"
+#include <stdio.h>
 
 void libunused_print(void) {
     printf("[libunused] function\n");

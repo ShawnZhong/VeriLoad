@@ -1,4 +1,4 @@
-#include "nolibc.h"
+#include <stdio.h>
 #include "libfoo.h"
 
 void libfoo_print(void) {
