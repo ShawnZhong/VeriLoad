@@ -50,6 +50,9 @@ pub const DT_INIT_ARRAY: i64 = 25;
 pub const DT_FINI_ARRAY: i64 = 26;
 pub const DT_INIT_ARRAYSZ: i64 = 27;
 pub const DT_FINI_ARRAYSZ: i64 = 28;
+pub const DT_RELRSZ: i64 = 35;
+pub const DT_RELR: i64 = 36;
+pub const DT_RELRENT: i64 = 37;
 
 pub const DT_RELA_TAG: u64 = 7;
 pub const DT_RELACOUNT: i64 = 0x6fff_fff9;
