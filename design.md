@@ -28,6 +28,8 @@ Current code path targets:
   - `R_X86_64_RELATIVE`
   - `R_X86_64_JUMP_SLOT`
   - `R_X86_64_GLOB_DAT`
+  - `R_X86_64_COPY`
+  - `R_X86_64_64`
 
 The implementation rejects malformed or unsupported inputs with `LoaderError` (fail fast).
 
@@ -77,7 +79,7 @@ Spec (`src/resolve_spec.rs`):
 - provider, if present, must be a symbol-name match with a defined provider symbol
 - `None` provider means no matching provider exists in scope
 
-Implementation resolves by scanning objects in discovered order and symbols in symbol-table order, returning the first match found. For required symbol relocations (`JUMP_SLOT`/`GLOB_DAT` with non-weak-undefined requester symbol), missing provider is an error.
+Implementation resolves by scanning objects in discovered order and symbols in symbol-table order, returning the first match found. For required symbol relocations (`JUMP_SLOT`/`GLOB_DAT`/`R_X86_64_64` with non-weak-undefined requester symbol, and all `COPY` relocations), missing provider is an error.
 
 ### Stage 4: Mmap planning (`mmap_plan_impl::mmap_plan_stage`)
 Spec (`src/mmap_plan_spec.rs`):
@@ -96,7 +98,7 @@ Spec (`src/relocate_plan_spec.rs`):
 
 Planned writes include:
 - all `RELATIVE` writes from `relas` and `jmprels`
-- symbol-based writes for resolved `JUMP_SLOT` and `GLOB_DAT`
+- symbol-based writes for resolved `JUMP_SLOT`, `GLOB_DAT`, `R_X86_64_64`, and `COPY`
 
 ### Stage 6: Relocation-write apply (`relocate_apply_impl::relocate_apply_stage`)
 Spec (`src/relocate_apply_spec.rs`):

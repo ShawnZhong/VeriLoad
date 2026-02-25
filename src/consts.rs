@@ -57,6 +57,8 @@ pub const DT_RELACOUNT: i64 = 0x6fff_fff9;
 pub const R_X86_64_GLOB_DAT: u32 = 6;
 pub const R_X86_64_JUMP_SLOT: u32 = 7;
 pub const R_X86_64_RELATIVE: u32 = 8;
+pub const R_X86_64_COPY: u32 = 5;
+pub const R_X86_64_64: u32 = 1;
 
 pub const ELF64_EHDR_SIZE: usize = 64;
 pub const ELF64_PHDR_SIZE: usize = 56;

@@ -110,13 +110,18 @@ pub open spec fn symbol_write_for_rr(
 ) -> RelocWrite
     recommends
         0 <= (rr.requester as int) && (rr.requester as int) < parsed.len(),
-        rela_type_of(rela) == R_X86_64_JUMP_SLOT || rela_type_of(rela) == R_X86_64_GLOB_DAT,
+        rela_type_of(rela) == R_X86_64_JUMP_SLOT || rela_type_of(rela) == R_X86_64_GLOB_DAT
+            || rela_type_of(rela) == R_X86_64_COPY || rela_type_of(rela) == R_X86_64_64,
 {
     let req = rr.requester as int;
     RelocWrite {
         object_name: parsed[req].input_name,
         write_addr: add_u64_or_zero(object_base(parsed, order, req), rela.offset),
-        value: rr_provider_value(parsed, order, rr),
+        value: if rela_type_of(rela) == R_X86_64_64 {
+            add_i64_or_zero(rr_provider_value(parsed, order, rr), rela.addend)
+        } else {
+            rr_provider_value(parsed, order, rr)
+        },
         reloc_type: rela_type_of(rela),
     }
 }
@@ -217,7 +222,14 @@ pub open spec fn expected_symbol_writes_from(
             Some(rel) => {
                 let rel_type = rela_type_of(rel);
                 let req = rr.requester as int;
-                if (rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT) && 0 <= req < parsed.len() {
+                if (rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT
+                    || rel_type == R_X86_64_64)
+                    && 0 <= req < parsed.len()
+                {
+                    seq![symbol_write_for_rr(parsed, order, rr, rel)] + tail
+                } else if rel_type == R_X86_64_COPY
+                    && 0 <= req < parsed.len()
+                {
                     seq![symbol_write_for_rr(parsed, order, rr, rel)] + tail
                 } else {
                     tail

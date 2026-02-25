@@ -134,7 +134,12 @@ fn symbol_is_weak_undef(sym: &DynSymbol) -> bool {
 }
 
 fn symbol_relocation_requires_provider(rel_type: u32, sym: &DynSymbol) -> bool {
-    (rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT) && !symbol_is_weak_undef(sym)
+    if rel_type == R_X86_64_COPY {
+        true
+    } else {
+        (rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT || rel_type
+            == R_X86_64_64) && !symbol_is_weak_undef(sym)
+    }
 }
 
 pub fn plan_relocate_stage(
@@ -436,7 +441,9 @@ pub fn plan_relocate_stage(
         match rel_opt {
             Some(rel) => {
                 let rel_type = rela_type_exec(&rel);
-                if rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT {
+                if rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT
+                    || rel_type == R_X86_64_COPY || rel_type == R_X86_64_64
+                {
                     let req_idx = rr.requester;
                     if req_idx >= parsed.len() {
                         return Err(LoaderError {});
@@ -461,7 +468,12 @@ pub fn plan_relocate_stage(
                         }
                     }
                     let req_base = object_base_exec(&parsed, &discovered.order, req_idx);
-                    let value = rr_provider_value_exec(&parsed, &discovered.order, rr);
+                    let provider_value = rr_provider_value_exec(&parsed, &discovered.order, rr);
+                    let value = if rel_type == R_X86_64_64 {
+                        add_i64_or_zero_exec(provider_value, rel.addend)
+                    } else {
+                        provider_value
+                    };
                     let write = RelocWrite {
                         object_name: clone_u8_vec(&parsed[req_idx].input_name),
                         write_addr: add_u64_or_zero_exec(req_base, rel.offset),

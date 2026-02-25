@@ -197,7 +197,12 @@ fn symbol_is_weak_undef(sym: &DynSymbol) -> bool {
 }
 
 fn symbol_relocation_requires_provider(rel_type: u32, sym: &DynSymbol) -> bool {
-    (rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT) && !symbol_is_weak_undef(sym)
+    if rel_type == R_X86_64_COPY {
+        true
+    } else {
+        (rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT || rel_type
+            == R_X86_64_64) && !symbol_is_weak_undef(sym)
+    }
 }
 
 pub fn resolve_stage_ref(
@@ -259,7 +264,9 @@ pub fn resolve_stage_ref(
                 let rel = &parsed[obj_idx].relas[ri];
                 let rel_type = rel.reloc_type();
                 let sym_idx = rel.sym_index();
-                if rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT {
+                if rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT
+                    || rel_type == R_X86_64_COPY || rel_type == R_X86_64_64
+                {
                     if sym_idx == 0 || sym_idx >= parsed[obj_idx].dynsyms.len() {
                         return Err(LoaderError {});
                     }
@@ -351,7 +358,9 @@ pub fn resolve_stage_ref(
                 let rel = &parsed[obj_idx].jmprels[ji];
                 let rel_type = rel.reloc_type();
                 let sym_idx = rel.sym_index();
-                if rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT {
+                if rel_type == R_X86_64_JUMP_SLOT || rel_type == R_X86_64_GLOB_DAT
+                    || rel_type == R_X86_64_COPY || rel_type == R_X86_64_64
+                {
                     if sym_idx == 0 || sym_idx >= parsed[obj_idx].dynsyms.len() {
                         return Err(LoaderError {});
                     }

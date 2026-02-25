@@ -75,12 +75,7 @@ pub fn plan_loader(input: LoaderInput) -> (out: Result<LoaderOutput, LoaderError
 fn read_loader_input(paths: &[String]) -> Result<LoaderInput, LoaderError> {
     let mut objects: Vec<LoaderObject> = Vec::new();
     for path in paths {
-        let bytes = match std::fs::read(path) {
-            Ok(v) => v,
-            Err(_) => {
-                return Err(LoaderError {});
-            }
-        };
+        let bytes = std::fs::read(path).unwrap_or_else(|_| panic!("failed to read file: {}", path));
 
         let name = std::path::Path::new(path)
             .file_name()

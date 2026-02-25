@@ -349,7 +349,8 @@ fn parse_rela_table(
         let info = info_r.unwrap();
         let reloc_type = (info & 0xffff_ffff) as u32;
         if reloc_type != R_X86_64_RELATIVE && reloc_type != R_X86_64_JUMP_SLOT
-            && reloc_type != R_X86_64_GLOB_DAT
+            && reloc_type != R_X86_64_GLOB_DAT && reloc_type != R_X86_64_COPY
+            && reloc_type != R_X86_64_64
         {
             return Err(LoaderError {});
         }

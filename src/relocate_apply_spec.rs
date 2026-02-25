@@ -89,6 +89,8 @@ pub open spec fn write_matches_resolved_symbol_reloc(
 ) -> bool {
     write_matches_r_x86_64_jump_slot_from_rr(parsed, order, rr, w)
         || write_matches_r_x86_64_glob_dat_from_rr(parsed, order, rr, w)
+        || write_matches_r_x86_64_64_from_rr(parsed, order, rr, w)
+        || write_matches_r_x86_64_copy_from_rr(parsed, order, rr, w)
 }
 
 pub open spec fn write_matches_r_x86_64_jump_slot_from_rr(
@@ -129,6 +131,43 @@ pub open spec fn write_matches_r_x86_64_glob_dat_from_rr(
     }
 }
 
+pub open spec fn write_matches_r_x86_64_64_from_rr(
+    parsed: Seq<ParsedObject>,
+    order: Seq<usize>,
+    rr: ResolvedReloc,
+    w: RelocWrite,
+) -> bool {
+    let req = rr.requester as int;
+    &&& 0 <= req < parsed.len()
+    &&& match rr_reloc_entry(parsed, rr) {
+        Some(rel) => {
+            &&& rela_type_of(rel) == R_X86_64_64
+            &&& w.write_addr == add_u64_or_zero(object_base(parsed, order, req), rel.offset)
+            &&& w.value == add_i64_or_zero(rr_provider_value(parsed, order, rr), rel.addend)
+            &&& w.reloc_type == R_X86_64_64
+        }
+        None => false,
+    }
+}
+
+pub open spec fn write_matches_r_x86_64_copy_from_rr(
+    parsed: Seq<ParsedObject>,
+    order: Seq<usize>,
+    rr: ResolvedReloc,
+    w: RelocWrite,
+) -> bool {
+    let req = rr.requester as int;
+    &&& 0 <= req < parsed.len()
+    &&& match rr_reloc_entry(parsed, rr) {
+        Some(rel) => {
+            &&& rela_type_of(rel) == R_X86_64_COPY
+            &&& w.reloc_type == R_X86_64_COPY
+            &&& w.write_addr == add_u64_or_zero(object_base(parsed, order, req), rel.offset)
+        }
+        None => false,
+    }
+}
+
 pub open spec fn write_matches_supported_relocation(
     parsed: Seq<ParsedObject>,
     order: Seq<usize>,
@@ -145,6 +184,20 @@ pub open spec fn write_matches_supported_relocation(
             )
         || exists|i: int|
             0 <= i < resolved.resolved_relocs@.len() && write_matches_r_x86_64_glob_dat_from_rr(
+                parsed,
+                order,
+                resolved.resolved_relocs@[i],
+                w,
+            )
+        || exists|i: int|
+            0 <= i < resolved.resolved_relocs@.len() && write_matches_r_x86_64_64_from_rr(
+                parsed,
+                order,
+                resolved.resolved_relocs@[i],
+                w,
+            )
+        || exists|i: int|
+            0 <= i < resolved.resolved_relocs@.len() && write_matches_r_x86_64_copy_from_rr(
                 parsed,
                 order,
                 resolved.resolved_relocs@[i],

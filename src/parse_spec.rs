@@ -6,6 +6,7 @@ verus! {
 
 pub open spec fn supported_reloc_type(t: u32) -> bool {
     t == R_X86_64_RELATIVE || t == R_X86_64_JUMP_SLOT || t == R_X86_64_GLOB_DAT
+        || t == R_X86_64_COPY || t == R_X86_64_64
 }
 
 pub open spec fn rela_type(r: RelaEntry) -> u32 {
