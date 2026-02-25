@@ -7,11 +7,6 @@ static void main_ctor(void) {
     printf("[main] ctor\n");
 }
 
-__attribute__((destructor))
-static void main_dtor(void) {
-    printf("[main] dtor\n");
-}
-
 int main(void) {
     printf("[main] entry\n");
     libfoo_print();

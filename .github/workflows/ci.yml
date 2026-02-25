@@ -2,6 +2,8 @@ name: ci
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -12,11 +14,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Init nolibc submodule
-        run: git submodule update --init --depth 1 third_party/nolibc
-
-      - name: Install Verus
-        run: ./install_verus.sh
+      - name: Install dependencies
+        run: ./install_deps.sh
 
       - name: Build
         run: make
