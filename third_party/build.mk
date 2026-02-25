@@ -14,7 +14,8 @@ $(BUILD_DIR)/libc.so: $(MUSL_PATCH) | $(BUILD_DIR)
 		echo "failed to apply $(MUSL_PATCH)" >&2; \
 		exit 1; \
 	fi
-	cd $(MUSL_DIR) && ./configure
+	cd $(MUSL_DIR) && ./configure --prefix=$(abspath $(BUILD_DIR))
 	$(MAKE) -C $(MUSL_DIR)
+	$(MAKE) -C $(MUSL_DIR) install
 	cp $(MUSL_DIR)/lib/libc.so $(BUILD_DIR)/libc.musl-x86_64.so.1
 	ln -sfn libc.musl-x86_64.so.1 $(BUILD_DIR)/libc.so

@@ -23,11 +23,11 @@ jobs:
       - name: Build and verify VeriLoad
         run: make compile
 
-      - name: Build tests
-        run: make tests
-
       - name: Build musl
         run: make musl
+
+      - name: Build tests
+        run: make tests
 
       - name: Run
         run: ./run.sh

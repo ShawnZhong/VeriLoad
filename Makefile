@@ -1,7 +1,7 @@
 BUILD_DIR := build
 
 .PHONY: all
-all: compile tests musl
+all: compile musl tests
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
