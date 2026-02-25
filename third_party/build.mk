@@ -2,7 +2,7 @@ MUSL_DIR := third_party/musl
 MUSL_PATCH := $(abspath third_party/musl.patch)
 
 .PHONY: musl
-musl: $(BUILD_DIR)/lib/libc.so
+musl: $(BUILD_DIR)/lib/libc.so $(BUILD_DIR)/libc.so $(BUILD_DIR)/libc.musl-x86_64.so.1
 
 $(BUILD_DIR)/lib/libc.so: $(MUSL_PATCH) | $(BUILD_DIR)
 	@set -eu; \
@@ -17,3 +17,9 @@ $(BUILD_DIR)/lib/libc.so: $(MUSL_PATCH) | $(BUILD_DIR)
 	cd $(MUSL_DIR) && ./configure --prefix=$(abspath $(BUILD_DIR))
 	$(MAKE) -C $(MUSL_DIR)
 	$(MAKE) -C $(MUSL_DIR) install
+
+$(BUILD_DIR)/libc.so: $(BUILD_DIR)/lib/libc.so | $(BUILD_DIR)
+	ln -sfn lib/libc.so $@
+
+$(BUILD_DIR)/libc.musl-x86_64.so.1: $(BUILD_DIR)/lib/libc.so | $(BUILD_DIR)
+	ln -sfn lib/libc.so $@
