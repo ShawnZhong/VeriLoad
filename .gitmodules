@@ -4,9 +4,6 @@
 [submodule "musl"]
 	path = third_party/musl
 	url = https://github.com/kraj/musl.git
-[submodule "nolibc"]
-	path = third_party/nolibc
-	url = https://github.com/wtarreau/nolibc.git
 [submodule "third_party/gABI"]
 	path = third_party/gABI
 	url = https://github.com/xinuos/gabi.git
