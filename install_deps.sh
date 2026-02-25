@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo apt-get update
-sudo apt-get install -y musl-tools
-
 VERUS_VERSION="0.2026.02.15.61aa1bf"
 RUST_TOOLCHAIN="1.93.0-x86_64-unknown-linux-gnu"
 ARCHIVE="verus-${VERUS_VERSION}-x86-linux.zip"

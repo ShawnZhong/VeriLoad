@@ -94,7 +94,25 @@ fn call_destructor(pc: u64) {
     f();
 }
 
-fn alloc_initial_stack() -> Result<*mut usize, LoaderError> {
+fn alloc_initial_stack(plan: &LoaderOutput) -> Result<*mut usize, LoaderError> {
+    let mut argv0 = if let Some(main_obj) = plan.parsed.first() {
+        main_obj.input_name.clone()
+    } else {
+        b"program".to_vec()
+    };
+    if argv0.is_empty() || argv0[0] == 0 {
+        argv0 = b"program".to_vec();
+    }
+    if argv0.last().copied() != Some(0) {
+        argv0.push(0);
+    }
+
+    let stack_words = 7usize;
+    let stack_table_bytes = stack_words * std::mem::size_of::<usize>();
+    if argv0.len() + stack_table_bytes > STACK_SIZE {
+        return Err(LoaderError {});
+    }
+
     let mapped = unsafe {
         mmap(
             ptr::null_mut(),
@@ -110,51 +128,52 @@ fn alloc_initial_stack() -> Result<*mut usize, LoaderError> {
     }
 
     let top = (mapped as usize + STACK_SIZE) & !0xfusize;
-    let sp = unsafe { (top as *mut usize).sub(5) };
+    let argv0_addr = top - argv0.len();
+    let table_top = argv0_addr & !0xfusize;
+    let sp = unsafe { (table_top as *mut usize).sub(stack_words) };
 
     unsafe {
-        // argc
-        ptr::write(sp.add(0), 0);
-        // argv[0] = NULL
-        ptr::write(sp.add(1), 0);
-        // envp[0] = NULL
+        ptr::copy_nonoverlapping(argv0.as_ptr(), argv0_addr as *mut u8, argv0.len());
+        // argc = 1
+        ptr::write(sp.add(0), 1);
+        // argv[0]
+        ptr::write(sp.add(1), argv0_addr);
+        // argv[1] = NULL
         ptr::write(sp.add(2), 0);
-        // auxv terminator: (AT_NULL, 0)
+        // envp[0] = NULL
         ptr::write(sp.add(3), 0);
+        // auxv: (AT_NULL, 0)
         ptr::write(sp.add(4), 0);
+        ptr::write(sp.add(5), 0);
+        // Keep rsp 16-byte alignment expectation used by startup code.
+        ptr::write(sp.add(6), 0);
     }
 
     Ok(sp)
-}
-
-#[cfg(target_arch = "x86_64")]
-unsafe fn jump_to_entry(entry_pc: u64, stack_ptr: *mut usize) -> ! {
-    asm!(
-        "mov rsp, {stack}",
-        "xor rbp, rbp",
-        "jmp {entry}",
-        stack = in(reg) stack_ptr,
-        entry = in(reg) (entry_pc as usize),
-        options(noreturn)
-    );
-}
-
-#[cfg(not(target_arch = "x86_64"))]
-unsafe fn jump_to_entry(_entry_pc: u64, _stack_ptr: *mut usize) -> ! {
-    std::process::abort()
 }
 
 pub fn run_runtime(plan: &LoaderOutput) -> Result<(), LoaderError> {
     for m in &plan.mmap_plans {
         map_segment(m)?;
     }
+
     for m in &plan.mmap_plans {
         protect_segment(m)?;
     }
+
+    let stack_ptr = alloc_initial_stack(plan)?;
     for c in &plan.constructors {
         call_constructor(c.pc);
     }
 
-    let sp = alloc_initial_stack()?;
-    unsafe { jump_to_entry(plan.entry_pc, sp) };
+    unsafe {
+        asm!(
+            "mov rsp, {stack}",
+            "xor rbp, rbp",
+            "jmp {entry}",
+            stack = in(reg) stack_ptr,
+            entry = in(reg) (plan.entry_pc as usize),
+            options(noreturn)
+        );
+    }
 }

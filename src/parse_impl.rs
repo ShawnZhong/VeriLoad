@@ -158,6 +158,9 @@ struct DynamicScan {
     jmprel: Option<u64>,
     pltrelsz: Option<u64>,
     pltrel: Option<u64>,
+    relr: Option<u64>,
+    relrsz: Option<u64>,
+    relrent: Option<u64>,
     init_array: Option<u64>,
     init_arraysz: Option<u64>,
     fini_array: Option<u64>,
@@ -178,6 +181,9 @@ fn empty_dynamic_scan() -> DynamicScan {
         jmprel: None,
         pltrelsz: None,
         pltrel: None,
+        relr: None,
+        relrsz: None,
+        relrent: None,
         init_array: None,
         init_arraysz: None,
         fini_array: None,
@@ -260,6 +266,12 @@ fn scan_dynamic(bytes: &Vec<u8>, dyn_off: usize, dyn_size: usize) -> (r: Result<
             scan.pltrelsz = Some(val);
         } else if tag == DT_PLTREL {
             scan.pltrel = Some(val);
+        } else if tag == DT_RELR {
+            scan.relr = Some(val);
+        } else if tag == DT_RELRSZ {
+            scan.relrsz = Some(val);
+        } else if tag == DT_RELRENT {
+            scan.relrent = Some(val);
         } else if tag == DT_INIT_ARRAY {
             scan.init_array = Some(val);
         } else if tag == DT_INIT_ARRAYSZ {
@@ -363,6 +375,218 @@ fn parse_rela_table(
         i = i + 1;
     }
 
+    Ok(out)
+}
+
+fn parse_relr_table(
+    bytes: &Vec<u8>,
+    phdrs: &Vec<ProgramHeader>,
+    vaddr: u64,
+    size: u64,
+) -> (r: Result<Vec<u64>, LoaderError>) {
+    if size == 0 {
+        return Ok(Vec::new());
+    }
+    if size % 8 != 0 {
+        return Err(LoaderError {});
+    }
+
+    let file_off_r = vaddr_to_file_offset(phdrs, vaddr, size);
+    if file_off_r.is_err() {
+        return Err(file_off_r.unwrap_err());
+    }
+    let file_off_u64 = file_off_r.unwrap();
+    let file_off_r = u64_to_usize(file_off_u64);
+    let size_r = u64_to_usize(size);
+    if file_off_r.is_err() || size_r.is_err() {
+        return Err(LoaderError {});
+    }
+    let file_off = file_off_r.unwrap();
+    let size_usize = size_r.unwrap();
+    if ensure_range(bytes.len(), file_off, size_usize).is_err() {
+        return Err(LoaderError {});
+    }
+
+    let count = size_usize / 8;
+    let mut out: Vec<u64> = Vec::new();
+    let mut i: usize = 0;
+    while i < count
+        invariant
+            i <= count,
+        decreases count - i,
+    {
+        let step = i.checked_mul(8);
+        if step.is_none() {
+            return Err(LoaderError {});
+        }
+        let base = file_off.checked_add(step.unwrap());
+        if base.is_none() {
+            return Err(LoaderError {});
+        }
+        let val_r = read_u64_le(bytes, base.unwrap());
+        if val_r.is_err() {
+            return Err(val_r.unwrap_err());
+        }
+        out.push(val_r.unwrap());
+        i = i + 1;
+    }
+
+    Ok(out)
+}
+
+fn decode_relr_entries(entries: &Vec<u64>) -> (r: Result<Vec<u64>, LoaderError>) {
+    let mut out: Vec<u64> = Vec::new();
+    let mut i: usize = 0;
+    let mut where_next: u64 = 0;
+    let mut have_base = false;
+
+    while i < entries.len()
+        invariant
+            i <= entries.len(),
+        decreases entries.len() - i,
+    {
+        let e = entries[i];
+        if (e & 1u64) == 0 {
+            if e % 8 != 0 {
+                return Err(LoaderError {});
+            }
+            out.push(e);
+            let nxt = e.checked_add(8);
+            if nxt.is_none() {
+                return Err(LoaderError {});
+            }
+            where_next = nxt.unwrap();
+            have_base = true;
+        } else {
+            if !have_base {
+                return Err(LoaderError {});
+            }
+            let mut bit: usize = 0;
+            while bit < 63
+                invariant
+                    bit <= 63,
+                decreases 63 - bit,
+            {
+                let mask = 1u64 << (bit + 1);
+                if (e & mask) != 0 {
+                    let rel = (bit as u64).checked_mul(8);
+                    if rel.is_none() {
+                        return Err(LoaderError {});
+                    }
+                    let off = where_next.checked_add(rel.unwrap());
+                    if off.is_none() {
+                        return Err(LoaderError {});
+                    }
+                    out.push(off.unwrap());
+                }
+                bit = bit + 1;
+            }
+            let nxt = where_next.checked_add(63u64 * 8u64);
+            if nxt.is_none() {
+                return Err(LoaderError {});
+            }
+            where_next = nxt.unwrap();
+        }
+        i = i + 1;
+    }
+
+    Ok(out)
+}
+
+fn read_u8_from_image(bytes: &Vec<u8>, phdrs: &Vec<ProgramHeader>, vaddr: u64) -> (r: Result<
+    u8,
+    LoaderError,
+>) {
+    let mut i: usize = 0;
+    while i < phdrs.len()
+        invariant
+            i <= phdrs.len(),
+        decreases phdrs.len() - i,
+    {
+        let ph = &phdrs[i];
+        if ph.p_type == PT_LOAD {
+            let mem_end = ph.p_vaddr.checked_add(ph.p_memsz);
+            if mem_end.is_none() {
+                return Err(LoaderError {});
+            }
+            let mem_end = mem_end.unwrap();
+            if vaddr >= ph.p_vaddr && vaddr < mem_end {
+                let delta = vaddr - ph.p_vaddr;
+                if delta < ph.p_filesz {
+                    let file_off = ph.p_offset.checked_add(delta);
+                    if file_off.is_none() {
+                        return Err(LoaderError {});
+                    }
+                    let file_off_r = u64_to_usize(file_off.unwrap());
+                    if file_off_r.is_err() {
+                        return Err(LoaderError {});
+                    }
+                    return read_u8(bytes, file_off_r.unwrap());
+                } else {
+                    return Ok(0);
+                }
+            }
+        }
+        i = i + 1;
+    }
+    Err(LoaderError {})
+}
+
+fn read_u64_from_image(bytes: &Vec<u8>, phdrs: &Vec<ProgramHeader>, vaddr: u64) -> (r: Result<
+    u64,
+    LoaderError,
+>) {
+    let mut out: u64 = 0;
+    let mut i: usize = 0;
+    while i < 8
+        invariant
+            i <= 8,
+        decreases 8 - i,
+    {
+        let cur_addr = vaddr.checked_add(i as u64);
+        if cur_addr.is_none() {
+            return Err(LoaderError {});
+        }
+        let b_r = read_u8_from_image(bytes, phdrs, cur_addr.unwrap());
+        if b_r.is_err() {
+            return Err(b_r.unwrap_err());
+        }
+        let shift = (i * 8) as u64;
+        out = out | ((b_r.unwrap() as u64) << shift);
+        i = i + 1;
+    }
+    Ok(out)
+}
+
+fn relr_offsets_to_relas(
+    bytes: &Vec<u8>,
+    phdrs: &Vec<ProgramHeader>,
+    relr_offsets: &Vec<u64>,
+) -> (r: Result<Vec<RelaEntry>, LoaderError>) {
+    let mut out: Vec<RelaEntry> = Vec::new();
+    let mut i: usize = 0;
+    while i < relr_offsets.len()
+        invariant
+            i <= relr_offsets.len(),
+        decreases relr_offsets.len() - i,
+    {
+        let off = relr_offsets[i];
+        if off % 8 != 0 {
+            return Err(LoaderError {});
+        }
+        let addend_r = read_u64_from_image(bytes, phdrs, off);
+        if addend_r.is_err() {
+            return Err(addend_r.unwrap_err());
+        }
+        let addend_u = addend_r.unwrap();
+        let entry = RelaEntry {
+            offset: off,
+            info: R_X86_64_RELATIVE as u64,
+            addend: addend_u as i64,
+        };
+        out.push(entry);
+        i = i + 1;
+    }
     Ok(out)
 }
 
@@ -672,6 +896,15 @@ fn parse_object_with_code(input: LoaderObject) -> (out: Result<ParsedObject, Loa
     if scan.pltrel.is_some() && scan.pltrel != Some(DT_RELA_TAG) {
         return Err(LoaderError {});
     }
+    if (scan.relr.is_some() && scan.relrsz.is_none()) || (scan.relr.is_none() && scan.relrsz.is_some()) {
+        return Err(LoaderError {});
+    }
+    if scan.relrent.is_some() && scan.relrent != Some(8) {
+        return Err(LoaderError {});
+    }
+    if scan.relrsz.unwrap_or(0) > 0 && scan.relrent != Some(8) {
+        return Err(LoaderError {});
+    }
 
     if scan.init_arraysz.unwrap_or(0) > 0 && scan.init_array.is_none() {
         return Err(LoaderError {});
@@ -876,23 +1109,38 @@ fn parse_object_with_code(input: LoaderObject) -> (out: Result<ParsedObject, Loa
     }
 
     let rela_vaddr = scan.rela.unwrap_or(0);
-    let relasz = scan.relasz.unwrap_or(0);
+    let relasz_input = scan.relasz.unwrap_or(0);
     let relaent = scan.relaent.unwrap_or(0);
     let jmprel_vaddr = scan.jmprel.unwrap_or(0);
     let pltrelsz = scan.pltrelsz.unwrap_or(0);
     let pltrel = scan.pltrel.unwrap_or(0);
+    let relr_vaddr = scan.relr.unwrap_or(0);
+    let relrsz = scan.relrsz.unwrap_or(0);
+    let relrent = scan.relrent.unwrap_or(0);
     let init_array_vaddr = scan.init_array.unwrap_or(0);
     let init_array_sz = scan.init_arraysz.unwrap_or(0);
     let fini_array_vaddr = scan.fini_array.unwrap_or(0);
     let fini_array_sz = scan.fini_arraysz.unwrap_or(0);
 
-    let relas_r = parse_rela_table(bytes, &phdrs, rela_vaddr, relasz);
+    let relas_r = parse_rela_table(bytes, &phdrs, rela_vaddr, relasz_input);
     if relas_r.is_err() {
         return Err(relas_r.unwrap_err());
     }
     let jmprels_r = parse_rela_table(bytes, &phdrs, jmprel_vaddr, pltrelsz);
     if jmprels_r.is_err() {
         return Err(jmprels_r.unwrap_err());
+    }
+    let relr_raw_r = parse_relr_table(bytes, &phdrs, relr_vaddr, relrsz);
+    if relr_raw_r.is_err() {
+        return Err(relr_raw_r.unwrap_err());
+    }
+    let relr_offsets_r = decode_relr_entries(&relr_raw_r.unwrap());
+    if relr_offsets_r.is_err() {
+        return Err(relr_offsets_r.unwrap_err());
+    }
+    let relr_relas_r = relr_offsets_to_relas(bytes, &phdrs, &relr_offsets_r.unwrap());
+    if relr_relas_r.is_err() {
+        return Err(relr_relas_r.unwrap_err());
     }
     let init_array_r = parse_init_array(bytes, &phdrs, init_array_vaddr, init_array_sz);
     if init_array_r.is_err() {
@@ -902,23 +1150,67 @@ fn parse_object_with_code(input: LoaderObject) -> (out: Result<ParsedObject, Loa
     if fini_array_r.is_err() {
         return Err(fini_array_r.unwrap_err());
     }
-    let relas = relas_r.unwrap();
+    let mut relas = relas_r.unwrap();
+    let relr_relas = relr_relas_r.unwrap();
     let jmprels = jmprels_r.unwrap();
     let init_array = init_array_r.unwrap();
     let fini_array = fini_array_r.unwrap();
 
-    let rela_bytes = (relas.len() as u64).checked_mul(ELF64_RELA_SIZE as u64);
+    let rela_input_bytes = (relas.len() as u64).checked_mul(ELF64_RELA_SIZE as u64);
     let jmprel_bytes = (jmprels.len() as u64).checked_mul(ELF64_RELA_SIZE as u64);
     let init_bytes = (init_array.len() as u64).checked_mul(8);
     let fini_bytes = (fini_array.len() as u64).checked_mul(8);
-    if rela_bytes.is_none() || jmprel_bytes.is_none() || init_bytes.is_none() || fini_bytes.is_none() {
+    if rela_input_bytes.is_none() || jmprel_bytes.is_none() || init_bytes.is_none() || fini_bytes.is_none() {
         return Err(LoaderError {});
     }
-    if rela_bytes.unwrap() != relasz || jmprel_bytes.unwrap() != pltrelsz || init_bytes.unwrap()
+    if rela_input_bytes.unwrap() != relasz_input || jmprel_bytes.unwrap() != pltrelsz || init_bytes.unwrap()
         != init_array_sz || fini_bytes.unwrap() != fini_array_sz
     {
         return Err(LoaderError {});
     }
+
+    let mut rr_i: usize = 0;
+    while rr_i < relr_relas.len()
+        invariant
+            rr_i <= relr_relas.len(),
+        decreases relr_relas.len() - rr_i,
+    {
+        let rr = &relr_relas[rr_i];
+        relas.push(RelaEntry { offset: rr.offset, info: R_X86_64_RELATIVE as u64, addend: rr.addend });
+        rr_i = rr_i + 1;
+    }
+
+    let mut chk_rela: usize = 0;
+    while chk_rela < relas.len()
+        invariant
+            chk_rela <= relas@.len(),
+            forall|k: int| 0 <= k < chk_rela ==> supported_reloc_type(rela_type(relas@[k])),
+        decreases relas.len() - chk_rela,
+    {
+        let info = relas[chk_rela].info;
+        let t = (info & 0xffff_ffff) as u32;
+        if t != R_X86_64_RELATIVE && t != R_X86_64_JUMP_SLOT && t != R_X86_64_GLOB_DAT
+            && t != R_X86_64_COPY && t != R_X86_64_64
+        {
+            return Err(LoaderError {});
+        }
+        proof {
+            assert(relas@[chk_rela as int].info == info);
+            assert(rela_type(relas@[chk_rela as int]) == t);
+            assert(supported_reloc_type(t));
+        }
+        chk_rela = chk_rela + 1;
+    }
+    proof {
+        assert(chk_rela == relas@.len());
+        assert(forall|k: int| 0 <= k < relas@.len() ==> supported_reloc_type(rela_type(relas@[k])));
+    }
+
+    let relasz_r = (relas.len() as u64).checked_mul(ELF64_RELA_SIZE as u64);
+    if relasz_r.is_none() {
+        return Err(LoaderError {});
+    }
+    let relasz = relasz_r.unwrap();
 
     proof {
         assert(input.bytes@.len() >= ELF64_EHDR_SIZE);

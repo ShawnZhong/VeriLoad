@@ -14,11 +14,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout musl
+        run: git submodule update --init --recursive third_party/musl
+
       - name: Install dependencies
         run: ./install_deps.sh
 
-      - name: Build
-        run: make
+      - name: Build and verify VeriLoad
+        run: make compile
+
+      - name: Build musl
+        run: make musl
+
+      - name: Build tests
+        run: make tests
 
       - name: Run
         run: ./run.sh
