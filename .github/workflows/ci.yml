@@ -20,8 +20,14 @@ jobs:
       - name: Install dependencies
         run: ./install_deps.sh
 
-      - name: Build
-        run: make compile tests musl
+      - name: Build and verify VeriLoad
+        run: make compile
+
+      - name: Build tests
+        run: make tests
+
+      - name: Build musl
+        run: make musl
 
       - name: Run
         run: ./run.sh
