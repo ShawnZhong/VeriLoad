@@ -27,7 +27,8 @@ make
 
 - `main` depends on `libfoo.so` and `libbar.so`. It calls `libfoo_print` and `libbar_step`.
 - `libbar.so` and `libbaz.so` depend on each other with mutual recursion on `libbar_step` and `libbaz_step`.
-- Each loaded object has a constructor and destructor to be called.
+- `libc.so` (from musl) is also a dependency for `main` and these shared libraries.
+- Each loaded object has a constructor to be called.
 
 Expected output:
 ```text
