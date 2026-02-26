@@ -1,9 +1,3 @@
 FROM alpine:latest
 
-RUN apk add --no-cache \
-  bash \
-  binutils \
-  build-base \
-  file \
-  linux-headers \
-  musl-dev
+RUN apk add --no-cache binutils file
