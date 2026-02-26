@@ -3,4 +3,4 @@ set -euo pipefail
 
 make
 
-cd build && ./veriload "$@" main libfoo.so libbar.so libbaz.so libunused.so libc.so libc.musl-x86_64.so.1
+cd build && ./veriload "$@" main libfoo.so libbar.so libbaz.so libunused.so libc.so
