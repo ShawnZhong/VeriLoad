@@ -1,9 +1,7 @@
-MUSL_CC := $(BUILD_DIR)/bin/musl-gcc
-
 .PHONY: tests
 tests: $(BUILD_DIR)/main
 
-$(BUILD_DIR)/main: $(wildcard tests/*.c tests/*.h) musl | $(BUILD_DIR)
+$(BUILD_DIR)/main: $(wildcard tests/*.c tests/*.h) $(MUSL_CC) | $(BUILD_DIR)
 	$(MUSL_CC) -fPIC -shared -Wl,-soname,libfoo.so -o $(BUILD_DIR)/libfoo.so tests/libfoo.c
 	$(MUSL_CC) -fPIC -shared -Wl,-soname,libbar.so -o $(BUILD_DIR)/libbar.bootstrap.so tests/libbar.c
 	$(MUSL_CC) -fPIC -shared -Wl,-soname,libbaz.so tests/libbaz.c $(BUILD_DIR)/libbar.bootstrap.so -o $(BUILD_DIR)/libbaz.so
