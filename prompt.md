@@ -2,12 +2,17 @@
 Based on ELF documentation and the x86-64 psABI, derive and implement a formal Verus specification and implementation for an ELF dynamic loader in `src/`.
 
 # Workflow
-- Read standards first, then for each stage write spec, implementation, and refinement proofs.
-  - `src/<stage>_spec.rs` defines the specification with data models and constants based on the gABI and psABI.
-  - `src/<stage>_impl.rs` implements the specification with refinement proofs.
-  - `src/main_spec.rs` and `src/main_impl.rs` orchestrate the stages and calls into the runtime.
+- Read very carefully the Verus references in the reading list.
+- Plan `src/design.md` and `src/todo.md` for the overall design and TODO list.
+- Carefully plan the data models and spec for each stage for a project skeleton.
+- To implement `main`, write the following files:
+  - `src/main.rs` orchestrate the stages and calls into the runtime.
   - `src/runtime.rs` executes the final plan.
   - `src/debug.rs` should print intermediate planner results and final output for inspection.
+- For the verified stages, read the standard, write spec, implementation, and refinement proofs.
+  - `src/s<number>_<stage_name>_spec.rs` defines the specification with data models and constants based on the gABI and psABI.
+  - `src/s<number>_<stage_name>_impl.rs` implements the specification with refinement proofs that it follows the spec.
+  - None of the verified stages should have any `external_body` or `assume_specification`.
 - After each stage, run proofs and test on sample input (`./run.sh --debug`).
 - For debugging, use `readelf`, `objdump`, and `ldd` to inspect ELF layout, disassembly/relocations, and runtime shared-library dependencies.
 
@@ -16,8 +21,8 @@ Based on ELF documentation and the x86-64 psABI, derive and implement a formal V
 - Make sure the spec is easy for a human to read and understand with citation to the standard.
 - Keep contracts minimal and semantic: requires only for real assumptions, ensures for behavior.
 - Fallible stage APIs should use `Option<T>`. Use `Vec<u8>` for bytes-related data.
-- Keep the trusted boundary small: minimize `external_body`/`assume_specification`.
 - Keep code simple and explicit (research prototype).
+- DO NOT READ GIT HISTORY. DO NOT READ `third_party/musl`.
 
 # Stages
 - Unverified input setup: read executable/shared objects from filesystem and build planner input as a sequence of ELF objects (`name + raw bytes`), where `name` is derived from `Path::file_name()`.
