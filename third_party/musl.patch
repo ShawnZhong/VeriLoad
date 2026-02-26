@@ -1,21 +1,16 @@
 diff --git a/src/env/__libc_start_main.c b/src/env/__libc_start_main.c
-index c5b277bd..e0adcee8 100644
+index c5b277bd..c71a5fe4 100644
 --- a/src/env/__libc_start_main.c
 +++ b/src/env/__libc_start_main.c
-@@ -17,6 +17,12 @@ weak_alias(dummy1, __init_ssp);
- 
- #define AUX_CNT 38
- 
-+__attribute__((constructor))
-+static void init_libc(void)
-+{
-+	__init_libc((char *[]){ 0 }, "");
-+}
-+
+@@ -20,6 +20,7 @@ weak_alias(dummy1, __init_ssp);
  #ifdef __GNUC__
  __attribute__((__noinline__))
  #endif
-@@ -72,6 +78,7 @@ static lsm2_fn libc_start_main_stage2;
++__attribute__((constructor))
+ void __init_libc(char **envp, char *pn)
+ {
+ 	size_t i, *auxv, aux[AUX_CNT] = { 0 };
+@@ -72,6 +73,7 @@ static lsm2_fn libc_start_main_stage2;
  int __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv,
  	void (*init_dummy)(), void(*fini_dummy)(), void(*ldso_dummy)())
  {

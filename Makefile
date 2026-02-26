@@ -1,3 +1,7 @@
+ifeq ($(filter -j%,$(MAKEFLAGS)),)
+MAKEFLAGS += -j$(shell nproc)
+endif
+
 BUILD_DIR := build
 
 .PHONY: all
