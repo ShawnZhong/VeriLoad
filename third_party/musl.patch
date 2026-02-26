@@ -1,3 +1,16 @@
+diff --git a/ldso/dynlink.c b/ldso/dynlink.c
+index f23cf4a0..8d5679ff 100644
+--- a/ldso/dynlink.c
++++ b/ldso/dynlink.c
+@@ -1630,7 +1630,7 @@ static void dl_debug_state(void)
+ 
+ weak_alias(dl_debug_state, _dl_debug_state);
+ 
+-void __init_tls(size_t *auxv)
++weak void __init_tls(size_t *auxv)
+ {
+ }
+ 
 diff --git a/src/env/__libc_start_main.c b/src/env/__libc_start_main.c
 index c5b277bd..c71a5fe4 100644
 --- a/src/env/__libc_start_main.c
