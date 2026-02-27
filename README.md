@@ -27,7 +27,8 @@ make
 
 - `main` depends on `libfoo.so` and `libbar.so`. It calls `libfoo_print` and `libbar_step`.
 - `libbar.so` and `libbaz.so` depend on each other with mutual recursion on `libbar_step` and `libbaz_step`.
-- `libc.so` (from musl) is also a dependency for `main` and these shared libraries.
+- `main` also runs a small pthread + TLS check and prints TLS values in main and worker thread.
+- `libc.so` (from musl) is a dependency for `main` and these shared libraries.
 - Each loaded object has a constructor to be called.
 
 Expected output:
@@ -42,6 +43,11 @@ Expected output:
 [libbaz] step=2
 [libbar] step=1
 [libbaz] step=0
+[main] testing pthread/tls
+[main] tls=42
+[thread] tls=99
+[main] tls=42
+[main] pthread/tls test completed
 [main] exit
 ```
 

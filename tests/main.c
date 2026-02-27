@@ -1,8 +1,17 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
+#include <stdlib.h>
 #include "libfoo.h"
 #include "libbar.h"
+
+#define panic(...)            \
+    do {                      \
+        printf(__VA_ARGS__);  \
+        exit(1);              \
+    } while (0)
+
+static __thread int tls_value;
 
 __attribute__((constructor))
 static void main_ctor(void) {
@@ -10,32 +19,29 @@ static void main_ctor(void) {
 }
 
 static void *thread_entry(void *arg) {
-    int *value = (int *)arg;
-    *value += 1;
-    printf("[thread] value=%d\n", *value);
+    (void)arg;
+    tls_value = 99;
+    printf("[thread] tls=%d\n", tls_value);
     fflush(stdout);
     return NULL;
 }
 
 static void test_pthread(void) {
     pthread_t tid;
-    int value = 41;
-    int rc = pthread_create(&tid, NULL, thread_entry, &value);
+    tls_value = 42;
+    printf("[main] tls=%d\n", tls_value);
+
+    int rc = pthread_create(&tid, NULL, thread_entry, NULL);
     if (rc != 0) {
-        printf("[main] pthread_create failed rc=%d (%s)\n", rc, strerror(rc));
-        return;
+        panic("[main] pthread_create failed rc=%d (%s)\n", rc, strerror(rc));
     }
 
     rc = pthread_join(tid, NULL);
     if (rc != 0) {
-        printf("[main] pthread_join failed rc=%d (%s)\n", rc, strerror(rc));
-        return;
+        panic("[main] pthread_join failed rc=%d (%s)\n", rc, strerror(rc));
     }
 
-    if (value != 42) {
-        printf("[main] pthread value mismatch: %d\n", value);
-        return;
-    }
+    printf("[main] tls=%d\n", tls_value);
 }
 
 int main(void) {
@@ -43,8 +49,7 @@ int main(void) {
     libfoo_print();
     libbar_step(3);
 
-
-    printf("[main] testing pthread\n");
+    printf("[main] pthread test start\n");
     test_pthread();
     printf("[main] pthread test completed\n");
 
