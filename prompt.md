@@ -3,16 +3,13 @@ Based on ELF documentation and the x86-64 psABI, derive and implement a formal V
 
 # Workflow
 - Read very carefully the Verus references in the reading list.
-- Plan `src/design.md` and `src/todo.md` for the overall design and TODO list.
 - Carefully plan the data models and spec for each stage for a project skeleton.
-- To implement `main`, write the following files:
-  - `src/main.rs` orchestrate the stages and calls into the runtime.
-  - `src/runtime.rs` executes the final plan.
-  - `src/debug.rs` should print intermediate planner results and final output for inspection.
-- For the verified stages, read the standard, write spec, implementation, and refinement proofs.
+- Implement `src/s0_main_impl.rs` first.
+- For the verified stages, read the very carefully about the standard, write formal spec in Verus, implementation, and refinement proofs.
   - `src/s<number>_<stage_name>_spec.rs` defines the specification with data models and constants based on the gABI and psABI.
   - `src/s<number>_<stage_name>_impl.rs` implements the specification with refinement proofs that it follows the spec.
   - None of the verified stages should have any `external_body` or `assume_specification`.
+- Finally, implement `src/s9_runtime.rs` to execute the final plan.
 - After each stage, run proofs and test on sample input (`./run.sh --debug`).
 - For debugging, use `readelf`, `objdump`, and `ldd` to inspect ELF layout, disassembly/relocations, and runtime shared-library dependencies.
 
