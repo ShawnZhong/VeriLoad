@@ -148,9 +148,7 @@ fn main_phdr_addr(plan: &LoaderOutput, base: u64) -> u64 {
     0
 }
 
-fn alloc_initial_stack(
-    plan: &LoaderOutput,
-) -> Result<(*mut usize, *mut *mut i8, *mut i8), LoaderError> {
+fn alloc_initial_stack(plan: &LoaderOutput) -> Result<*mut usize, LoaderError> {
     let mut argv0 = if let Some(main_obj) = plan.parsed.first() {
         main_obj.input_name.clone()
     } else {
@@ -279,9 +277,7 @@ fn alloc_initial_stack(
         }
     }
 
-    let envp = unsafe { sp.add(3) } as *mut *mut i8;
-    let pn = argv0_addr as *mut i8;
-    Ok((sp, envp, pn))
+    Ok(sp)
 }
 
 pub fn run_runtime(plan: &LoaderOutput) -> Result<(), LoaderError> {
@@ -293,11 +289,11 @@ pub fn run_runtime(plan: &LoaderOutput) -> Result<(), LoaderError> {
         protect_segment(m)?;
     }
 
-    let (stack_ptr, envp, pn) = alloc_initial_stack(plan)?;
+    let stack_ptr = alloc_initial_stack(plan)?;
     for c in &plan.constructors {
-        let ctor: extern "C" fn(*mut *mut i8, *mut i8) =
+        let ctor: extern "C" fn() =
             unsafe { std::mem::transmute(c.pc as usize) };
-        ctor(envp, pn);
+        ctor();
     }
 
     unsafe {

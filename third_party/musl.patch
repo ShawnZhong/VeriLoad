@@ -1,7 +1,16 @@
 diff --git a/ldso/dynlink.c b/ldso/dynlink.c
-index f23cf4a0..8d5679ff 100644
+index f23cf4a0..97f25696 100644
 --- a/ldso/dynlink.c
 +++ b/ldso/dynlink.c
+@@ -1616,7 +1616,7 @@ static void do_init_fini(struct dso **queue)
+ 	pthread_mutex_unlock(&init_fini_lock);
+ }
+ 
+-void __libc_start_init(void)
++weak void __libc_start_init(void)
+ {
+ 	do_init_fini(main_ctor_queue);
+ 	if (!__malloc_replaced && main_ctor_queue != builtin_ctor_queue)
 @@ -1630,7 +1630,7 @@ static void dl_debug_state(void)
  
  weak_alias(dl_debug_state, _dl_debug_state);
@@ -11,23 +20,3 @@ index f23cf4a0..8d5679ff 100644
  {
  }
  
-diff --git a/src/env/__libc_start_main.c b/src/env/__libc_start_main.c
-index c5b277bd..c71a5fe4 100644
---- a/src/env/__libc_start_main.c
-+++ b/src/env/__libc_start_main.c
-@@ -20,6 +20,7 @@ weak_alias(dummy1, __init_ssp);
- #ifdef __GNUC__
- __attribute__((__noinline__))
- #endif
-+__attribute__((constructor))
- void __init_libc(char **envp, char *pn)
- {
- 	size_t i, *auxv, aux[AUX_CNT] = { 0 };
-@@ -72,6 +73,7 @@ static lsm2_fn libc_start_main_stage2;
- int __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv,
- 	void (*init_dummy)(), void(*fini_dummy)(), void(*ldso_dummy)())
- {
-+	exit(main(argc, argv, argv+argc+1));
- 	char **envp = argv+argc+1;
- 
- 	/* External linkage, and explicit noinline attribute if available,
