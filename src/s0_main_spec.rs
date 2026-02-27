@@ -1,10 +1,3 @@
-// Stage 0: Program Invocation (unverified setup + verified pipeline glue).
-// Input:
-// - Ordered objects from CLI paths; each object is (path bytes, raw file bytes).
-// - Object index 0 is the root object for dependency stages.
-// Output:
-// - RuntimePlan produced by verified stages 1..8.
-
 use vstd::prelude::*;
 
 verus! {
