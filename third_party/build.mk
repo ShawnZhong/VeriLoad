@@ -1,22 +1,11 @@
 MUSL_DIR := third_party/musl
-MUSL_PATCH := $(abspath third_party/musl.patch)
 MUSL_CC := $(BUILD_DIR)/bin/musl-gcc
 
 .PHONY: musl
 musl: $(MUSL_CC)
 
-$(MUSL_CC): $(MUSL_PATCH) | $(BUILD_DIR)
-	@set -eu; \
-	if git -C $(MUSL_DIR) apply --check $(MUSL_PATCH) >/dev/null 2>&1; then \
-		git -C $(MUSL_DIR) apply $(MUSL_PATCH); \
-	elif git -C $(MUSL_DIR) apply -R --check $(MUSL_PATCH) >/dev/null 2>&1; then \
-		:; \
-	else \
-		echo "failed to apply $(MUSL_PATCH)" >&2; \
-		exit 1; \
-	fi
+$(MUSL_CC): | $(BUILD_DIR)
 	cd $(MUSL_DIR) && ./configure --prefix=$(abspath $(BUILD_DIR))
-	$(MAKE) -C $(MUSL_DIR)
-	$(MAKE) -C $(MUSL_DIR) install
+	$(MAKE) -C $(MUSL_DIR) LDSO_OBJS= install
 	ln -sfn lib/libc.so $(BUILD_DIR)/libc.so
 	ln -sfn lib/libc.so $(BUILD_DIR)/libc.musl-x86_64.so.1

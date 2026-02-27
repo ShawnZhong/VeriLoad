@@ -5,11 +5,11 @@ VERILOAD_SOURCES := $(wildcard src/*.rs)
 VERILOAD_BINARY := $(BUILD_DIR)/veriload
 
 $(VERILOAD_BINARY): $(VERILOAD_SOURCES) | $(BUILD_DIR)
-	$(VERUS_BIN) --compile $(VERILOAD_MAIN) -- -C target-feature=+crt-static -o $(VERILOAD_BINARY)
+	MAKEFLAGS= $(VERUS_BIN) --compile $(VERILOAD_MAIN) -- -C target-feature=+crt-static -o $(VERILOAD_BINARY)
 
 .PHONY: verify
 verify:
-	$(VERUS_BIN) $(VERILOAD_MAIN)
+	MAKEFLAGS= $(VERUS_BIN) $(VERILOAD_MAIN)
 
 .PHONY: compile
 compile: $(VERILOAD_BINARY)
