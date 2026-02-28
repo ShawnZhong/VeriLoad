@@ -11,7 +11,7 @@
         exit(1);              \
     } while (0)
 
-static __thread int tls_value;
+static __thread int tls;
 
 __attribute__((constructor))
 static void main_ctor(void) {
@@ -20,16 +20,17 @@ static void main_ctor(void) {
 
 static void *thread_entry(void *arg) {
     (void)arg;
-    tls_value = 99;
-    printf("[thread] tls=%d\n", tls_value);
+    printf("[thread] tls=%d, &tls=%p\n", tls, &tls);
+    tls = 99;
+    printf("[thread] tls=%d, &tls=%p\n", tls, &tls);
     fflush(stdout);
     return NULL;
 }
 
 static void test_pthread(void) {
     pthread_t tid;
-    tls_value = 42;
-    printf("[main] tls=%d\n", tls_value);
+    tls = 42;
+    printf("[main] tls=%d, &tls=%p\n", tls, &tls);
 
     int rc = pthread_create(&tid, NULL, thread_entry, NULL);
     if (rc != 0) {
@@ -41,7 +42,7 @@ static void test_pthread(void) {
         panic("[main] pthread_join failed rc=%d (%s)\n", rc, strerror(rc));
     }
 
-    printf("[main] tls=%d\n", tls_value);
+    printf("[main] tls=%d, &tls=%p\n", tls, &tls);
 }
 
 int main(void) {

@@ -44,9 +44,10 @@ Expected output:
 [libbar] step=1
 [libbaz] step=0
 [main] testing pthread/tls
-[main] tls=42
-[thread] tls=99
-[main] tls=42
+[main] tls=42, &tls=0x70000069d5d4
+[thread] tls=0, &tls=0x73be9954bb34
+[thread] tls=99, &tls=0x73be9954bb34
+[main] tls=42, &tls=0x70000069d5d4
 [main] pthread/tls test completed
 [main] exit
 ```
