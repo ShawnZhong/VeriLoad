@@ -6,7 +6,6 @@ endif
 all: veriload musl tests
 
 BUILD_DIR := build
-
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 

@@ -21,7 +21,7 @@ jobs:
         run: ./install_deps.sh
 
       - name: Build and verify VeriLoad
-        run: make compile
+        run: make veriload
 
       - name: Build musl
         run: make musl
