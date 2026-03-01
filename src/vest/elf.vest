@@ -1,0 +1,179 @@
+// ELF64 parser — little-endian only
+!LITTLE_ENDIAN
+
+// ===== ELF Header =====
+
+elf_data = enum {
+    LittleEndian = 1u8,
+    BigEndian    = 2u8,
+    ...
+}
+
+elf_osabi = enum {
+    SystemV  = 0u8,
+    HPUX     = 1u8,
+    NetBSD   = 2u8,
+    Linux    = 3u8,
+    GNUHurd  = 4u8,
+    Solaris  = 6u8,
+    AIX      = 7u8,
+    IRIX     = 8u8,
+    FreeBSD  = 9u8,
+    OpenBSD  = 12u8,
+    ...
+}
+
+elf_type = enum {
+    None = 0u16,
+    Rel  = 1u16,
+    Exec = 2u16,
+    Dyn  = 3u16,
+    Core = 4u16,
+    ...
+}
+
+elf_machine = enum {
+    None    = 0u16,
+    M32     = 1u16,
+    SPARC   = 2u16,
+    X86     = 3u16,
+    M68K    = 4u16,
+    MIPS    = 8u16,
+    PowerPC = 20u16,
+    S390    = 22u16,
+    ARM     = 40u16,
+    SuperH  = 42u16,
+    IA64    = 50u16,
+    X86_64  = 62u16,
+    AArch64 = 183u16,
+    RISCV   = 243u16,
+    ...
+}
+
+// ELF64 header: 64 bytes total
+elf_header = {
+    const magic:  [u8; 4] = [0x7f, 0x45, 0x4c, 0x46],
+    const class:  u8 = 2,       // ELFCLASS64
+    data:         elf_data,
+    ei_version:   u8,
+    osabi:        elf_osabi,
+    abiversion:   u8,
+    pad:          [u8; 7],
+    ty:           elf_type,
+    machine:      elf_machine,
+    e_version:    u32,
+    entry:        u64,
+    phoff:        u64,
+    shoff:        u64,
+    flags:        u32,
+    ehsize:       u16,
+    phentsize:    u16,
+    phnum:        u16,
+    shentsize:    u16,
+    shnum:        u16,
+    shstrndx:     u16,
+}
+
+// ===== Section Header (Elf64_Shdr) — 64 bytes =====
+
+elf_sht = enum {
+    Null          = 0u32,
+    ProgBits      = 1u32,
+    SymTab        = 2u32,
+    StrTab        = 3u32,
+    Rela          = 4u32,
+    Hash          = 5u32,
+    Dynamic       = 6u32,
+    Note          = 7u32,
+    NoBits        = 8u32,
+    Rel           = 9u32,
+    ShLib         = 10u32,
+    DynSym        = 11u32,
+    // 12 and 13 reserved
+    InitArray     = 14u32,
+    FiniArray     = 15u32,
+    PreinitArray  = 16u32,
+    Group         = 17u32,
+    SymTabShndx   = 18u32,
+    Relr          = 19u32,
+    ...
+}
+
+elf_shdr = {
+    sh_name:      u32,
+    sh_type:      elf_sht,
+    sh_flags:     u64,
+    sh_addr:      u64,
+    sh_offset:    u64,
+    sh_size:      u64,
+    sh_link:      u32,
+    sh_info:      u32,
+    sh_addralign: u64,
+    sh_entsize:   u64,
+}
+
+// ===== Program Header (Elf64_Phdr) — 56 bytes =====
+// Note: p_flags is the SECOND field in Elf64 (unlike Elf32 where it is last)
+
+elf_pt = enum {
+    Null    = 0u32,
+    Load    = 1u32,
+    Dynamic = 2u32,
+    Interp  = 3u32,
+    Note    = 4u32,
+    ShLib   = 5u32,
+    Phdr    = 6u32,
+    Tls     = 7u32,
+    ...
+}
+
+elf_phdr = {
+    p_type:   elf_pt,
+    p_flags:  u32,
+    p_offset: u64,
+    p_vaddr:  u64,
+    p_paddr:  u64,
+    p_filesz: u64,
+    p_memsz:  u64,
+    p_align:  u64,
+}
+
+// ===== Symbol Table Entry (Elf64_Sym) — 24 bytes =====
+// Note: field order differs from Elf32
+
+elf_sym = {
+    st_name:  u32,
+    st_info:  u8,   // binding (high 4 bits) | type (low 4 bits)
+    st_other: u8,   // visibility in low 3 bits
+    st_shndx: u16,
+    st_value: u64,
+    st_size:  u64,
+}
+
+// ===== Relocation without addend (Elf64_Rel) — 16 bytes =====
+
+elf_rel = {
+    r_offset: u64,
+    r_info:   u64,  // sym index (high 32) | type (low 32)
+}
+
+// ===== Relocation with addend (Elf64_Rela) — 24 bytes =====
+
+elf_rela = {
+    r_offset: u64,
+    r_info:   u64,  // sym index (high 32) | type (low 32)
+    r_addend: u64,  // Elf64_Sxword; cast to i64 when interpreting
+}
+
+// ===== Relative relocation (Elf64_Relr) — 8 bytes =====
+// LSB=0: address entry (one R_*_RELATIVE at this address).
+// LSB=1: bitmap entry — bits 1..63 each mark a relocatable 8-byte slot
+//         in the 63-slot block immediately after the last address entry.
+elf_relr = u64
+
+// ===== Dynamic section entry (Elf64_Dyn) — 16 bytes =====
+
+elf_dyn = {
+    d_tag: u64,  // Elf64_Sxword; cast to i64 when interpreting
+    d_un:  u64,  // d_val or d_ptr depending on d_tag
+}
