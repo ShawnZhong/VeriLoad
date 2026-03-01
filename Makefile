@@ -13,7 +13,7 @@ $(BUILD_DIR):
 clean:
 	rm -rf $(BUILD_DIR)
 
-# ==================== Veriload ====================
+# ==================== VeriLoad ====================
 VERUS_BIN := .verus/verus-x86-linux/verus
 VERILOAD_MAIN := src/main_impl.rs
 VERILOAD_BINARY := $(BUILD_DIR)/veriload
