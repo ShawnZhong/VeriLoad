@@ -10,3 +10,6 @@
 [submodule "third_party/psABI_x86_64"]
 	path = third_party/psABI_x86_64
 	url = https://gitlab.com/x86-psABIs/x86-64-ABI.git
+[submodule "third_party/vest"]
+	path = third_party/vest
+	url = https://github.com/secure-foundations/vest.git
